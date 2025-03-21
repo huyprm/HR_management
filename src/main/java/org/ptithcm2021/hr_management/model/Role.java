@@ -1,16 +1,20 @@
 package org.ptithcm2021.hr_management.model;
 
 import jakarta.persistence.Entity;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import lombok.*;
+import org.ptithcm2021.hr_management.enums.RoleEnum;
 
 @Entity(name = "roles")
-@Setter
-@Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@Setter
+@Getter
+@Builder
 public class Role {
-    @
+    @Id
+    private RoleEnum id;
+    private String description;
+
 }
