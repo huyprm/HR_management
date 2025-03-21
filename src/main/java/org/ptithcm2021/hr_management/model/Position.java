@@ -25,6 +25,4 @@ public class Position {
     @JoinColumn(name = "departmentId")
     private Department department;
 
-    @OneToMany(mappedBy = "position")
-    private List<UserPosition> userPositions;
 }

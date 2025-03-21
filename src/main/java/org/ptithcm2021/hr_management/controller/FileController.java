@@ -1,9 +1,9 @@
 package org.ptithcm2021.hr_management.controller;
 
-import com.cloudinary.Api;
 import lombok.RequiredArgsConstructor;
 import org.ptithcm2021.hr_management.dto.response.ApiResponse;
 import org.ptithcm2021.hr_management.service.FileService;
+import org.ptithcm2021.hr_management.service.imp.FileServiceImp;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -14,7 +14,7 @@ import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/file")
+@RequestMapping("/api/files")
 public class FileController {
     private final FileService fileService;
     @PostMapping("/upload")

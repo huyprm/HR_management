@@ -10,7 +10,9 @@ public enum ErrorCode {
     INVALID_JWT (1001, "Jwt invalid", HttpStatus.UNAUTHORIZED),
     USERNAME_NOT_FOUND(1002, "Username does not existed", HttpStatus.NOT_FOUND),
     WRONG_PASSWORD(1003, "Wrong password", HttpStatus.BAD_REQUEST),
-    ACCOUNT_LOCKED(1004, "Account locked", HttpStatus.LOCKED)
+    ACCOUNT_LOCKED(1004, "Account locked", HttpStatus.LOCKED),
+    DEGREE_NOT_FOUND(1005, "Degree not found", HttpStatus.NOT_FOUND),
+    ROLE_NOT_FOUND(1006, "Role not found", HttpStatus.NOT_FOUND)
 
     ;
 

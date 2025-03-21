@@ -1,12 +1,9 @@
 package org.ptithcm2021.hr_management.config;
 
 import com.nimbusds.jose.JOSEException;
-import lombok.RequiredArgsConstructor;
-import org.ptithcm2021.hr_management.service.AuthenticationService;
+import org.ptithcm2021.hr_management.service.imp.AuthenticationServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
@@ -23,7 +20,7 @@ public class JwtDecoderConfig implements JwtDecoder{
     @Value("${jwt.signer_key}")
     private String sign_key;
     @Autowired
-    private AuthenticationService authenticationService;
+    private AuthenticationServiceImpl authenticationService;
 
 
     @Override

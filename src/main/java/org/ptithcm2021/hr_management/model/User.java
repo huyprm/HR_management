@@ -1,13 +1,11 @@
 package org.ptithcm2021.hr_management.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.hibernate.annotations.DynamicInsert;
+import jakarta.validation.constraints.Email;
+import lombok.*;
+import org.ptithcm2021.hr_management.enums.UserStatusEnum;
 
-import javax.swing.text.rtf.RTFEditorKit;
+import java.util.Date;
 import java.util.List;
 
 @Entity(name = "users")
@@ -17,31 +15,25 @@ import java.util.List;
 @Getter
 public class User {
     @Id
-    private String id;
-
+    @Email(message = "Email invalid")
+    private String email;
     private String fullName;
     private String numberCCCD;
     private String phoneNumber;
-    private String email;
-    private String dob;
+    private Date dob;
     private String gender;
     private String address;
     private String ethnicity;
     private String religion;
+    private String taxCode;
     private String degree;
-    private String status;
+    @Column
+    private UserStatusEnum status = UserStatusEnum.PENDING;
     private String avatar;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "accountId")
     private Account account;
-
-    @ManyToOne()
-    @JoinColumn(name = "degreeId")
-    private Degree degreeId;
-
-    @OneToMany(mappedBy = "user")
-    private List<UserPosition> userPositions;
 
     @OneToMany(mappedBy = "user")
     private List<RewardAssignment> rewardAssignments;
