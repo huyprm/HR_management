@@ -16,9 +16,16 @@ import java.io.IOException;
 @RequiredArgsConstructor
 @RequestMapping("/api/files")
 public class FileController {
+
     private final FileService fileService;
+
     @PostMapping("/upload")
     public ApiResponse<String> uploadImage(@RequestParam MultipartFile file) throws IOException {
         return ApiResponse.<String>builder().data(fileService.uploadImage(file)).build();
+    }
+
+    @PostMapping("/edit")
+    public ApiResponse<String> editImage(@RequestParam MultipartFile file, @RequestParam String currentImg) throws Exception {
+        return ApiResponse.<String>builder().data(fileService.editImage(file, currentImg)).build();
     }
 }

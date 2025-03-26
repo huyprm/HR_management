@@ -1,8 +1,6 @@
 package org.ptithcm2021.hr_management.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import lombok.*;
 import org.ptithcm2021.hr_management.enums.RoleEnum;
 
@@ -14,6 +12,7 @@ import org.ptithcm2021.hr_management.enums.RoleEnum;
 @Builder
 public class Role {
     @Id
+    @Enumerated(EnumType.STRING)
     private RoleEnum id;
     private String description;
 

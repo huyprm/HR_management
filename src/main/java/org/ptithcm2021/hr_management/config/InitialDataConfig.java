@@ -2,6 +2,8 @@ package org.ptithcm2021.hr_management.config;
 
 import lombok.RequiredArgsConstructor;
 import org.ptithcm2021.hr_management.enums.RoleEnum;
+import org.ptithcm2021.hr_management.exception.AppException;
+import org.ptithcm2021.hr_management.exception.ErrorCode;
 import org.ptithcm2021.hr_management.model.Account;
 import org.ptithcm2021.hr_management.model.Role;
 import org.ptithcm2021.hr_management.repository.AccountRepository;
@@ -31,10 +33,14 @@ public class InitialDataConfig {
                 }
 
             }
-            if (accountRepository.findById("admin").isEmpty()){
+            if (accountRepository.findById("huydlx@gmail.com").isEmpty()){
+                Role role = roleRepository.findById(RoleEnum.ADMIN)
+                        .orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_FOUND));
+
                 Account account = Account.builder()
-                        .username("admin")
+                        .username("huydlx@gmail.com")
                         .password(passwordEncoder.encode("admin"))
+                        .role(role)
                         .build();
                 accountRepository.save(account);
             }

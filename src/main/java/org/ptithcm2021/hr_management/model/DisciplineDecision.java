@@ -1,9 +1,6 @@
 package org.ptithcm2021.hr_management.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.Date;
@@ -21,7 +18,7 @@ public class DisciplineDecision {
     private String content;
     private Date date;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "userId")
     private User signer;
 }

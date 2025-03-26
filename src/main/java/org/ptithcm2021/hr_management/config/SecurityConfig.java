@@ -25,14 +25,14 @@ public class SecurityConfig {
         this.jwtDecoderConfig =jwtDecoderConfig;
     }
 
-    private static final String[] POST_ENDPOINT = {
-            "/api/auth/login"
+    private static final String[] PUBLIC_ENDPOINT = {
+            "/api/auth/**"
     };
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(authorizeRequests -> authorizeRequests
-                .requestMatchers(HttpMethod.POST, POST_ENDPOINT).permitAll()
+                .requestMatchers(PUBLIC_ENDPOINT).permitAll()
                 .requestMatchers(
                         "/swagger-ui/**",
                         "/v3/api-docs/**",

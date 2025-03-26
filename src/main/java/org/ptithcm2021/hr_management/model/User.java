@@ -40,4 +40,7 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private List<DisciplineAssignment> disciplineAssignments;
+
+    @OneToMany(mappedBy = "user")
+    private List<Salary> salaries;
 }

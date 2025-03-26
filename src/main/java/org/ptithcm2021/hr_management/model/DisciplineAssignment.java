@@ -3,6 +3,8 @@ package org.ptithcm2021.hr_management.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Date;
+
 @Entity(name = "disciplineAssigments")
 @Setter
 @Getter
@@ -17,6 +19,8 @@ public class DisciplineAssignment {
     @ManyToOne
     @JoinColumn(name ="userId")
     private User user;
+
+    private Date date;
 
     @ManyToOne
     @JoinColumn(name ="disciplineDecisionId")

@@ -38,8 +38,4 @@ public class RequestForm{
     @JoinColumn(name = "userSignId")
     private User userSign;
 
-    @ManyToOne
-    @JoinColumn(name = "formTypeId")
-    private FormType formType;
-
 }

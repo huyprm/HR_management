@@ -22,4 +22,18 @@ public class FileServiceImp implements FileService {
         return uploadResult.get("url").toString();
     }
 
+    @Override
+    public String editImage(MultipartFile file, String currentImg) throws Exception {
+        if(!currentImg.isEmpty()) {
+            String publicId = extractPublicId(currentImg);
+            cloudinary.uploader().destroy(publicId, ObjectUtils.emptyMap());
+        }
+        return uploadImage(file);
+    }
+
+    private static String extractPublicId(String url) {
+        url = url.replaceAll("^https://res.cloudinary.com/[^/]+/image/upload/v\\d+/", ""); // Xóa domain & version
+        return url.replaceAll("\\.[a-z]+$", ""); // Xóa phần mở rộng (.jpg, .png, ...)
+    }
+
 }
