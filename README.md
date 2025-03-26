@@ -1,4 +1,4 @@
 Pull repo về và start là đủ.
 Tài khoản test
-  username: admin
+  username: huydlx@gmail.com
   password: admin
