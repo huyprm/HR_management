@@ -2,6 +2,7 @@ package org.ptithcm2021.hr_management.service.imp;
 
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
+import org.ptithcm2021.hr_management.dto.request.ChangePasswordRequest;
 import org.ptithcm2021.hr_management.dto.request.UserRequest;
 import org.ptithcm2021.hr_management.dto.response.UserResponse;
 import org.ptithcm2021.hr_management.enums.UserStatusEnum;
@@ -21,8 +22,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -93,6 +97,25 @@ public class UserServiceImp implements UserService {
 
         User user = userRepository.findById(Long.parseLong(securityContext)).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
         return userMapper.toUserResponse(user);
+    }
+
+    @Override
+    public void changePassword(ChangePasswordRequest changePasswordRequest) {
+        User user = userRepository.findById(changePasswordRequest.getUserId()).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+
+        Account account =user.getAccount();
+
+        if(account.getPassword().matches(changePasswordRequest.getOldPass())){
+            account.setPassword(passwordEncoder.encode(changePasswordRequest.getNewPass()));
+        }else {
+            throw new AppException(ErrorCode.PASSWORD_NOT_MATCH);
+        }
+        userRepository.save(user);
+    }
+
+    @Override
+    public List<UserResponse> getAllUser() {
+        return userRepository.findAll().stream().map(userMapper::toUserResponse).collect(Collectors.toList());
     }
 
 

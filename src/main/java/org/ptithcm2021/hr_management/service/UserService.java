@@ -2,10 +2,13 @@ package org.ptithcm2021.hr_management.service;
 
 import jakarta.mail.MessagingException;
 import org.aspectj.weaver.patterns.IToken;
+import org.ptithcm2021.hr_management.dto.request.ChangePasswordRequest;
 import org.ptithcm2021.hr_management.dto.request.UserRequest;
 import org.ptithcm2021.hr_management.dto.response.UserResponse;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 public interface UserService {
     @PreAuthorize("hasAnyAuthority('SCOPE_STAFF', 'SCOPE_ADMIN')")
@@ -22,5 +25,9 @@ public interface UserService {
 
     UserResponse fetchInfoUser();
 
+    @PreAuthorize("#id == authentication.name")
+    void changePassword(ChangePasswordRequest changePasswordRequest);
 
+    @PreAuthorize("hasAnyAuthority('SCOPE_STAFF', 'SCOPE_ADMIN')")
+    List<UserResponse> getAllUser();
 }

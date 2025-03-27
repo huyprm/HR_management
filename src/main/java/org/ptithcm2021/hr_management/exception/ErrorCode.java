@@ -14,6 +14,7 @@ public enum ErrorCode {
     DEGREE_NOT_FOUND(1005, "Degree not found", HttpStatus.NOT_FOUND),
     ROLE_NOT_FOUND(1006, "Role not found", HttpStatus.NOT_FOUND),
     USER_NOT_FOUND(1007, "User not found", HttpStatus.NOT_FOUND),
+    PASSWORD_NOT_MATCH(1008, "Passwords do not match", HttpStatus.BAD_REQUEST);
 
     ;
 

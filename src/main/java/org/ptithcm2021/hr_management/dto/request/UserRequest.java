@@ -1,6 +1,7 @@
 package org.ptithcm2021.hr_management.dto.request;
 
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -34,6 +35,6 @@ public class UserRequest {
     private String degree;
     private String taxCode;
 
-    @NotNull(message = "Role cannot be empty")
+    @NotBlank(message = "Role cannot be empty")
     private RoleEnum roleId;
 }
