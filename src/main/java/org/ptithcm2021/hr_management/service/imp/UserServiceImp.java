@@ -53,6 +53,22 @@ public class UserServiceImp implements UserService {
         return userMapper.toUserResponse(user);
     }
 
+    @Override
+    public UserResponse updateUser(long id, UserRequest userRequest) {
+        User user = userRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+        userMapper.updateUser(user, userRequest);
+
+        if(userRequest.getRoleId() != null){
+            Role role = roleRepository.findById(userRequest.getRoleId())
+                    .orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_FOUND));
+
+            user.getAccount().setRole(role);
+        }
+
+        return userMapper.toUserResponse(userRepository.save(user));
+    }
+
+
     private String createSendPWMessage(String username, String password, String name){
         return String.format(
                 "Xin chào %s,\n\n" +

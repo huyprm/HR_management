@@ -9,6 +9,7 @@ import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.ptithcm2021.hr_management.dto.request.LoginRequest;
+import org.ptithcm2021.hr_management.enums.RoleEnum;
 import org.ptithcm2021.hr_management.exception.AppException;
 import org.ptithcm2021.hr_management.exception.ErrorCode;
 import org.ptithcm2021.hr_management.model.Account;
@@ -50,11 +51,16 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public String generateToken(Account account){
-        long id = account.getUser().getId();
+        String subject;
+
+        if(account.getRole().equals(RoleEnum.ADMIN)){
+            subject = "admin";
+        } else subject = String.valueOf(account.getUser().getId());
+
         JWSHeader header = new JWSHeader.Builder(JWSAlgorithm.HS512).type(JOSEObjectType.JWT).build();
 
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
-                .subject(String.valueOf(id))
+                .subject(String.valueOf(subject))
                 .issuer("ptithcm.com")
                 .issueTime(new Date())
                 .jwtID(UUID.randomUUID().toString())

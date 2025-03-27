@@ -12,4 +12,7 @@ public interface UserService {
 
     @PreAuthorize("#id == authentication.name")
     UserResponse getUser(long id);
+
+    @PreAuthorize("hasAuthority('SCOPE_STAFF')")
+    UserResponse updateUser(long id, UserRequest userRequest);
 }

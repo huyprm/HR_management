@@ -36,7 +36,7 @@ public class User extends Base{
     private UserStatusEnum status = UserStatusEnum.PENDING;
     private String avatar;
 
-    @OneToOne(cascade = CascadeType.PERSIST)
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "accountId")
     private Account account;
 

@@ -30,4 +30,9 @@ public class UserController {
     public ApiResponse<UserResponse> getUser(@PathVariable long id){
         return ApiResponse.<UserResponse>builder().data(userService.getUser(id)).build();
     }
+
+    @PutMapping({"/{id}"})
+    public ApiResponse<UserResponse> updateUser(@PathVariable long id, @RequestBody UserRequest userRequest){
+        return ApiResponse.<UserResponse>builder().data(userService.updateUser(id, userRequest)).build();
+    }
 }
