@@ -20,16 +20,17 @@ public class MailServiceImp implements MailService {
     private final JavaMailSender javaMailSender;
 
     @Override
-    public String forgotPassword(String email, String content) throws MessagingException {
+    public String sendMimeEmail(String email, String content, String subject) throws MessagingException {
         MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
         helper.setTo(email);
-        helper.setSubject("Mã OTP Xác Nhận Quên Mật Khẩu");
+        helper.setSubject(subject);
         helper.setText(content, true);
 
         javaMailSender.send(message);
 
         return "Sent mail successful";
     }
+
 }

@@ -24,4 +24,6 @@ public class JobGrade {
     private String groupName;
     private double coefficient;
     private String description;
+
+
 }

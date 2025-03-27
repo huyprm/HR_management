@@ -13,8 +13,10 @@ import org.ptithcm2021.hr_management.exception.AppException;
 import org.ptithcm2021.hr_management.exception.ErrorCode;
 import org.ptithcm2021.hr_management.model.Account;
 import org.ptithcm2021.hr_management.repository.AccountRepository;
+import org.ptithcm2021.hr_management.repository.UserRepository;
 import org.ptithcm2021.hr_management.service.AuthenticationService;
 import org.ptithcm2021.hr_management.service.MailService;
+import org.ptithcm2021.hr_management.service.UserService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -39,6 +41,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final AccountRepository accountRepository;
     private final MailService mailService;
 
+
     @Value("${jwt.signer_key}")
     protected String SIGNER_KEY;
 
@@ -47,10 +50,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public String generateToken(Account account){
+        long id = account.getUser().getId();
         JWSHeader header = new JWSHeader.Builder(JWSAlgorithm.HS512).type(JOSEObjectType.JWT).build();
 
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
-                .subject(account.getUsername())
+                .subject(String.valueOf(id))
                 .issuer("ptithcm.com")
                 .issueTime(new Date())
                 .jwtID(UUID.randomUUID().toString())
@@ -114,7 +118,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public void forgotPassword(String email) throws MessagingException {
         String otp = generateOTP(email);
         String content = getOtpEmailContent(otp);
-        mailService.forgotPassword(email, content);
+        mailService.sendMimeEmail(email, content, "\"Mã OTP Xác Nhận Quên Mật Khẩu\"");
     }
 
     @Override

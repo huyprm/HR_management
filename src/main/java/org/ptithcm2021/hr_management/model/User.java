@@ -2,6 +2,7 @@ package org.ptithcm2021.hr_management.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.ptithcm2021.hr_management.enums.UserStatusEnum;
 
@@ -13,11 +14,14 @@ import java.util.List;
 @AllArgsConstructor
 @Setter
 @Getter
-public class User {
-    @Id
+public class User extends Base{
+
+    @Column(unique = true)
     @Email(message = "Email invalid")
     private String email;
+
     private String fullName;
+    @NotNull
     private String numberCCCD;
     private String phoneNumber;
     private Date dob;
@@ -27,6 +31,7 @@ public class User {
     private String religion;
     private String taxCode;
     private String degree;
+
     @Column
     private UserStatusEnum status = UserStatusEnum.PENDING;
     private String avatar;
@@ -43,4 +48,7 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private List<Salary> salaries;
+
+    @OneToMany(mappedBy = "user")
+    private List<Contract> contracts;
 }

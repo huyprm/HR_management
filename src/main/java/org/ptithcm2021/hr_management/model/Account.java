@@ -1,6 +1,7 @@
 package org.ptithcm2021.hr_management.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Entity(name = "accounts")
@@ -12,7 +13,10 @@ import lombok.*;
 public class Account {
     @Id
     private String username;
+
+    @NotNull(message = "Password not empty")
     private String password;
+
     @Column
     @Builder.Default
     private Boolean status = true;
@@ -20,4 +24,7 @@ public class Account {
     @ManyToOne
     @JoinColumn(name = "roleId")
     private Role role;
+
+    @OneToOne(mappedBy = "account")
+    private User user;
 }

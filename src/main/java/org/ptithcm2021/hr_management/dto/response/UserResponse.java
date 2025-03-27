@@ -13,6 +13,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Builder
 public class UserResponse {
+    private long id;
     private String email;
     private String fullName;
     private String numberCCCD;
@@ -26,5 +27,4 @@ public class UserResponse {
     private String degree;
     private UserStatusEnum status;
     private String avatar;
-
 }

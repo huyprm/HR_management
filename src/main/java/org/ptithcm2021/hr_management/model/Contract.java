@@ -38,4 +38,8 @@ public class Contract{
     @JoinColumn(name = "positionId")
     private Position position;
 
+    @ManyToOne()
+    @JoinColumn(name = "jobGradeId")
+    private JobGrade jobGrade;
+
 }

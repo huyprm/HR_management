@@ -8,6 +8,7 @@ import lombok.Setter;
 import org.ptithcm2021.hr_management.enums.ContractStatusEnum;
 
 import java.util.Date;
+import java.util.List;
 
 @Entity(name = "contractTypes")
 @Setter
@@ -28,9 +29,8 @@ public class ContractType {
     @JoinColumn(name = "userId")
     private User user;
 
-    @ManyToOne
-    @JoinColumn(name = "contractTypeId")
-    private ContractType contractType;
+    @OneToMany(mappedBy = "contractType")
+    private List<Contract> contracts;
 
     @ManyToOne
     @JoinColumn(name = "positionId")

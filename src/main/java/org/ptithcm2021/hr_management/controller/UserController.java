@@ -1,15 +1,14 @@
 package org.ptithcm2021.hr_management.controller;
 
+import jakarta.mail.MessagingException;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.ptithcm2021.hr_management.dto.request.UserRequest;
 import org.ptithcm2021.hr_management.dto.response.ApiResponse;
 import org.ptithcm2021.hr_management.dto.response.UserResponse;
 import org.ptithcm2021.hr_management.model.User;
 import org.ptithcm2021.hr_management.service.UserService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/users")
@@ -17,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
     private final UserService userService;
     @PostMapping("/create")
-    public ApiResponse<UserResponse> createUser(@RequestBody UserRequest request) {
+    public ApiResponse<UserResponse> createUser(@RequestBody UserRequest request) throws MessagingException {
         return ApiResponse.<UserResponse>builder().data(userService.createUser(request)).build();
     }
 
@@ -27,4 +26,8 @@ public class UserController {
     }
 
 
+    @GetMapping("/{id}")
+    public ApiResponse<UserResponse> getUser(@PathVariable long id){
+        return ApiResponse.<UserResponse>builder().data(userService.getUser(id)).build();
+    }
 }

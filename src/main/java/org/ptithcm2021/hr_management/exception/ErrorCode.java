@@ -12,7 +12,8 @@ public enum ErrorCode {
     WRONG_PASSWORD(1003, "Wrong password", HttpStatus.BAD_REQUEST),
     ACCOUNT_LOCKED(1004, "Account locked", HttpStatus.LOCKED),
     DEGREE_NOT_FOUND(1005, "Degree not found", HttpStatus.NOT_FOUND),
-    ROLE_NOT_FOUND(1006, "Role not found", HttpStatus.NOT_FOUND)
+    ROLE_NOT_FOUND(1006, "Role not found", HttpStatus.NOT_FOUND),
+    USER_NOT_FOUND(1007, "User not found", HttpStatus.NOT_FOUND),
 
     ;
 
