@@ -1,5 +1,6 @@
 package org.ptithcm2021.hr_management.controller;
 
+import com.cloudinary.Api;
 import jakarta.mail.MessagingException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -34,5 +35,16 @@ public class UserController {
     @PutMapping({"/{id}"})
     public ApiResponse<UserResponse> updateUser(@PathVariable long id, @RequestBody UserRequest userRequest){
         return ApiResponse.<UserResponse>builder().data(userService.updateUser(id, userRequest)).build();
+    }
+
+    @DeleteMapping({"/{id}"})
+    public ApiResponse<Void> deleteUser(@PathVariable long id){
+        userService.deleteUser(id);
+        return ApiResponse.<Void>builder().message("User has been deleted").build();
+    }
+
+    @GetMapping({"/info"})
+    public ApiResponse<UserResponse> fetchInfoUser(){
+        return ApiResponse.<UserResponse>builder().data(userService.fetchInfoUser()).build();
     }
 }
