@@ -48,6 +48,8 @@ public class UserServiceImp implements UserService {
                 .username(user.getEmail())
                 .password(passwordEncoder.encode(password))
                 .role(role).build();
+
+        user.setAccount(account);
         User result = userRepository.save(user);
 
         String message = createSendPWMessage(account.getUsername(), password, result.getFullName());
