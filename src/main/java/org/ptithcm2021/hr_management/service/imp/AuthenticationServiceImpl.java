@@ -53,7 +53,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public String generateToken(Account account){
         String subject;
 
-        if(account.getRole().equals(RoleEnum.ADMIN)){
+        if(account.getRole().getId().equals(RoleEnum.ADMIN)){
             subject = "admin";
         } else subject = String.valueOf(account.getUser().getId());
 
