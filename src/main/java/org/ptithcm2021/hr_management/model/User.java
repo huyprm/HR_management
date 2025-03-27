@@ -32,8 +32,10 @@ public class User extends Base{
     private String taxCode;
     private String degree;
 
-    @Column
+    @Column()
+    @Enumerated(EnumType.STRING)
     private UserStatusEnum status = UserStatusEnum.PENDING;
+
     private String avatar;
 
     @OneToOne(cascade = CascadeType.ALL)
