@@ -14,7 +14,7 @@ public interface UserService {
     @PreAuthorize("hasAnyAuthority('SCOPE_STAFF', 'SCOPE_ADMIN')")
     UserResponse createUser(UserRequest userRequest) throws MessagingException;
 
-    @PreAuthorize("#id == authentication.name")
+    @PreAuthorize("hasAnyAuthority('SCOPE_STAFF', 'SCOPE_ADMIN') or #id == authentication.name")
     UserResponse getUser(long id);
 
     @PreAuthorize("hasAnyAuthority('SCOPE_STAFF', 'SCOPE_ADMIN')")

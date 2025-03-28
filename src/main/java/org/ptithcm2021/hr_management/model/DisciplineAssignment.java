@@ -1,28 +1,28 @@
-package org.ptithcm2021.hr_management.model;
-
-import jakarta.persistence.*;
-import lombok.*;
-
-import java.util.Date;
-
-@Entity(name = "disciplineAssigments")
-@Setter
-@Getter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-public class DisciplineAssignment {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-
-    @ManyToOne
-    @JoinColumn(name ="userId")
-    private User user;
-
-    private Date date;
-
-    @ManyToOne
-    @JoinColumn(name ="disciplineDecisionId")
-    private DisciplineDecision disciplineDecision;
-}
+//package org.ptithcm2021.hr_management.model;
+//
+//import jakarta.persistence.*;
+//import lombok.*;
+//
+//import java.util.Date;
+//
+//@Entity(name = "disciplineAssigments")
+//@Setter
+//@Getter
+//@NoArgsConstructor
+//@AllArgsConstructor
+//@Builder
+//public class DisciplineAssignment {
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    private int id;
+//
+//    @ManyToOne
+//    @JoinColumn(name ="userId")
+//    private User user;
+//
+//    private Date date;
+//
+//    @ManyToOne
+//    @JoinColumn(name ="disciplineDecisionId")
+//    private DisciplineDecision disciplineDecision;
+//}

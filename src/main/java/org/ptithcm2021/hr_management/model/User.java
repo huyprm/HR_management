@@ -42,15 +42,15 @@ public class User extends Base{
     @JoinColumn(name = "accountId")
     private Account account;
 
-    @OneToMany(mappedBy = "user")
-    private List<RewardAssignment> rewardAssignments;
-
-    @OneToMany(mappedBy = "user")
-    private List<DisciplineAssignment> disciplineAssignments;
-
-    @OneToMany(mappedBy = "user")
-    private List<Salary> salaries;
-
-    @OneToMany(mappedBy = "user")
-    private List<Contract> contracts;
+//    @OneToMany(mappedBy = "user")
+//    private List<RewardAssignment> rewardAssignments;
+//
+//    @OneToMany(mappedBy = "user")
+//    private List<DisciplineAssignment> disciplineAssignments;
+//
+//    @OneToMany(mappedBy = "user")
+//    private List<Salary> salaries;
+//
+//    @OneToMany(mappedBy = "user")
+//    private List<Contract> contracts;
 }

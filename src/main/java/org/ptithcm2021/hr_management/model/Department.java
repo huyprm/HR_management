@@ -15,9 +15,16 @@ import java.util.List;
 @Setter
 public class Department{
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
     private String name;
     private String description;
+
+    @Column(unique = true)
+    private String acronym;
+
+    @Column()
+    private boolean isDeleted = false;
 
     @OneToMany(mappedBy = "department")
     private List<Position> positions;

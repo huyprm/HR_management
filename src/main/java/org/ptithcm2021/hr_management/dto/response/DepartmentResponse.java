@@ -1,0 +1,17 @@
+package org.ptithcm2021.hr_management.dto.response;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class DepartmentResponse {
+    private long id;
+    private String name;
+    private String description;
+    private String acronym;
+}

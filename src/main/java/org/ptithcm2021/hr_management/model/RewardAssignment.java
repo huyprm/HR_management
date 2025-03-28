@@ -1,28 +1,28 @@
-package org.ptithcm2021.hr_management.model;
-
-import jakarta.persistence.*;
-import lombok.*;
-
-import java.util.Date;
-
-@Entity(name = "rewardAssignments")
-@Setter
-@Getter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-public class RewardAssignment {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-
-    @ManyToOne
-    @JoinColumn(name ="rewardDecisionId")
-    private RewardDecision rewardDecision;
-
-    private Date date;
-
-    @ManyToOne
-    @JoinColumn(name ="userId")
-    private User user;
-}
+//package org.ptithcm2021.hr_management.model;
+//
+//import jakarta.persistence.*;
+//import lombok.*;
+//
+//import java.util.Date;
+//
+//@Entity(name = "rewardAssignments")
+//@Setter
+//@Getter
+//@NoArgsConstructor
+//@AllArgsConstructor
+//@Builder
+//public class RewardAssignment {
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    private int id;
+//
+//    @ManyToOne
+//    @JoinColumn(name ="rewardDecisionId")
+//    private RewardDecision rewardDecision;
+//
+//    private Date date;
+//
+//    @ManyToOne
+//    @JoinColumn(name ="userId")
+//    private User user;
+//}
