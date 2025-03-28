@@ -52,16 +52,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public String generateToken(Account account){
-        String subject;
-
-        if(account.getRole().getId().equals(RoleEnum.ADMIN)){
-            subject = "admin";
-        } else subject = String.valueOf(account.getUser().getId());
+        String subject= account.getUsername().equals("admin") ? null : String.valueOf(account.getUser().getId());
 
         JWSHeader header = new JWSHeader.Builder(JWSAlgorithm.HS512).type(JOSEObjectType.JWT).build();
 
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
-                .subject(String.valueOf(subject))
+                .subject(subject)
                 .issuer("ptithcm.com")
                 .issueTime(new Date())
                 .jwtID(UUID.randomUUID().toString())
@@ -139,11 +135,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public Account resetPassword(String newPass, String email) {
+    public String resetPassword(String newPass, String email) {
         Account account = accountRepository.findById(email).orElseThrow(() -> new AppException(ErrorCode.USERNAME_NOT_FOUND));
         account.setPassword(passwordEncoder.encode(newPass));
         accountRepository.save(account);
-        return account;
+
+        return generateToken(account);
     }
 
     private String getOtp(String email){

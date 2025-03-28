@@ -94,6 +94,7 @@ public class UserServiceImp implements UserService {
     @Override
     public UserResponse fetchInfoUser() {
         String securityContext = SecurityContextHolder.getContext().getAuthentication().getName();
+        if(securityContext == null) throw new AppException(ErrorCode.UNAUTHORIZED);
 
         User user = userRepository.findById(Long.parseLong(securityContext)).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
         return userMapper.toUserResponse(user);

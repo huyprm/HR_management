@@ -15,5 +15,5 @@ public interface AuthenticationService {
     void logout(String token) throws ParseException;
     void forgotPassword(String email) throws MessagingException;
     boolean verifyOTP(String email, String otp);
-    Account resetPassword(String newPass, String email);
+    String resetPassword(String newPass, String email);
 }

@@ -42,7 +42,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/resetPassword")
-    public ApiResponse<Account> resetPassword(@RequestParam String newPass, @RequestParam String email){
-        return ApiResponse.<Account>builder().data(authenticationService.resetPassword(newPass, email)).build();
+    public ApiResponse<String> resetPassword(@RequestParam String newPass, @RequestParam String email){
+        return ApiResponse.<String>builder().data(authenticationService.resetPassword(newPass, email)).build();
     }
 }
