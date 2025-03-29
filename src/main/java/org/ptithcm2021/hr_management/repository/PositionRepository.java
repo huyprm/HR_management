@@ -1,9 +1,9 @@
 package org.ptithcm2021.hr_management.repository;
 
-import org.ptithcm2021.hr_management.model.Department;
+import org.ptithcm2021.hr_management.model.Position;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface DepartmentRepository extends JpaRepository<Department, Integer> {
+public interface PositionRepository extends JpaRepository<Position, Integer> {
 }

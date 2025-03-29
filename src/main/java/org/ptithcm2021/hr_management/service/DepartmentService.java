@@ -10,11 +10,11 @@ public interface DepartmentService {
 
     DepartmentResponse createDepartment (DepartmentRequest departmentRequest);
 
-    DepartmentResponse updateDepartment (long id, DepartmentRequest departmentRequest);
+    DepartmentResponse updateDepartment (int id, DepartmentRequest departmentRequest);
 
-    void deleteDepartment(long departmentId);
+    void deleteDepartment(int departmentId);
 
-    DepartmentResponse getDepartment (long departmentId);
+    DepartmentResponse getDepartment (int departmentId);
 
     List<DepartmentResponse> getDepartments ();
 }

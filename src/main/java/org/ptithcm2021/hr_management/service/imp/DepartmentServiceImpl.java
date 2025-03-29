@@ -28,7 +28,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
-    public DepartmentResponse updateDepartment(long id, DepartmentRequest departmentRequest) {
+    public DepartmentResponse updateDepartment(int id, DepartmentRequest departmentRequest) {
         Department department = departmentRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.DEPARTMENT_NOT_FOUND));
 
@@ -40,17 +40,16 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
-    public void deleteDepartment(long departmentId) {
-        Department department = departmentRepository.findById(departmentId)
-                .orElseThrow(() -> new AppException(ErrorCode.DEPARTMENT_NOT_FOUND));
-
-        department.setDeleted(true);
-
-        departmentRepository.save(department);
+    public void deleteDepartment(int departmentId) {
+        try {
+            departmentRepository.deleteById(departmentId);
+        }catch (Exception e){
+            throw new AppException(ErrorCode.CANNOT_BE_DELETED);
+        }
     }
 
     @Override
-    public DepartmentResponse getDepartment(long departmentId) {
+    public DepartmentResponse getDepartment(int departmentId) {
         Department department = departmentRepository.findById(departmentId)
                 .orElseThrow(() -> new AppException(ErrorCode.DEPARTMENT_NOT_FOUND));
 
@@ -61,6 +60,6 @@ public class DepartmentServiceImpl implements DepartmentService {
     public List<DepartmentResponse> getDepartments() {
         List<Department> departments = departmentRepository.findAll();
 
-        return departments.stream().filter(department -> !department.isDeleted()).map(departmentMapper::toDepartmentResponse).toList();
+        return departments.stream().map(departmentMapper::toDepartmentResponse).toList();
     }
 }

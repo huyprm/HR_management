@@ -14,5 +14,5 @@ public class PositionRequest {
     private String description;
 
     @NotNull(message = "Department position cannot be empty")
-    private long departmentId;
+    private int departmentId;
 }

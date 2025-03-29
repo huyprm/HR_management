@@ -16,6 +16,10 @@ public enum ErrorCode {
     USER_NOT_FOUND(1007, "User not found", HttpStatus.NOT_FOUND),
     PASSWORD_NOT_MATCH(1008, "Passwords do not match", HttpStatus.BAD_REQUEST),
     DEPARTMENT_NOT_FOUND(1009, "Department not found", HttpStatus.NOT_FOUND),
+    POSITION_NOT_FOUND(1010," Position not found", HttpStatus.NOT_FOUND),
+    CANNOT_BE_DELETED(1011, "Cannot delete record because related data still exists", HttpStatus.CONFLICT),
+    CONTRACT_TYPE_NAME_EXISTED(1012, "The name of the contract type already exists", HttpStatus.CONFLICT),
+    CONTRACT_TYPE_NOT_FOUND(1013, "Contract type not found", HttpStatus.NOT_FOUND),
 
     ;
 
