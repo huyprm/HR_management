@@ -24,6 +24,7 @@ public enum ErrorCode {
     POSITION_NAME_EXISTS(1015,"Position name already exists", HttpStatus.CONFLICT),
     JOB_GRADE_NAME_EXISTS(1016, "Job grade name already exists", HttpStatus.CONFLICT),
     JOB_GRADE_NOT_FOUND(1017, "Job grade not found", HttpStatus.NOT_FOUND),
+    FEEDBACK_NOT_FOUND(1018, "Feedback not found", HttpStatus.NOT_FOUND),
 
     ;
 

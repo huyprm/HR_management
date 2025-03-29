@@ -19,8 +19,11 @@ import java.text.ParseException;
 public class JwtDecoderConfig implements JwtDecoder{
     @Value("${jwt.signer_key}")
     private String sign_key;
-    @Autowired
-    private AuthenticationServiceImpl authenticationService;
+    private final AuthenticationServiceImpl authenticationService;
+
+    public JwtDecoderConfig(AuthenticationServiceImpl authenticationService) {
+        this.authenticationService = authenticationService;
+    }
 
 
     @Override

@@ -25,7 +25,7 @@ public interface UserService {
 
     UserResponse fetchInfoUser();
 
-    @PreAuthorize("#id == authentication.name")
+    @PreAuthorize("#changePasswordRequest.userId == authentication.name")
     void changePassword(ChangePasswordRequest changePasswordRequest);
 
     @PreAuthorize("hasAnyAuthority('SCOPE_STAFF', 'SCOPE_ADMIN')")

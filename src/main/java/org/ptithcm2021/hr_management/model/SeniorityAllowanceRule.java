@@ -17,11 +17,19 @@
 //    @Id
 //    @GeneratedValue(strategy = GenerationType.IDENTITY)
 //    private int id;
+//
+//    @Column(nullable = false)
 //    private int minService;
-//    private int maxService;
+//
+//    @Column(nullable = false)
 //    private double seniorityPercentage;
-//    private double seniorityLeaveDay;
+//
+//    @Column(nullable = false)
+//    private int seniorityLeaveDay;
+//
+//    @Column(nullable = false)
 //    private Date effectiveDate;
+//
 //    private Date expiryDate;
 //
 //    @Column(columnDefinition = "text")

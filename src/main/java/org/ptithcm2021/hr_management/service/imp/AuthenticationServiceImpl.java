@@ -30,6 +30,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
+import java.util.Objects;
 import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -144,7 +145,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     private String getOtp(String email){
-        return redisTemplate.opsForValue().get("otp:"+email).toString();
+        return Objects.requireNonNull(redisTemplate.opsForValue().get("otp:" + email)).toString();
     }
 
     private String generateOTP(String email){
