@@ -25,6 +25,9 @@ public class PositionServiceImpl implements PositionService {
 
     @Override
     public PositionResponse createPosition(PositionRequest positionRequest) {
+        if (positionRepository.existsByName(positionRequest.getName()))
+            throw new AppException(ErrorCode.POSITION_NAME_EXISTS);
+
         Position position = positionMapper.toPosition(positionRequest);
 
         Department department = departmentRepository.findById(positionRequest.getDepartmentId())
@@ -36,7 +39,10 @@ public class PositionServiceImpl implements PositionService {
     }
 
     @Override
-    public PositionResponse updatePosition(int positionId, PositionRequest positionRequest) {
+    public PositionResponse updatePosition(String positionId, PositionRequest positionRequest) {
+        if (positionRepository.existsByName(positionRequest.getName()))
+            throw new AppException(ErrorCode.POSITION_NAME_EXISTS);
+
         Position position = positionRepository.findById(positionId)
                 .orElseThrow(() -> new AppException(ErrorCode.POSITION_NOT_FOUND));
 
@@ -53,7 +59,7 @@ public class PositionServiceImpl implements PositionService {
     }
 
     @Override
-    public void deletePosition(int positionId) {
+    public void deletePosition(String positionId) {
         if (!positionRepository.existsById(positionId)) {
             throw new AppException(ErrorCode.POSITION_NOT_FOUND);
         }
@@ -66,7 +72,7 @@ public class PositionServiceImpl implements PositionService {
     }
 
     @Override
-    public PositionResponse getPosition(int positionId) {
+    public PositionResponse getPosition(String positionId) {
         Position position = positionRepository.findById(positionId)
                 .orElseThrow(() -> new AppException(ErrorCode.POSITION_NOT_FOUND));
 

@@ -23,20 +23,20 @@ public class PositionController {
     }
 
     @PostMapping("/update/{id}")
-    public ApiResponse<PositionResponse> updatePosition(@PathVariable int id, @RequestBody PositionRequest positionRequest){
+    public ApiResponse<PositionResponse> updatePosition(@PathVariable String id, @RequestBody PositionRequest positionRequest){
         return ApiResponse.<PositionResponse>builder()
                 .data(positionService.updatePosition(id, positionRequest)).build();
     }
 
     @DeleteMapping("/{id}")
-    public ApiResponse<Void> deletePosition(@PathVariable int id){
+    public ApiResponse<Void> deletePosition(@PathVariable String id){
         positionService.deletePosition(id);
 
         return ApiResponse.<Void>builder().message("Deleted successfully").build();
     }
 
     @GetMapping("/{id}")
-    public ApiResponse<PositionResponse> getPosition(@PathVariable int id){
+    public ApiResponse<PositionResponse> getPosition(@PathVariable String id){
         return ApiResponse.<PositionResponse>builder()
                 .data(positionService.getPosition(id)).build();
     }

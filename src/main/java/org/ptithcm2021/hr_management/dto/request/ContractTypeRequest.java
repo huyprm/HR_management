@@ -10,6 +10,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ContractTypeRequest {
+    @NotBlank(message = "Contract type code cannot be empty")
+    private String id;
+
     @NotBlank(message = "Contract type name cannot be empty")
     private String name;
 

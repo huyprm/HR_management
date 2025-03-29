@@ -10,11 +10,11 @@ import java.util.List;
 public interface ContractTypeService {
     ContractTypeResponse createContractType(ContractTypeRequest contractTypeRequest);
 
-    ContractTypeResponse updateContractType(int id, ContractTypeRequest contractTypeRequest);
+    ContractTypeResponse updateContractType(String id, ContractTypeRequest contractTypeRequest);
 
-    void deleteContractType(int id);
+    void deleteContractType(String id);
 
-    ContractTypeResponse getContractType(int id);
+    ContractTypeResponse getContractType(String id);
 
     List<ContractTypeResponse> getAllContractType();
 }

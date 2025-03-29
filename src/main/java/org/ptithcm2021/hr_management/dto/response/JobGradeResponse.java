@@ -1,21 +1,15 @@
-package org.ptithcm2021.hr_management.model;
+package org.ptithcm2021.hr_management.dto.response;
 
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Entity(name = "jobGraces")
-@Setter
-@Getter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class JobGrade {
-    @Id
+public class JobGradeResponse {
     private String id;
-
-    @Column(unique = true, nullable = false)
     private String name;
     //private String groupName;
     private double coefficient;

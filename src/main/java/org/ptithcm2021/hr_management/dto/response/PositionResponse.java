@@ -11,7 +11,7 @@ import org.ptithcm2021.hr_management.model.Department;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PositionResponse {
-    private int id;
+    private String id;
     private String name;
     private String description;
     private DepartmentResponse department;

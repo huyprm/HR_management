@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ContractTypeResponse {
-    private int id;
+    private String id;
 
     private String name;
 

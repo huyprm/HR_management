@@ -31,7 +31,7 @@ public class ContractTypeServiceImpl implements ContractTypeService {
     }
 
     @Override
-    public ContractTypeResponse updateContractType(int id, ContractTypeRequest contractTypeRequest) {
+    public ContractTypeResponse updateContractType(String id, ContractTypeRequest contractTypeRequest) {
         if (contractTypeRepository.existsByName(contractTypeRequest.getName())) {
             throw new AppException(ErrorCode.CONTRACT_TYPE_NAME_EXISTED);
         }
@@ -45,7 +45,7 @@ public class ContractTypeServiceImpl implements ContractTypeService {
     }
 
     @Override
-    public void deleteContractType(int id) {
+    public void deleteContractType(String id) {
         try{
             contractTypeRepository.deleteById(id);
         }catch (Exception e){
@@ -54,7 +54,7 @@ public class ContractTypeServiceImpl implements ContractTypeService {
     }
 
     @Override
-    public ContractTypeResponse getContractType(int id) {
+    public ContractTypeResponse getContractType(String id) {
         ContractType contractType = contractTypeRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.CONTRACT_TYPE_NOT_FOUND));
 

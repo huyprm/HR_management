@@ -15,8 +15,9 @@ import java.util.List;
 @Setter
 public class Department{
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private String id;
+
+    @Column(unique = true, nullable = false)
     private String name;
     private String description;
 

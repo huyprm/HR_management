@@ -10,11 +10,11 @@ import java.util.List;
 public interface PositionService {
     PositionResponse createPosition(PositionRequest positionRequest);
 
-    PositionResponse updatePosition(int positionId, PositionRequest positionRequest);
+    PositionResponse updatePosition(String positionId, PositionRequest positionRequest);
 
-    void deletePosition(int positionId);
+    void deletePosition(String positionId);
 
-    PositionResponse getPosition(int positionId);
+    PositionResponse getPosition(String positionId);
 
     List<PositionResponse> getPositions();
 }

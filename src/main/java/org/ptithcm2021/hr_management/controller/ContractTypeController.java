@@ -22,20 +22,20 @@ public class ContractTypeController {
     }
 
     @PostMapping("/update/{id}")
-    public ApiResponse<ContractTypeResponse> updateContractType(@PathVariable int  id,
+    public ApiResponse<ContractTypeResponse> updateContractType(@PathVariable String  id,
                                                                 @RequestBody ContractTypeRequest contractTypeRequest){
         return ApiResponse.<ContractTypeResponse>builder()
                 .data(contractTypeService.updateContractType(id,contractTypeRequest)).build();
     }
 
     @DeleteMapping("/{id}")
-    public ApiResponse<Void> deleteContractType(@PathVariable int id){
+    public ApiResponse<Void> deleteContractType(@PathVariable String id){
         contractTypeService.deleteContractType(id);
         return ApiResponse.<Void>builder().message("Deleted successfully").build();
     }
 
     @GetMapping("/{id}")
-    public ApiResponse<ContractTypeResponse> getContractType(@PathVariable int id){
+    public ApiResponse<ContractTypeResponse> getContractType(@PathVariable String id){
         return ApiResponse.<ContractTypeResponse>builder()
                 .data(contractTypeService.getContractType(id)).build();
     }

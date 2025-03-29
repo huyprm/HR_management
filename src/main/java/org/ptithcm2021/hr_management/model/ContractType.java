@@ -13,8 +13,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class ContractType {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private String id;
 
     @Column(unique = true, nullable = false)
     private String name;

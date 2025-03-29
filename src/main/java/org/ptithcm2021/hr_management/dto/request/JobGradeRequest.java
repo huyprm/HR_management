@@ -6,16 +6,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class DepartmentRequest {
-    @NotBlank(message = "Department code cannot be blank")
+@NoArgsConstructor
+public class JobGradeRequest {
+    @NotBlank(message = "Job grade code cannot be blank")
     private String id;
 
-    @NotBlank(message = "Department name cannot be blank")
+    @NotBlank(message = "Job Grade name cannot be blank")
     private String name;
-
+    //private String groupName;
+    private double coefficient;
     private String description;
-
-
 }

@@ -20,6 +20,10 @@ public enum ErrorCode {
     CANNOT_BE_DELETED(1011, "Cannot delete record because related data still exists", HttpStatus.CONFLICT),
     CONTRACT_TYPE_NAME_EXISTED(1012, "The name of the contract type already exists", HttpStatus.CONFLICT),
     CONTRACT_TYPE_NOT_FOUND(1013, "Contract type not found", HttpStatus.NOT_FOUND),
+    DEPARTMENT_NAME_EXIST(1014, "The department name already exists", HttpStatus.CONFLICT),
+    POSITION_NAME_EXISTS(1015,"Position name already exists", HttpStatus.CONFLICT),
+    JOB_GRADE_NAME_EXISTS(1016, "Job grade name already exists", HttpStatus.CONFLICT),
+    JOB_GRADE_NOT_FOUND(1017, "Job grade not found", HttpStatus.NOT_FOUND),
 
     ;
 

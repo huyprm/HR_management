@@ -23,13 +23,13 @@ public class DepartmentController {
 
     @PostMapping("/update/{id}")
     public ApiResponse<DepartmentResponse> updateDepartment(@RequestBody DepartmentRequest departmentRequest,
-                                                            @PathVariable int id){
+                                                            @PathVariable String id){
         return ApiResponse.<DepartmentResponse>builder()
                 .data(departmentService.updateDepartment(id, departmentRequest)).build();
     }
 
     @DeleteMapping("/{id}")
-    public ApiResponse<Void> deleteDepartment(@PathVariable int id){
+    public ApiResponse<Void> deleteDepartment(@PathVariable String id){
         departmentService.deleteDepartment(id);
 
         return ApiResponse.<Void>builder()
@@ -37,7 +37,7 @@ public class DepartmentController {
     }
 
     @GetMapping("/{id}")
-    public ApiResponse<DepartmentResponse> getDepartmentById(@PathVariable int id){
+    public ApiResponse<DepartmentResponse> getDepartmentById(@PathVariable String id){
         return ApiResponse.<DepartmentResponse>builder()
                 .data(departmentService.getDepartment(id)).build();
     }
