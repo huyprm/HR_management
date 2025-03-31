@@ -43,8 +43,6 @@ public class SecurityConfig {
                 .anyRequest().authenticated()
         );
 
-        http.addFilterBefore(new JwtCookieFilter(), BearerTokenAuthenticationFilter.class);
-
         http.oauth2ResourceServer(oauth2 ->oauth2
                 .jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtDecoderConfig))
                 .authenticationEntryPoint(new EntryPointAuthentication())

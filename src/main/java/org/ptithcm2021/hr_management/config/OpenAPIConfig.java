@@ -24,14 +24,8 @@ public class OpenAPIConfig {
                                         .name("BearerAuth")
                                         .type(SecurityScheme.Type.HTTP)
                                         .scheme("bearer")
-                                        .bearerFormat("JWT"))
-                        .addSecuritySchemes("CookieAuth",
-                                new SecurityScheme()
-                                        .name("token") // Tên cookie bạn đang dùng
-                                        .type(SecurityScheme.Type.APIKEY)
-                                        .in(SecurityScheme.In.COOKIE)))
-                .addSecurityItem(new SecurityRequirement().addList("BearerAuth"))
-                .addSecurityItem(new SecurityRequirement().addList("CookieAuth"));
+                                        .bearerFormat("JWT")))
+                .addSecurityItem(new SecurityRequirement().addList("BearerAuth"));
     }
 
 }

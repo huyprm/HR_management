@@ -23,35 +23,14 @@ public class AuthenticationController {
     private final AuthenticationServiceImpl authenticationService;
 
     @PostMapping("/login")
-    public ApiResponse<String> login(@RequestBody @Valid LoginRequest request,
-                                     @RequestHeader(value = "X-Client-Type", required = false) String clientType,
-                                     HttpServletResponse response){
-        if("mobile".equalsIgnoreCase(clientType)){
-            return ApiResponse.<String>builder()
-                    .data(authenticationService.login(request)).build();
-        }
-        else{
-            String token = authenticationService.login(request);
-
-            Cookie cookie = new Cookie("token", token);
-            cookie.setHttpOnly(true);
-            cookie.setSecure(true);
-            cookie.setPath("/");
-            response.addCookie(cookie);
-        }
-        return ApiResponse.<String>builder().message("Login successful").build();
+    public ApiResponse<String> login(@RequestBody @Valid LoginRequest request){
+        return ApiResponse.<String>builder()
+                .data(authenticationService.login(request)).build();
     }
 
     @PostMapping("/logout")
-    public ApiResponse<Void> logout(@RequestBody String token, HttpServletResponse response) throws ParseException {
+    public ApiResponse<Void> logout(@RequestBody String token) throws ParseException {
         authenticationService.logout(token);
-
-        Cookie cookie = new Cookie("token", null);
-        cookie.setHttpOnly(true);
-        cookie.setSecure(true);
-        cookie.setPath("/");
-        response.addCookie(cookie);
-
         return ApiResponse.<Void>builder().build();
     }
 
