@@ -14,7 +14,7 @@ import java.io.Serializable;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class RewardAssigmentId implements Serializable {
+public class RewardAssignmentId implements Serializable {
     @Column(name = "userId")
     private long userId;
 

@@ -1,27 +1,25 @@
-//package org.ptithcm2021.hr_management.model;
-//
-//import jakarta.persistence.*;
-//import lombok.*;
-//
-//import java.util.Date;
-//
-//@Entity(name = "rewardAssignments")
-//@Setter
-//@Getter
-//@NoArgsConstructor
-//@AllArgsConstructor
-//@Builder
-//public class RewardAssignment {
-//    @Id
-//    private RewardAssigmentId id;
-//
-//    @ManyToOne
-//    @MapsId("employeeId")
-//    @JoinColumn(name ="rewardDecisionId")
-//    private RewardDecision rewardDecision;
-//
-//    @ManyToOne
-//    @MapsId("rewardDecisionId")
-//    @JoinColumn(name ="userId")
-//    private User user;
-//}
+package org.ptithcm2021.hr_management.model;
+
+import jakarta.persistence.*;
+import lombok.*;
+
+@Entity(name = "rewardAssignments")
+@Setter
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class RewardAssignment {
+    @EmbeddedId
+    private RewardAssignmentId id;
+
+    @ManyToOne
+    @MapsId("rewardDecisionId")
+    @JoinColumn(name ="rewardDecisionId1")
+    private RewardDecision rewardDecision;
+
+    @ManyToOne
+    @MapsId("userId")
+    @JoinColumn(name ="user_id")
+    private User user;
+}

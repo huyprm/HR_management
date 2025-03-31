@@ -26,5 +26,4 @@ public class RewardDecision {
     @ManyToOne
     @JoinColumn(name = "userId")
     private User signer;
-
 }

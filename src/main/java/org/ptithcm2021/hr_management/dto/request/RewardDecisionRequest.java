@@ -26,6 +26,6 @@ public class RewardDecisionRequest {
     @NotNull(message = "Decision date cannot be empty")
     private Date date;
 
-    @NotBlank(message ="The decision maker cannot leave blank.")
+    @NotNull(message ="The decision maker cannot leave blank.")
     private long signerId;
 }
