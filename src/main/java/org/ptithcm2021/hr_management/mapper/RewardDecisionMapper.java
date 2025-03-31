@@ -11,8 +11,8 @@ import org.ptithcm2021.hr_management.model.RewardDecision;
 public interface RewardDecisionMapper {
     RewardDecision toRewardDecision(RewardDecisionRequest rewardDecisionRequest);
 
-    @Mapping(target = "signer.id", source = "sender.id")
-    @Mapping(target = "signer.fullName", source = "sender.fullName")
+    @Mapping(target = "signer.id", source = "signer.id")
+    @Mapping(target = "signer.fullName", source = "signer.fullName")
     RewardDecisionResponse toRewardDecisionResponse(RewardDecision rewardDecision);
 
     void updateRewardDecision(@MappingTarget RewardDecision rewardDecision, RewardDecisionRequest rewardDecisionRequest);

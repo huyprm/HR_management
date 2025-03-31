@@ -13,16 +13,15 @@
 //@Builder
 //public class RewardAssignment {
 //    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    private int id;
+//    private RewardAssigmentId id;
 //
 //    @ManyToOne
+//    @MapsId("employeeId")
 //    @JoinColumn(name ="rewardDecisionId")
 //    private RewardDecision rewardDecision;
 //
-//    private Date date;
-//
 //    @ManyToOne
+//    @MapsId("rewardDecisionId")
 //    @JoinColumn(name ="userId")
 //    private User user;
 //}

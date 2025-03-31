@@ -25,7 +25,7 @@ public class RewardDecisionServiceImp implements RewardDecisionService {
 
     @Override
     public RewardDecisionResponse createRewardDecision(RewardDecisionRequest rewardDecisionRequest) {
-        User user = userService.getUserToUser(rewardDecisionRequest.getSigner());
+        User user = userService.getUserToUser(rewardDecisionRequest.getSignerId());
 
         RewardDecision rewardDecision = rewardDecisionMapper.toRewardDecision(rewardDecisionRequest);
         rewardDecision.setSigner(user);
@@ -40,8 +40,8 @@ public class RewardDecisionServiceImp implements RewardDecisionService {
 
         rewardDecisionMapper.updateRewardDecision(rewardDecision, rewardDecisionRequest);
 
-        if (rewardDecision.getSigner().getId()!= rewardDecisionRequest.getSigner()){
-            User user = userService.getUserToUser(rewardDecisionRequest.getSigner());
+        if (rewardDecision.getSigner().getId()!= rewardDecisionRequest.getSignerId()){
+            User user = userService.getUserToUser(rewardDecisionRequest.getSignerId());
             rewardDecision.setSigner(user);
         }
         return rewardDecisionMapper.toRewardDecisionResponse(rewardDecisionRepository.save(rewardDecision));
