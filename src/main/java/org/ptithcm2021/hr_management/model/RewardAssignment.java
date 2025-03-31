@@ -15,7 +15,7 @@ public class RewardAssignment {
 
     @ManyToOne
     @MapsId("rewardDecisionId")
-    @JoinColumn(name ="rewardDecisionId1")
+    @JoinColumn(name ="reward_decision_id")
     private RewardDecision rewardDecision;
 
     @ManyToOne

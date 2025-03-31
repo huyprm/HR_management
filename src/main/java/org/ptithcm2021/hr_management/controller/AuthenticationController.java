@@ -1,6 +1,8 @@
 package org.ptithcm2021.hr_management.controller;
 
 import jakarta.mail.MessagingException;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +14,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
 
+import static com.cloudinary.AccessControlRule.AccessType.token;
+
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
@@ -19,10 +23,23 @@ public class AuthenticationController {
     private final AuthenticationServiceImpl authenticationService;
 
     @PostMapping("/login")
-    public ApiResponse<String> login(@RequestBody @Valid LoginRequest request) {
+    public ApiResponse<String> login(@RequestBody @Valid LoginRequest request,
+                                     @RequestHeader(value = "X-Client-Type", required = false) String clientType,
+                                     HttpServletResponse response){
+        if("mobile".equalsIgnoreCase(clientType)){
+            return ApiResponse.<String>builder()
+                    .data(authenticationService.login(request)).build();
+        }
+        else{
+            String token = authenticationService.login(request);
 
-        return ApiResponse.<String>builder()
-                .data(authenticationService.login(request)).build();
+            Cookie cookie = new Cookie("token", token);
+            cookie.setHttpOnly(true);
+            cookie.setSecure(true);
+            cookie.setPath("/");
+            response.addCookie(cookie);
+        }
+        return ApiResponse.<String>builder().message("Login successful").build();
     }
 
     @PostMapping("/logout")

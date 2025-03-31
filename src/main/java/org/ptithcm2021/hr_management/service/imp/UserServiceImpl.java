@@ -119,7 +119,8 @@ public class UserServiceImpl implements UserService {
 
         Account account =user.getAccount();
 
-        if(account.getPassword().matches(changePasswordRequest.getOldPass())){
+        if(passwordEncoder.matches(changePasswordRequest.getOldPass(), account.getPassword())){
+
             account.setPassword(passwordEncoder.encode(changePasswordRequest.getNewPass()));
         }else {
             throw new AppException(ErrorCode.PASSWORD_NOT_MATCH);
