@@ -1,5 +1,6 @@
 package org.ptithcm2021.hr_management.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.ptithcm2021.hr_management.dto.request.JobGradeRequest;
 import org.ptithcm2021.hr_management.dto.response.ApiResponse;
@@ -16,14 +17,14 @@ public class JobGradeController {
     private final JobGradeService jobGradeService;
 
     @PostMapping("/create")
-    public ApiResponse<JobGradeResponse> createJobGrade(@RequestBody JobGradeRequest jobGradeRequest) {
+    public ApiResponse<JobGradeResponse> createJobGrade(@RequestBody @Valid JobGradeRequest jobGradeRequest) {
         return ApiResponse.<JobGradeResponse>builder()
                 .data(jobGradeService.createJobGrade(jobGradeRequest)).build();
     }
 
     @PostMapping("/update/{id}")
     public ApiResponse<JobGradeResponse> updateJobGrade(@PathVariable String id,
-                                                        @RequestBody JobGradeRequest jobGradeRequest) {
+                                                        @RequestBody @Valid JobGradeRequest jobGradeRequest) {
         return ApiResponse.<JobGradeResponse>builder()
                 .data(jobGradeService.updateJobGrade(id, jobGradeRequest)).build();
     }

@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface FeedbackService {
 
-    @PreAuthorize("#feedbackRequest.userId == authentication.name")
+    @PreAuthorize("T(String).valueOf(#feedbackRequest.userId) == authentication.name")
     FeedbackResponse createFeedback(FeedbackRequest feedbackRequest);
 
     @PreAuthorize("hasAnyAuthority('SCOPE_AMIN', 'SCOPE_MANAGER', 'SCOPE_USER')")

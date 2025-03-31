@@ -2,33 +2,34 @@ package org.ptithcm2021.hr_management.controller;
 
 import com.cloudinary.Api;
 import jakarta.mail.MessagingException;
+import jakarta.validation.Valid;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.ptithcm2021.hr_management.dto.request.ChangePasswordRequest;
 import org.ptithcm2021.hr_management.dto.request.UserRequest;
 import org.ptithcm2021.hr_management.dto.response.ApiResponse;
 import org.ptithcm2021.hr_management.dto.response.UserResponse;
 import org.ptithcm2021.hr_management.model.User;
 import org.ptithcm2021.hr_management.service.UserService;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static org.hibernate.validator.internal.util.ReflectionHelper.typeOf;
+
+@Slf4j
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
     @PostMapping("/create")
-    public ApiResponse<UserResponse> createUser(@RequestBody UserRequest request) throws MessagingException {
+    public ApiResponse<UserResponse> createUser(@RequestBody @Valid UserRequest request) throws MessagingException {
         return ApiResponse.<UserResponse>builder().data(userService.createUser(request)).build();
     }
-
-    @PostMapping("/update")
-    public User updateUser(@RequestBody UserRequest request) {
-        return null;
-    }
-
 
     @GetMapping("/{id}")
     public ApiResponse<UserResponse> getUser(@PathVariable long id){
@@ -36,7 +37,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ApiResponse<UserResponse> updateUser(@PathVariable long id, @RequestBody UserRequest userRequest){
+    public ApiResponse<UserResponse> updateUser(@PathVariable long id, @RequestBody @Valid UserRequest userRequest){
         return ApiResponse.<UserResponse>builder().data(userService.updateUser(id, userRequest)).build();
     }
 
@@ -52,7 +53,7 @@ public class UserController {
     }
 
     @PostMapping("/change-pass")
-    public ApiResponse<Void> changePassword(@RequestBody ChangePasswordRequest changePasswordRequest){
+    public ApiResponse<Void> changePassword(@RequestBody @Valid ChangePasswordRequest changePasswordRequest){
         userService.changePassword(changePasswordRequest);
         return ApiResponse.<Void>builder().message("Change successful").build();
     }

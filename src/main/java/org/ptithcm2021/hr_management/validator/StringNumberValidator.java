@@ -21,7 +21,7 @@ public class StringNumberValidator implements ConstraintValidator<StringNumberCo
             case CCCD:
                 return s.matches("\\d{12}");
             case PHONE:
-                return s.matches("0\\d{10}");
+                return s.matches("0\\d{9}");
             default:
                 return false;
         }

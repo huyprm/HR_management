@@ -5,6 +5,7 @@ import org.aspectj.weaver.patterns.IToken;
 import org.ptithcm2021.hr_management.dto.request.ChangePasswordRequest;
 import org.ptithcm2021.hr_management.dto.request.UserRequest;
 import org.ptithcm2021.hr_management.dto.response.UserResponse;
+import org.ptithcm2021.hr_management.model.User;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +15,7 @@ public interface UserService {
     @PreAuthorize("hasAnyAuthority('SCOPE_STAFF', 'SCOPE_ADMIN')")
     UserResponse createUser(UserRequest userRequest) throws MessagingException;
 
-    @PreAuthorize("hasAnyAuthority('SCOPE_STAFF', 'SCOPE_ADMIN') or #id == authentication.name")
+    @PreAuthorize("hasAnyAuthority('SCOPE_STAFF', 'SCOPE_ADMIN')")
     UserResponse getUser(long id);
 
     @PreAuthorize("hasAnyAuthority('SCOPE_STAFF', 'SCOPE_ADMIN')")
@@ -25,9 +26,11 @@ public interface UserService {
 
     UserResponse fetchInfoUser();
 
-    @PreAuthorize("#changePasswordRequest.userId == authentication.name")
+    @PreAuthorize("T(String).valueOf(#changePasswordRequest.userId) == authentication.name")
     void changePassword(ChangePasswordRequest changePasswordRequest);
 
     @PreAuthorize("hasAnyAuthority('SCOPE_STAFF', 'SCOPE_ADMIN')")
     List<UserResponse> getAllUser();
+
+    User getUserToUser(long id);
 }

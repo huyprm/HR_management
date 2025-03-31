@@ -4,19 +4,24 @@ import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.ptithcm2021.hr_management.dto.request.ChangePasswordRequest;
 import org.ptithcm2021.hr_management.dto.request.UserRequest;
+import org.ptithcm2021.hr_management.dto.response.NotificationRecipientResponse;
 import org.ptithcm2021.hr_management.dto.response.UserResponse;
 import org.ptithcm2021.hr_management.enums.UserStatusEnum;
 import org.ptithcm2021.hr_management.exception.AppException;
 import org.ptithcm2021.hr_management.exception.ErrorCode;
 import org.ptithcm2021.hr_management.mapper.UserMapper;
 import org.ptithcm2021.hr_management.model.Account;
+import org.ptithcm2021.hr_management.model.NotificationRecipient;
 import org.ptithcm2021.hr_management.model.Role;
 import org.ptithcm2021.hr_management.model.User;
 import org.ptithcm2021.hr_management.repository.AccountRepository;
+import org.ptithcm2021.hr_management.repository.NotificationRecipientRepository;
 import org.ptithcm2021.hr_management.repository.RoleRepository;
 import org.ptithcm2021.hr_management.repository.UserRepository;
 import org.ptithcm2021.hr_management.service.MailService;
 import org.ptithcm2021.hr_management.service.UserService;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -29,11 +34,11 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
-    private final AccountRepository accountRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
     private final MailService mailService;
+    private final NotificationRecipientRepository notificationRecipientRepository;
 
 
     @Override
@@ -62,7 +67,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponse getUser(long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
-        return userMapper.toUserResponse(user);
+
+        if(user.getStatus().equals(UserStatusEnum.TERMINATED)) throw new AppException(ErrorCode.USER_TERMINATED);
+
+        UserResponse userResponse = userMapper.toUserResponse(user);
+        userResponse.setRecipientResponse(getTop5NotificationRecipient(id));
+
+        return userResponse;
     }
 
     @Override
@@ -94,7 +105,12 @@ public class UserServiceImpl implements UserService {
         if(securityContext == null) throw new AppException(ErrorCode.UNAUTHORIZED);
 
         User user = userRepository.findById(Long.parseLong(securityContext)).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
-        return userMapper.toUserResponse(user);
+
+
+        UserResponse userResponse = userMapper.toUserResponse(user);
+        userResponse.setRecipientResponse(getTop5NotificationRecipient(user.getId()));
+
+        return userResponse;
     }
 
     @Override
@@ -116,7 +132,27 @@ public class UserServiceImpl implements UserService {
         return userRepository.findAll().stream().map(userMapper::toUserResponse).collect(Collectors.toList());
     }
 
+    @Override
+    public User getUserToUser(long id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
 
+        if(user.getStatus().equals(UserStatusEnum.TERMINATED)) throw new AppException(ErrorCode.USER_TERMINATED);
+
+        return user;
+    }
+
+    private List<NotificationRecipientResponse> getTop5NotificationRecipient(long userId) {
+        Pageable pageable = PageRequest.of(0,5);
+        List<NotificationRecipient> notificationRecipients = notificationRecipientRepository.findTop5ByUserId(userId, pageable);
+
+        return notificationRecipients.stream().map(notificationRecipient -> {
+            return NotificationRecipientResponse.builder()
+                    .id(notificationRecipient.getId())
+                    .title(notificationRecipient.getNotification().getTitle())
+                    .readStatus(notificationRecipient.isReadStatus())
+                    .sendDate(notificationRecipient.getNotification().getSendDate()).build();
+        }).toList();
+    }
     private String createSendPWMessage(String username, String password, String name){
         return String.format(
                 "<html>" +

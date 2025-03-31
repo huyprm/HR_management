@@ -7,4 +7,5 @@ import java.io.IOException;
 public interface FileService {
     String uploadImage(MultipartFile file) throws IOException;
     String editImage(MultipartFile file, String currentImg) throws Exception;
+    String uploadPdf(MultipartFile file) throws IOException;
 }

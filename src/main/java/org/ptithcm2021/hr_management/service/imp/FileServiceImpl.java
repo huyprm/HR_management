@@ -31,6 +31,17 @@ public class FileServiceImpl implements FileService {
         return uploadImage(file);
     }
 
+    @Override
+    public String uploadPdf(MultipartFile file) throws IOException {
+        Map uploadResult = cloudinary.uploader().upload(file.getBytes(),
+                ObjectUtils.asMap(
+                        "resource_type", "raw", // Chỉ định file PDF
+                        "format", "pdf",
+                        "folder", "documents"
+                ));
+        return uploadResult.get("secure_url").toString();
+    }
+
     private static String extractPublicId(String url) {
         url = url.replaceAll("^https://res.cloudinary.com/[^/]+/image/upload/v\\d+/", ""); // Xóa domain & version
         return url.replaceAll("\\.[a-z]+$", ""); // Xóa phần mở rộng (.jpg, .png, ...)

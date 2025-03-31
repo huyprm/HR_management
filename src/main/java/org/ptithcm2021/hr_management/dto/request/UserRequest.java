@@ -35,6 +35,6 @@ public class UserRequest {
     private String degree;
     private String taxCode;
 
-    @NotBlank(message = "Role cannot be empty")
+    @NotNull(message = "Role cannot be empty")
     private RoleEnum roleId;
 }

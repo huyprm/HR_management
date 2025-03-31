@@ -25,6 +25,9 @@ public enum ErrorCode {
     JOB_GRADE_NAME_EXISTS(1016, "Job grade name already exists", HttpStatus.CONFLICT),
     JOB_GRADE_NOT_FOUND(1017, "Job grade not found", HttpStatus.NOT_FOUND),
     FEEDBACK_NOT_FOUND(1018, "Feedback not found", HttpStatus.NOT_FOUND),
+    USER_TERMINATED(1019,"User has terminated the contract", HttpStatus.BAD_REQUEST),
+    NOTIFICATION_NOT_FOUND(1020, "Notification not found", HttpStatus.NOT_FOUND),
+    REWARD_DECISION_NOT_FOUND(1021, "Reward decision not found", HttpStatus.NOT_FOUND),
 
     ;
 

@@ -18,7 +18,7 @@ public class FileController {
 
     private final FileService fileService;
 
-    @PostMapping("/upload")
+    @PostMapping("/image")
     public ApiResponse<String> uploadImage(@RequestParam MultipartFile file) throws IOException {
         return ApiResponse.<String>builder().data(fileService.uploadImage(file)).build();
     }
@@ -26,5 +26,10 @@ public class FileController {
     @PostMapping("/edit")
     public ApiResponse<String> editImage(@RequestParam MultipartFile file, @RequestParam String currentImg) throws Exception {
         return ApiResponse.<String>builder().data(fileService.editImage(file, currentImg)).build();
+    }
+
+    @PostMapping("/pdf")
+    public ApiResponse<String> uploadPdf(@RequestParam MultipartFile file) throws IOException {
+        return ApiResponse.<String>builder().data(fileService.uploadPdf(file)).build();
     }
 }

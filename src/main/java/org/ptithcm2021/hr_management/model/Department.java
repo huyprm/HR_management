@@ -26,4 +26,7 @@ public class Department{
 
     @OneToMany(mappedBy = "department")
     private List<Position> positions;
+
+    @OneToMany(mappedBy = "department")
+    private List<User> users;
 }

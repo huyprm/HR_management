@@ -1,5 +1,6 @@
 package org.ptithcm2021.hr_management.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.ptithcm2021.hr_management.dto.request.ContractTypeRequest;
 import org.ptithcm2021.hr_management.dto.response.ApiResponse;
@@ -16,14 +17,14 @@ public class ContractTypeController {
     private final ContractTypeService contractTypeService;
 
     @PostMapping("/create")
-    public ApiResponse<ContractTypeResponse> createContractType(@RequestBody ContractTypeRequest contractTypeRequest){
+    public ApiResponse<ContractTypeResponse> createContractType(@RequestBody @Valid ContractTypeRequest contractTypeRequest){
         return ApiResponse.<ContractTypeResponse>builder()
                 .data(contractTypeService.createContractType(contractTypeRequest)).build();
     }
 
     @PostMapping("/update/{id}")
     public ApiResponse<ContractTypeResponse> updateContractType(@PathVariable String  id,
-                                                                @RequestBody ContractTypeRequest contractTypeRequest){
+                                                                @RequestBody @Valid ContractTypeRequest contractTypeRequest){
         return ApiResponse.<ContractTypeResponse>builder()
                 .data(contractTypeService.updateContractType(id,contractTypeRequest)).build();
     }

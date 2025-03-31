@@ -1,6 +1,7 @@
 package org.ptithcm2021.hr_management.controller;
 
 import com.cloudinary.Api;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.ptithcm2021.hr_management.dto.request.PositionRequest;
 import org.ptithcm2021.hr_management.dto.response.ApiResponse;
@@ -17,13 +18,13 @@ public class PositionController {
     private final PositionService positionService;
 
     @PostMapping("/create")
-    public ApiResponse<PositionResponse> createPosition(@RequestBody PositionRequest positionRequest){
+    public ApiResponse<PositionResponse> createPosition(@RequestBody @Valid PositionRequest positionRequest){
         return ApiResponse.<PositionResponse>builder()
                 .data(positionService.createPosition(positionRequest)).build();
     }
 
     @PostMapping("/update/{id}")
-    public ApiResponse<PositionResponse> updatePosition(@PathVariable String id, @RequestBody PositionRequest positionRequest){
+    public ApiResponse<PositionResponse> updatePosition(@PathVariable String id, @RequestBody @Valid PositionRequest positionRequest){
         return ApiResponse.<PositionResponse>builder()
                 .data(positionService.updatePosition(id, positionRequest)).build();
     }

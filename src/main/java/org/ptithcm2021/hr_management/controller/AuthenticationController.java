@@ -1,6 +1,7 @@
 package org.ptithcm2021.hr_management.controller;
 
 import jakarta.mail.MessagingException;
+import jakarta.validation.Valid;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.ptithcm2021.hr_management.dto.request.LoginRequest;
@@ -18,7 +19,7 @@ public class AuthenticationController {
     private final AuthenticationServiceImpl authenticationService;
 
     @PostMapping("/login")
-    public ApiResponse<String> login(@RequestBody LoginRequest request) {
+    public ApiResponse<String> login(@RequestBody @Valid LoginRequest request) {
 
         return ApiResponse.<String>builder()
                 .data(authenticationService.login(request)).build();

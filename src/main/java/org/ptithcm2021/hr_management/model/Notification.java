@@ -1,30 +1,32 @@
-//package org.ptithcm2021.hr_management.model;
-//
-//import jakarta.persistence.Entity;
-//import jakarta.persistence.Id;
-//import jakarta.persistence.JoinColumn;
-//import jakarta.persistence.ManyToOne;
-//import lombok.AllArgsConstructor;
-//import lombok.Getter;
-//import lombok.NoArgsConstructor;
-//import lombok.Setter;
-//
-//import java.time.Instant;
-//
-//@Entity(name = "notifications")
-//@Setter
-//@Getter
-//@NoArgsConstructor
-//@AllArgsConstructor
-//public class Notification {
-//    @Id
-//    private long id;
-//
-//    private String title;
-//    private String content;
-//    private Instant sendDate;
-//
-//    @ManyToOne
-//    @JoinColumn(name = "userId")
-//    private User sender;
-//}
+package org.ptithcm2021.hr_management.model;
+
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Entity(name = "notifications")
+@Setter
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+public class Notification {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+
+    private String title;
+    private String content;
+    private String attached;
+
+    @Column
+    private LocalDateTime sendDate = LocalDateTime.now();
+
+    private String infoReceiver;
+
+    @ManyToOne
+    @JoinColumn(name = "userId", nullable = false)
+    private User sender;
+}

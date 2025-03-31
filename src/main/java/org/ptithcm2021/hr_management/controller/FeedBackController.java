@@ -1,5 +1,6 @@
 package org.ptithcm2021.hr_management.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.ptithcm2021.hr_management.dto.request.FeedbackRequest;
 import org.ptithcm2021.hr_management.dto.response.ApiResponse;
@@ -16,7 +17,7 @@ public class FeedBackController {
     private final FeedbackService feedbackService;
 
     @PostMapping("/create")
-    public ApiResponse<FeedbackResponse> createFeedback(@RequestBody FeedbackRequest feedbackRequest) {
+    public ApiResponse<FeedbackResponse> createFeedback(@RequestBody @Valid FeedbackRequest feedbackRequest) {
         return ApiResponse.<FeedbackResponse>builder()
                 .data(feedbackService.createFeedback(feedbackRequest)).build();
     }

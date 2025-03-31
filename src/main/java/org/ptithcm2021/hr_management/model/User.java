@@ -39,8 +39,13 @@ public class User extends Base{
     private String avatar;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "accountId")
+    @JoinColumn(name = "accountId", nullable = false)
     private Account account;
+
+    @ManyToOne
+    @JoinColumn(name = "departmentId")
+    private Department department;
+
 
 //    @OneToMany(mappedBy = "user")
 //    private List<RewardAssignment> rewardAssignments;
