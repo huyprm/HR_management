@@ -43,8 +43,15 @@ public class AuthenticationController {
     }
 
     @PostMapping("/logout")
-    public ApiResponse<Void> logout(@RequestBody String token) throws ParseException {
+    public ApiResponse<Void> logout(@RequestBody String token, HttpServletResponse response) throws ParseException {
         authenticationService.logout(token);
+
+        Cookie cookie = new Cookie("token", null);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true);
+        cookie.setPath("/");
+        response.addCookie(cookie);
+
         return ApiResponse.<Void>builder().build();
     }
 
