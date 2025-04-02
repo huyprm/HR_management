@@ -22,7 +22,7 @@ public class ContractTypeController {
                 .data(contractTypeService.createContractType(contractTypeRequest)).build();
     }
 
-    @PostMapping("/update/{id}")
+    @PutMapping("/{id}")
     public ApiResponse<ContractTypeResponse> updateContractType(@PathVariable String  id,
                                                                 @RequestBody @Valid ContractTypeRequest contractTypeRequest){
         return ApiResponse.<ContractTypeResponse>builder()

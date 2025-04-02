@@ -23,7 +23,7 @@ public class RewardDecisionController {
                 .data(rewardDecisionService.createRewardDecision(rewardDecisionRequest)).build();
     }
 
-    @PostMapping("/update/{id}")
+    @PutMapping("/{id}")
     public ApiResponse<RewardDecisionResponse> updateRewardDecision(@PathVariable String id, @RequestBody @Valid RewardDecisionRequest rewardDecisionRequest) {
         return ApiResponse.<RewardDecisionResponse>builder()
                 .data(rewardDecisionService.updateRewardDecision(id, rewardDecisionRequest)).build();

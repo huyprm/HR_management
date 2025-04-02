@@ -22,7 +22,7 @@ public class DepartmentController {
                 .data(departmentService.createDepartment(departmentRequest)).build();
     }
 
-    @PostMapping("/update/{id}")
+    @PutMapping("/{id}")
     public ApiResponse<DepartmentResponse> updateDepartment(@RequestBody @Valid DepartmentRequest departmentRequest,
                                                             @PathVariable String id){
         return ApiResponse.<DepartmentResponse>builder()

@@ -23,7 +23,8 @@ public class UserRequest {
     @StringNumberConstraint(type = StringNumberConstraint.NumberType.PHONE)
     private String phoneNumber;
 
-    @Email(message = "Email cannot be empty")
+    @Email(message = "Email is in wrong format")
+    @NotBlank(message = "Email cannot be empty")
     private String email;
 
     private Date dob;

@@ -36,7 +36,7 @@ public class UserController {
         return ApiResponse.<UserResponse>builder().data(userService.getUser(id)).build();
     }
 
-    @PutMapping("/{id}")
+    @PatchMapping("/{id}")
     public ApiResponse<UserResponse> updateUser(@PathVariable long id, @RequestBody @Valid UserRequest userRequest){
         return ApiResponse.<UserResponse>builder().data(userService.updateUser(id, userRequest)).build();
     }

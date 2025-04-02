@@ -23,7 +23,7 @@ public class PositionController {
                 .data(positionService.createPosition(positionRequest)).build();
     }
 
-    @PostMapping("/update/{id}")
+    @PutMapping("/{id}")
     public ApiResponse<PositionResponse> updatePosition(@PathVariable String id, @RequestBody @Valid PositionRequest positionRequest){
         return ApiResponse.<PositionResponse>builder()
                 .data(positionService.updatePosition(id, positionRequest)).build();

@@ -11,11 +11,11 @@ import lombok.*;
 @Builder
 public class RewardAssignment {
     @EmbeddedId
-    private RewardAssignmentId id;
+    private AssignmentId id;
 
     @ManyToOne
-    @MapsId("rewardDecisionId")
-    @JoinColumn(name ="reward_decision_id")
+    @MapsId("decisionId")
+    @JoinColumn(name ="decision_id")
     private RewardDecision rewardDecision;
 
     @ManyToOne

@@ -14,10 +14,10 @@ import java.io.Serializable;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class RewardAssignmentId implements Serializable {
+public class AssignmentId implements Serializable {
     @Column(name = "userId")
     private long userId;
 
     @Column(name = "rewardDecisionId")
-    private String rewardDecisionId;
+    private String decisionId;
 }

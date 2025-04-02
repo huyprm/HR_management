@@ -28,6 +28,7 @@ public enum ErrorCode {
     USER_TERMINATED(1019,"User has terminated the contract", HttpStatus.BAD_REQUEST),
     NOTIFICATION_NOT_FOUND(1020, "Notification not found", HttpStatus.NOT_FOUND),
     REWARD_DECISION_NOT_FOUND(1021, "Reward decision not found", HttpStatus.NOT_FOUND),
+    REWARD_ASSIGNMENT_NOT_FOUND(1021, "Reward assignment not found", HttpStatus.NOT_FOUND),
 
     ;
 

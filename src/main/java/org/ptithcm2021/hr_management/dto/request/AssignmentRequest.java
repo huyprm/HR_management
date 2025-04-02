@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class RewardAssignmentRequest {
-    private String rewardDecisionId;
+public class AssignmentRequest {
+    private String decisionId;
     private Long userId;
 }

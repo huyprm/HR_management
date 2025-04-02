@@ -22,7 +22,7 @@ public class JobGradeController {
                 .data(jobGradeService.createJobGrade(jobGradeRequest)).build();
     }
 
-    @PostMapping("/update/{id}")
+    @PutMapping("/{id}")
     public ApiResponse<JobGradeResponse> updateJobGrade(@PathVariable String id,
                                                         @RequestBody @Valid JobGradeRequest jobGradeRequest) {
         return ApiResponse.<JobGradeResponse>builder()
