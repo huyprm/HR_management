@@ -12,7 +12,9 @@ import org.ptithcm2021.hr_management.repository.JobGradeRepository;
 import org.ptithcm2021.hr_management.service.JobGradeService;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -46,7 +48,7 @@ public class JobGradeServiceImpl implements JobGradeService {
 
     @Override
     public void deleteJobGrade(String id) {
-        if (jobGradeRepository.existsById(id))
+        if (!jobGradeRepository.existsById(id))
             throw new AppException(ErrorCode.JOB_GRADE_NOT_FOUND);
 
         try{
@@ -66,6 +68,7 @@ public class JobGradeServiceImpl implements JobGradeService {
 
     @Override
     public List<JobGradeResponse> getAllJobGrade() {
-        return jobGradeRepository.findAll().stream().map(jobGradeMapper::toJobGradeResponse).toList();
+        return jobGradeRepository.findAll()
+                .stream().map(jobGradeMapper::toJobGradeResponse).toList();
     }
 }

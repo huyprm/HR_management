@@ -7,10 +7,9 @@ import org.ptithcm2021.hr_management.dto.response.AssignmentResponse;
 import org.ptithcm2021.hr_management.exception.AppException;
 import org.ptithcm2021.hr_management.exception.ErrorCode;
 import org.ptithcm2021.hr_management.mapper.AssignmentMapper;
-import org.ptithcm2021.hr_management.model.RewardAssignment;
-import org.ptithcm2021.hr_management.model.AssignmentId;
-import org.ptithcm2021.hr_management.model.RewardDecision;
-import org.ptithcm2021.hr_management.model.User;
+import org.ptithcm2021.hr_management.model.*;
+import org.ptithcm2021.hr_management.repository.DisciplineAssignmentRepository;
+import org.ptithcm2021.hr_management.repository.DisciplineDecisionRepository;
 import org.ptithcm2021.hr_management.repository.RewardAssignmentRepository;
 import org.ptithcm2021.hr_management.repository.RewardDecisionRepository;
 import org.ptithcm2021.hr_management.service.AssignmentService;
@@ -19,25 +18,25 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service("rewardAssignmentServiceImpl")
+@Service("disciplineAssignmentServiceImpl")
 @RequiredArgsConstructor
-public class RewardAssignmentServiceImpl implements AssignmentService {
-    private final RewardDecisionRepository rewardDecisionRepository;
+public class DisciplineAssignmentServiceImpl implements AssignmentService {
+    private final DisciplineDecisionRepository decisionRepository;
+    private final DisciplineAssignmentRepository assignmentRepository;
     private final UserService userService;
-    private final RewardAssignmentRepository rewardAssignmentRepository;
     private final AssignmentMapper assignmentMapper;
 
     @Override
     public AssignmentResponse createAssignment(AssignmentRequest request) {
-        RewardDecision rewardDecision = rewardDecisionRepository.findById(request.getDecisionId())
-                .orElseThrow(() -> new AppException(ErrorCode.REWARD_DECISION_NOT_FOUND));
+        DisciplineDecision decision = decisionRepository.findById(request.getDecisionId())
+                .orElseThrow(() -> new AppException(ErrorCode.DISCIPLINE_DECISION_NOT_FOUND));
 
         User user = userService.getUserToUser(request.getUserId());
 
         AssignmentId assignmentId = new AssignmentId(request.getUserId(), request.getDecisionId());
-        RewardAssignment rewardAssignment = new RewardAssignment(assignmentId, rewardDecision, user);
+        DisciplineAssignment assignment = new DisciplineAssignment(assignmentId, user, decision);
 
-        return assignmentMapper.toRewardAssignmentResponse(rewardAssignmentRepository.save(rewardAssignment));
+        return assignmentMapper.toDisciplinedAssignmentResponse(assignmentRepository.save(assignment));
     }
 
     @Transactional
@@ -45,29 +44,29 @@ public class RewardAssignmentServiceImpl implements AssignmentService {
         AssignmentId oldId = new AssignmentId(userId, rewardDecisionId);
 
         // Tìm kiếm bản ghi cũ
-        RewardAssignment existingAssignment = rewardAssignmentRepository.findById(oldId)
+        DisciplineAssignment existingAssignment = assignmentRepository.findById(oldId)
                 .orElseThrow(() -> new AppException(ErrorCode.ASSIGNMENT_NOT_FOUND));
 
         // Xóa bản ghi cũ
-        rewardAssignmentRepository.delete(existingAssignment);
+        assignmentRepository.delete(existingAssignment);
 
         // Tạo bản ghi mới với userId mới
         long newUserId = request.getUserId() != null? request.getUserId(): existingAssignment.getUser().getId();
-        String newRewardDecision = request.getDecisionId() != null? request.getDecisionId(): existingAssignment.getRewardDecision().getId();
+        String newDecision = request.getDecisionId() != null? request.getDecisionId(): existingAssignment.getDisciplineDecision().getId();
 
-        AssignmentId newId = new AssignmentId( newUserId, newRewardDecision);
+        AssignmentId newId = new AssignmentId( newUserId, newDecision);
 
-        RewardAssignment newAssignment = new RewardAssignment();
+        DisciplineAssignment newAssignment = new DisciplineAssignment();
         newAssignment.setId(newId);
 
-        RewardDecision rewardDecision = rewardDecisionRepository.findById(newRewardDecision)
-                .orElseThrow(() -> new AppException(ErrorCode.REWARD_DECISION_NOT_FOUND));
-        newAssignment.setRewardDecision(rewardDecision);
+        DisciplineDecision decision = decisionRepository.findById(newDecision)
+                .orElseThrow(() -> new AppException(ErrorCode.DISCIPLINE_DECISION_NOT_FOUND));
+        newAssignment.setDisciplineDecision(decision);
 
         User newUser = userService.getUserToUser(newUserId);
         newAssignment.setUser(newUser);
 
-        return assignmentMapper.toRewardAssignmentResponse(rewardAssignmentRepository.save(newAssignment));
+        return assignmentMapper.toDisciplinedAssignmentResponse(assignmentRepository.save(newAssignment));
     }
 
 
@@ -75,27 +74,28 @@ public class RewardAssignmentServiceImpl implements AssignmentService {
     public AssignmentResponse getAssignment(String rewardId, long userId) {
         AssignmentId temp = new AssignmentId(userId, rewardId);
 
-        RewardAssignment rewardAssignment = rewardAssignmentRepository.findById(temp)
+        DisciplineAssignment assignment = assignmentRepository.findById(temp)
                 .orElseThrow(() -> new AppException(ErrorCode.ASSIGNMENT_NOT_FOUND));
 
-        return assignmentMapper.toRewardAssignmentResponse(rewardAssignment);
+        return assignmentMapper.toDisciplinedAssignmentResponse(assignment);
     }
 
     @Override
     public List<AssignmentResponse> getAllAssignmentByUser(long id) {
-        List<RewardAssignment> rewardAssignments = rewardAssignmentRepository.findAllByUserId(id)
+        List<DisciplineAssignment> rewardAssignments = assignmentRepository.findAllByUserId(id)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
 
-        return rewardAssignments.stream().map(assignmentMapper::toRewardAssignmentResponse).toList();
+        return rewardAssignments.stream().map(assignmentMapper::toDisciplinedAssignmentResponse).toList();
     }
 
     @Override
     public void deleteAssignment(String rewardId, long userId) {
         AssignmentId temp = new AssignmentId(userId, rewardId);
-        if(rewardAssignmentRepository.existsById(temp)){
-            rewardAssignmentRepository.deleteById(temp);
+        if(assignmentRepository.existsById(temp)){
+            assignmentRepository.deleteById(temp);
         } else{
             throw new AppException(ErrorCode.ASSIGNMENT_NOT_FOUND);
         }
     }
+
 }

@@ -7,19 +7,19 @@ import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
 
-public interface RewardAssignmentService {
+public interface AssignmentService {
     @PreAuthorize("hasAnyAuthority('SCOPE_STAFF', 'SCOPE_ADMIN')")
-    AssignmentResponse createRewardAssignment(AssignmentRequest assignmentRequest);
+    AssignmentResponse createAssignment(AssignmentRequest assignmentRequest);
 
     @PreAuthorize("hasAnyAuthority('SCOPE_STAFF', 'SCOPE_ADMIN')")
-    AssignmentResponse updateRewardAssignment(AssignmentRequest assignmentRequest, String rewardDecisionId, long userId);
+    AssignmentResponse updateAssignment(AssignmentRequest assignmentRequest, String rewardDecisionId, long userId);
 
     @PreAuthorize("hasAnyAuthority('SCOPE_STAFF', 'SCOPE_ADMIN') or #userId == authentication.name")
-    AssignmentResponse getRewardAssignment(String rewardId, long userId);
+    AssignmentResponse getAssignment(String rewardId, long userId);
 
     @PreAuthorize("hasAnyAuthority('SCOPE_STAFF', 'SCOPE_ADMIN') or #userId == authentication.name")
-    List<AssignmentResponse> getAllRewardAssignmentByUser (long userId);
+    List<AssignmentResponse> getAllAssignmentByUser (long userId);
 
     @PreAuthorize("hasAnyAuthority('SCOPE_STAFF', 'SCOPE_ADMIN')")
-    void deleteRewardAssignment(String rewardId, long userId);
+    void deleteAssignment(String rewardId, long userId);
 }

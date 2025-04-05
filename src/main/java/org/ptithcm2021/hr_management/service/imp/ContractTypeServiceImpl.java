@@ -11,7 +11,9 @@ import org.ptithcm2021.hr_management.repository.ContractTypeRepository;
 import org.ptithcm2021.hr_management.service.ContractTypeService;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -63,6 +65,7 @@ public class ContractTypeServiceImpl implements ContractTypeService {
 
     @Override
     public List<ContractTypeResponse> getAllContractType() {
-        return contractTypeRepository.findAll().stream().map(contractTypeMapper::toContractTypeResponse).toList();
+        return contractTypeRepository.findAll()
+                .stream().map(contractTypeMapper::toContractTypeResponse).toList();
     }
 }

@@ -17,8 +17,6 @@ public class Account {
     @Id
     private String username;
 
-    @NotBlank(message = "Password not empty")
-    @Size(min = 5, message = "Password is greater than 5 characters")
     private String password;
 
     @Column

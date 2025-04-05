@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ChangePasswordRequest {
     @NotNull
-    private long userId;
+    private Long userId;
 
     @NotBlank(message = "Old password cannot be empty")
     private String oldPass;

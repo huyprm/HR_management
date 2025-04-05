@@ -8,12 +8,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class JobGradeRequest {
-    @NotBlank(message = "Job grade code cannot be blank")
-    private String id;
-
-    @NotBlank(message = "Job Grade name cannot be blank")
+public class LeaveTypeRequest {
+    @NotBlank(message = "Leave type name cannot be blank")
     private String name;
-    private double coefficient;
     private String description;
 }

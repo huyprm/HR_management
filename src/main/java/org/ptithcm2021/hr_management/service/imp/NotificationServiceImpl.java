@@ -21,7 +21,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -111,7 +113,8 @@ public class NotificationServiceImpl implements NotificationService {
     public List<NotificationRecipientResponse> getAllNotificationRecipient(long userId) {
         List<NotificationRecipient> notificationRecipients = recipientRepository.finAllByUserId(userId);
 
-        return notificationRecipients.stream().map(notificationRecipient -> {
+        return notificationRecipients
+                .stream().map(notificationRecipient -> {
             return NotificationRecipientResponse.builder()
                     .id(notificationRecipient.getId())
                     .title(notificationRecipient.getNotification().getTitle())
@@ -125,7 +128,8 @@ public class NotificationServiceImpl implements NotificationService {
         Pageable pageable = PageRequest.of(0,5);
         List<NotificationRecipient> notificationRecipients = recipientRepository.findTop5ByUserId(userId, pageable);
 
-        return notificationRecipients.stream().map(notificationRecipient -> {
+        return notificationRecipients
+                .stream().map(notificationRecipient -> {
             return NotificationRecipientResponse.builder()
                     .id(notificationRecipient.getId())
                     .title(notificationRecipient.getNotification().getTitle())

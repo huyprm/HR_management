@@ -28,8 +28,12 @@ public enum ErrorCode {
     USER_TERMINATED(1019,"User has terminated the contract", HttpStatus.BAD_REQUEST),
     NOTIFICATION_NOT_FOUND(1020, "Notification not found", HttpStatus.NOT_FOUND),
     REWARD_DECISION_NOT_FOUND(1021, "Reward decision not found", HttpStatus.NOT_FOUND),
-    REWARD_ASSIGNMENT_NOT_FOUND(1021, "Reward assignment not found", HttpStatus.NOT_FOUND),
-
+    ASSIGNMENT_NOT_FOUND(1022, "Reward assignment not found", HttpStatus.NOT_FOUND),
+    DISCIPLINE_DECISION_NOT_FOUND(1023, "Discipline decision not found", HttpStatus.NOT_FOUND),
+    LEAVE_TYPE_NOT_FOUND(1024, "Leave type not found", HttpStatus.NOT_FOUND),
+    LEAVE_APPLICATION_NOT_FOUND(1025, "Leave application not found", HttpStatus.NOT_FOUND),
+    LEAVE_BALANCE_NOT_FOUND(1026, "Leave balance not found", HttpStatus.NOT_FOUND),
+    LEAVE_DAY_NOT_FOUND(1027, "Leave day not found", HttpStatus.NOT_FOUND),
     ;
 
     ErrorCode(int code, String message, HttpStatus status){

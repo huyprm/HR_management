@@ -13,7 +13,9 @@ import org.ptithcm2021.hr_management.repository.UserRepository;
 import org.ptithcm2021.hr_management.service.FeedbackService;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -44,6 +46,7 @@ public class FeedbackServiceImpl implements FeedbackService {
 
     @Override
     public List<FeedbackResponse> getAllFeedback() {
-        return feedbackRepository.findAll().stream().map(feedbackMapper::toFeedBackResponse).toList();
+        return feedbackRepository.findAll()
+                .stream().map(feedbackMapper::toFeedBackResponse).toList();
     }
 }

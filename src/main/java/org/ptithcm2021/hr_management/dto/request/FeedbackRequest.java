@@ -17,5 +17,5 @@ public class FeedbackRequest {
     private String content;
 
     @NotNull(message = "Sender cannot be empty")
-    private long userId;
+    private Long userId;
 }

@@ -20,7 +20,7 @@ public class NotificationRequest {
     private String content;
 
     @NotNull(message = "Sender cannot be empty")
-    private long userId;
+    private Long userId;
 
     private String attached;
     private List<Long> receiverIds;

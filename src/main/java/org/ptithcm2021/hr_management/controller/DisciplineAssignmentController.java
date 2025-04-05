@@ -1,7 +1,6 @@
 package org.ptithcm2021.hr_management.controller;
 
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.ptithcm2021.hr_management.dto.request.AssignmentRequest;
 import org.ptithcm2021.hr_management.dto.response.ApiResponse;
 import org.ptithcm2021.hr_management.dto.response.AssignmentResponse;
@@ -13,15 +12,14 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/reward-assignments")
-public class RewardAssigmentController {
+@RequestMapping("/api/discipline-assignments")
+public class DisciplineAssignmentController {
     private final AssignmentService assignmentService;
 
     @Autowired
-    public RewardAssigmentController(@Qualifier("rewardAssignmentServiceImpl") AssignmentService assignmentService){
+     public DisciplineAssignmentController(@Qualifier("disciplineAssignmentServiceImpl") AssignmentService assignmentService) {
         this.assignmentService = assignmentService;
     }
-
     @PostMapping("/create")
     public ApiResponse<AssignmentResponse> createAssignment (@RequestBody @Valid AssignmentRequest assignmentRequest){
         return ApiResponse.<AssignmentResponse>builder()

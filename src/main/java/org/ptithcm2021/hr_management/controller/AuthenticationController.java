@@ -1,5 +1,6 @@
 package org.ptithcm2021.hr_management.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
@@ -19,6 +20,7 @@ import static com.cloudinary.AccessControlRule.AccessType.token;
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
+@Tag(name = "Authentication Controller")
 public class AuthenticationController {
     private final AuthenticationServiceImpl authenticationService;
 

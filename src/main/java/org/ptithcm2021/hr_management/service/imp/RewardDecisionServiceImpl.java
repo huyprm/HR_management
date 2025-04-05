@@ -1,70 +1,70 @@
 package org.ptithcm2021.hr_management.service.imp;
 
 import lombok.RequiredArgsConstructor;
-import org.ptithcm2021.hr_management.dto.request.RewardDecisionRequest;
-import org.ptithcm2021.hr_management.dto.response.RewardDecisionResponse;
+import org.ptithcm2021.hr_management.dto.request.DecisionRequest;
+import org.ptithcm2021.hr_management.dto.response.DecisionResponse;
 import org.ptithcm2021.hr_management.exception.AppException;
 import org.ptithcm2021.hr_management.exception.ErrorCode;
-import org.ptithcm2021.hr_management.mapper.RewardDecisionMapper;
+import org.ptithcm2021.hr_management.mapper.DecisionMapper;
 import org.ptithcm2021.hr_management.model.RewardDecision;
 import org.ptithcm2021.hr_management.model.User;
 import org.ptithcm2021.hr_management.repository.RewardDecisionRepository;
-import org.ptithcm2021.hr_management.service.RewardDecisionService;
+import org.ptithcm2021.hr_management.service.DecisionService;
 import org.ptithcm2021.hr_management.service.UserService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Service
+@Service("rewardDecisionServiceImpl")
 @RequiredArgsConstructor
-public class RewardDecisionServiceImp implements RewardDecisionService {
+public class RewardDecisionServiceImpl implements DecisionService {
     private final RewardDecisionRepository rewardDecisionRepository;
-    private final RewardDecisionMapper rewardDecisionMapper;
+    private final DecisionMapper decisionMapper;
     private final UserService userService;
 
     @Override
-    public RewardDecisionResponse createRewardDecision(RewardDecisionRequest rewardDecisionRequest) {
-        User user = userService.getUserToUser(rewardDecisionRequest.getSignerId());
+    public DecisionResponse createDecision(DecisionRequest decisionRequest) {
+        User user = userService.getUserToUser(decisionRequest.getSignerId());
 
-        RewardDecision rewardDecision = rewardDecisionMapper.toRewardDecision(rewardDecisionRequest);
+        RewardDecision rewardDecision = decisionMapper.toRewardDecision(decisionRequest);
         rewardDecision.setSigner(user);
 
-        return rewardDecisionMapper.toRewardDecisionResponse(rewardDecisionRepository.save(rewardDecision));
+        return decisionMapper.toRewardDecisionResponse(rewardDecisionRepository.save(rewardDecision));
     }
 
     @Override
-    public RewardDecisionResponse updateRewardDecision(String id, RewardDecisionRequest rewardDecisionRequest) {
+    public DecisionResponse updateDecision(String id, DecisionRequest decisionRequest) {
         RewardDecision rewardDecision = rewardDecisionRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.REWARD_DECISION_NOT_FOUND));
 
-        rewardDecisionMapper.updateRewardDecision(rewardDecision, rewardDecisionRequest);
+        decisionMapper.updateRewardDecision(rewardDecision, decisionRequest);
 
-        if (rewardDecision.getSigner().getId()!= rewardDecisionRequest.getSignerId()){
-            User user = userService.getUserToUser(rewardDecisionRequest.getSignerId());
+        if (rewardDecision.getSigner().getId()!= decisionRequest.getSignerId()){
+            User user = userService.getUserToUser(decisionRequest.getSignerId());
             rewardDecision.setSigner(user);
         }
-        return rewardDecisionMapper.toRewardDecisionResponse(rewardDecisionRepository.save(rewardDecision));
+        return decisionMapper.toRewardDecisionResponse(rewardDecisionRepository.save(rewardDecision));
     }
 
     @Override
-    public RewardDecisionResponse getRewardDecision(String id) {
+    public DecisionResponse getDecision(String id) {
         RewardDecision rewardDecision = rewardDecisionRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.REWARD_DECISION_NOT_FOUND));
 
-        return rewardDecisionMapper.toRewardDecisionResponse(rewardDecision);
+        return decisionMapper.toRewardDecisionResponse(rewardDecision);
     }
 
     @Override
-    public List<RewardDecisionResponse> getAllRewardDecision() {
+    public List<DecisionResponse> getAllDecision() {
         List<RewardDecision> rewardDecisions = rewardDecisionRepository.findAll();
         return rewardDecisions.stream()
-                .map(rewardDecisionMapper::toRewardDecisionResponse)
+                .map(decisionMapper::toRewardDecisionResponse)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public void deleteRewardDecision(String id) {
+    public void deleteDecision(String id) {
         if (!rewardDecisionRepository.existsById(id)) {
             throw new AppException(ErrorCode.REWARD_DECISION_NOT_FOUND);
         }

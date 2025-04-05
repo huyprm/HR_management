@@ -6,7 +6,7 @@ import org.ptithcm2021.hr_management.dto.response.AssignmentResponse;
 import org.ptithcm2021.hr_management.model.DisciplineAssignment;
 import org.ptithcm2021.hr_management.model.RewardAssignment;
 
-@Mapper(componentModel = "spring", uses = RewardDecisionMapper.class)
+@Mapper(componentModel = "spring", uses = DecisionMapper.class)
 public interface AssignmentMapper {
     @Mapping(target = "userSummaryResponse.id", source = "user.id")
     @Mapping(target = "userSummaryResponse.fullName", source = "user.fullName")

@@ -15,9 +15,10 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AssignmentId implements Serializable {
+    private static final long serialVersionUID = 1L;
     @Column(name = "userId")
     private long userId;
 
-    @Column(name = "rewardDecisionId")
+    @Column(name = "decisionId")
     private String decisionId;
 }
