@@ -5,4 +5,5 @@ public enum ContractStatusEnum {
     EXPIRING_SOON,
     EXPIRED,
     TERMINATED,
+    RENEWED,
 }

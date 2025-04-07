@@ -46,6 +46,10 @@ public class User extends Base{
     @JoinColumn(name = "departmentId")
     private Department department;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "seniorityAllowanceId")
+    private SeniorityAllowance seniorityAllowance;
+
 
 //    @OneToMany(mappedBy = "user")
 //    private List<RewardAssignment> rewardAssignments;

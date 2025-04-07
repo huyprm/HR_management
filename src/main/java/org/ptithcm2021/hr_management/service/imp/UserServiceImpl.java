@@ -10,15 +10,13 @@ import org.ptithcm2021.hr_management.enums.UserStatusEnum;
 import org.ptithcm2021.hr_management.exception.AppException;
 import org.ptithcm2021.hr_management.exception.ErrorCode;
 import org.ptithcm2021.hr_management.mapper.UserMapper;
-import org.ptithcm2021.hr_management.model.Account;
-import org.ptithcm2021.hr_management.model.NotificationRecipient;
-import org.ptithcm2021.hr_management.model.Role;
-import org.ptithcm2021.hr_management.model.User;
+import org.ptithcm2021.hr_management.model.*;
 import org.ptithcm2021.hr_management.repository.AccountRepository;
 import org.ptithcm2021.hr_management.repository.NotificationRecipientRepository;
 import org.ptithcm2021.hr_management.repository.RoleRepository;
 import org.ptithcm2021.hr_management.repository.UserRepository;
 import org.ptithcm2021.hr_management.service.MailService;
+import org.ptithcm2021.hr_management.service.SeniorityAllowanceService;
 import org.ptithcm2021.hr_management.service.UserService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -41,6 +39,7 @@ public class UserServiceImpl implements UserService {
     private final NotificationRecipientRepository notificationRecipientRepository;
 
 
+
     @Override
     public UserResponse createUser(UserRequest userRequest) throws MessagingException {
         User user = userMapper.toUser(userRequest);
@@ -56,6 +55,12 @@ public class UserServiceImpl implements UserService {
                 .role(role).build();
 
         user.setAccount(account);
+
+        SeniorityAllowance seniorityAllowance = new SeniorityAllowance();
+        seniorityAllowance.setUser(user);
+
+        user.setSeniorityAllowance(seniorityAllowance);
+
         User result = userRepository.save(user);
 
         String message = createSendPWMessage(account.getUsername(), password, result.getFullName());

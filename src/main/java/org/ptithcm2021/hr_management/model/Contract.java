@@ -27,16 +27,22 @@ public class Contract{
     private Date endDate;
 
     private double basicSalary;
-    private boolean status;
     private String clause;
-    private ContractStatusEnum contractStatusEnum;
+
+    @Enumerated(EnumType.STRING)
+    private ContractStatusEnum contractStatusEnum = ContractStatusEnum.PENDING;
+
     @ManyToOne()
     @JoinColumn(name = "contractTypeId")
-    private ContractType contractType;
+    private ContractType contractType ;
 
     @ManyToOne()
     @JoinColumn(name = "userId")
     private User user;
+
+    @ManyToOne()
+    @JoinColumn(name = "signerId")
+    private User signer;
 
     @ManyToOne()
     @JoinColumn(name = "positionId")
@@ -45,5 +51,4 @@ public class Contract{
     @ManyToOne()
     @JoinColumn(name = "jobGradeId")
     private JobGrade jobGrade;
-
 }

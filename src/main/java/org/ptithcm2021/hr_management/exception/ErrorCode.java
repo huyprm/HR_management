@@ -34,6 +34,9 @@ public enum ErrorCode {
     LEAVE_APPLICATION_NOT_FOUND(1025, "Leave application not found", HttpStatus.NOT_FOUND),
     LEAVE_BALANCE_NOT_FOUND(1026, "Leave balance not found", HttpStatus.NOT_FOUND),
     LEAVE_DAY_NOT_FOUND(1027, "Leave day not found", HttpStatus.NOT_FOUND),
+    SENIORITY_ALLOWANCE_RULE_NOT_FOUND(1028, "Seniority allowance rule not found", HttpStatus.NOT_FOUND),
+    CONTRACT_NOT_FOUND(1029, "Contract not found", HttpStatus.NOT_FOUND),
+    EXTEND_CONTRACT(1029, "The contract is still valid and cannot be renewed.", HttpStatus.CONFLICT),
     ;
 
     ErrorCode(int code, String message, HttpStatus status){

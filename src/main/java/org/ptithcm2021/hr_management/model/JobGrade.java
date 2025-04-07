@@ -17,7 +17,6 @@ public class JobGrade {
 
     @Column(unique = true, nullable = false)
     private String name;
-    //private String groupName;
     private double coefficient;
     private String description;
 }
