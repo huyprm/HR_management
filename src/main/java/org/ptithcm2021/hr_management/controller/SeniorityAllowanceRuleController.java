@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/seniority-allowance-rules")
+@RequestMapping("/api/seniority-allowance-rules")
 @RequiredArgsConstructor
 public class SeniorityAllowanceRuleController {
 

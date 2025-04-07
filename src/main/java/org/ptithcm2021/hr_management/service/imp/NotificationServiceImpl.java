@@ -38,8 +38,10 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public NotificationResponse createNotification(NotificationRequest notificationRequest) {
-        User sender = userService.getUserToUser(notificationRequest.getUserId());
-
+        User sender =null;
+        if (notificationRequest.getUserId() !=null) {
+            sender = userService.getUserToUser(notificationRequest.getUserId());
+        }
         Notification notification = notificationMapper.toNotification(notificationRequest);
 
         List<NotificationRecipient> notificationRecipients = new ArrayList<>();

@@ -21,9 +21,6 @@ public class Department{
     private String name;
     private String description;
 
-    @Column(unique = true)
-    private String acronym;
-
     @OneToMany(mappedBy = "department")
     private List<Position> positions;
 

@@ -28,4 +28,6 @@ public interface ContractService {
 
     @PreAuthorize("T(String).valueOf(#userId) == authentication.name")
     ContractResponse getContractIsPendingByUserId(long userId);
+
+    void updateContractStatus();
 }

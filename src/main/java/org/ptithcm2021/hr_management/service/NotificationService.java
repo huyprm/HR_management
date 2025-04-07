@@ -8,8 +8,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import java.util.List;
 
 public interface NotificationService {
-    @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN', 'SCOPE_MANAGER', 'SCOPE_STAFF') and " +
-            "T(String).valueOf(#notificationRequest.userId) == authentication.name")
+    @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN', 'SCOPE_MANAGER', 'SCOPE_STAFF')")
     NotificationResponse createNotification(NotificationRequest notificationRequest);
 
     NotificationResponse getNotification(long id);

@@ -12,6 +12,7 @@ import org.ptithcm2021.hr_management.model.User;
 import org.ptithcm2021.hr_management.repository.SeniorityAllowanceRuleRepository;
 import org.ptithcm2021.hr_management.service.SeniorityAllowanceRuleService;
 import org.ptithcm2021.hr_management.service.UserService;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;

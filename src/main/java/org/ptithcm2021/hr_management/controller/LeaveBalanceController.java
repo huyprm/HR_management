@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/leave-balances")
+@RequestMapping("/api/api/leave-balances")
 public class LeaveBalanceController {
     private final LeaveBalanceService leaveBalanceService;
 

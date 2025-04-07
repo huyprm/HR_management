@@ -27,6 +27,6 @@ public class Notification {
     private String infoReceiver;
 
     @ManyToOne
-    @JoinColumn(name = "userId", nullable = false)
+    @JoinColumn(name = "userId")
     private User sender;
 }

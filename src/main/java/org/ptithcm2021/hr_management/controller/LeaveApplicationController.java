@@ -17,7 +17,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/leave-applications")
+@RequestMapping("/api/leave-applications")
 @RequiredArgsConstructor
 @Tag(name = "Leave Application Controller")
 public class LeaveApplicationController {

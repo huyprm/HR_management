@@ -1,6 +1,7 @@
 package org.ptithcm2021.hr_management.controller;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.ptithcm2021.hr_management.dto.request.ContractRequest;
 import org.ptithcm2021.hr_management.dto.response.ApiResponse;
 import org.ptithcm2021.hr_management.dto.response.ContractResponse;
@@ -12,13 +13,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/contracts")
+@RequiredArgsConstructor
 public class ContractController {
 
     private final ContractService contractService;
-
-    public ContractController(ContractService contractService) {
-        this.contractService = contractService;
-    }
 
     @PostMapping("/create")
     public ApiResponse<ContractResponse> createContract(@RequestBody @Valid ContractRequest contractRequest) {
@@ -42,7 +40,7 @@ public class ContractController {
     }
 
     @GetMapping
-    public ApiResponse<List<ContractResponse>> getAllContract(@RequestParam ContractStatusEnum contractStatusEnum) {
+    public ApiResponse<List<ContractResponse>> getAllContract(@RequestParam(required = false) ContractStatusEnum contractStatusEnum) {
         return ApiResponse.<List<ContractResponse>>builder()
                 .data(contractService.getAllContract(contractStatusEnum))
                 .build();
@@ -54,7 +52,7 @@ public class ContractController {
         return ApiResponse.<Void>builder().message("Deleted successfully").build();
     }
 
-    @PutMapping("/extend/{contractId}")
+    @PostMapping("/extend/{contractId}")
     public ApiResponse<ContractResponse> extendContract(@PathVariable int contractId,
                                                         @RequestBody @Valid ContractRequest contractRequest) {
         return ApiResponse.<ContractResponse>builder()
@@ -66,6 +64,13 @@ public class ContractController {
     public ApiResponse<ContractResponse> getContractIsPendingByUserId(@PathVariable long userId) {
         return ApiResponse.<ContractResponse>builder()
                 .data(contractService.getContractIsPendingByUserId(userId))
+                .build();
+    }
+
+    @GetMapping("/schedule")
+    public ApiResponse<ContractResponse> updateContractStatus() {
+        contractService.updateContractStatus();
+        return ApiResponse.<ContractResponse>builder()
                 .build();
     }
 }

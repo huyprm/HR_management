@@ -23,8 +23,8 @@ public class ContractResponse {
     private String clause;
     private ContractStatusEnum contractStatusEnum;
     private String contractTypeName ;
-    private UserSummaryResponse userSummaryResponse;
-    private UserSummaryResponse signerSummaryResponse;
+    private UserSummaryResponse user;
+    private UserSummaryResponse signer;
     private String positionName;
     private String jobGradeName;
 }

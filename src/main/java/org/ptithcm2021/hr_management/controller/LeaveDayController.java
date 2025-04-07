@@ -15,7 +15,7 @@ import java.time.temporal.ChronoField;
 import java.util.List;
 
 @RestController
-@RequestMapping("/leave-days")
+@RequestMapping("/api/leave-days")
 @RequiredArgsConstructor
 public class LeaveDayController {
 

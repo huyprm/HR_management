@@ -19,7 +19,7 @@ public class NotificationRequest {
     @NotBlank(message = "Content cannot be blank")
     private String content;
 
-    @NotNull(message = "Sender cannot be empty")
+   // @NotNull(message = "Sender cannot be empty")
     private Long userId;
 
     private String attached;
