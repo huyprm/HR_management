@@ -3,6 +3,7 @@ package org.ptithcm2021.hr_management.service;
 import org.ptithcm2021.hr_management.dto.request.ContractRequest;
 import org.ptithcm2021.hr_management.dto.response.ContractResponse;
 import org.ptithcm2021.hr_management.enums.ContractStatusEnum;
+import org.ptithcm2021.hr_management.model.Contract;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
@@ -29,5 +30,7 @@ public interface ContractService {
     @PreAuthorize("T(String).valueOf(#userId) == authentication.name")
     ContractResponse getContractIsPendingByUserId(long userId);
 
-    void updateContractStatus();
+    Contract getContractCurrentOfUser(long userId);
+
+    List<Contract> getAllContractIsPendingOrExpirySoon();
 }

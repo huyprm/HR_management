@@ -1,7 +1,9 @@
 package org.ptithcm2021.hr_management.service.imp;
 
+import io.micrometer.common.lang.Nullable;
 import lombok.RequiredArgsConstructor;
 import org.ptithcm2021.hr_management.dto.request.ContractRequest;
+import org.ptithcm2021.hr_management.dto.request.LeaveBalanceRequest;
 import org.ptithcm2021.hr_management.dto.request.NotificationRequest;
 import org.ptithcm2021.hr_management.dto.response.ContractResponse;
 import org.ptithcm2021.hr_management.enums.ContractStatusEnum;
@@ -11,12 +13,19 @@ import org.ptithcm2021.hr_management.mapper.ContractMapper;
 import org.ptithcm2021.hr_management.model.*;
 import org.ptithcm2021.hr_management.repository.*;
 import org.ptithcm2021.hr_management.service.ContractService;
+import org.ptithcm2021.hr_management.service.LeaveBalanceService;
 import org.ptithcm2021.hr_management.service.NotificationService;
 import org.ptithcm2021.hr_management.service.UserService;
+import org.ptithcm2021.hr_management.util.LeaveBalanceUtil;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.Year;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -32,6 +41,7 @@ public class ContractServiceImpl implements ContractService {
     private final JobGradeRepository jobGradeRepository;
     private final UserRepository userRepository;
     private final NotificationService notificationService;
+    private final LeaveBalanceService leaveBalanceService;
 
     @Override
     public ContractResponse createContract(ContractRequest contractRequest, boolean isExtend) {
@@ -61,6 +71,9 @@ public class ContractServiceImpl implements ContractService {
             user.getSeniorityAllowance().setHireDate(contract.getStartDate());
             userRepository.save(user);
         }
+
+        if(contract.getContractType().isPolicy())
+            createOrUpdateLeaveBalance(user.getId(), contract.getStartDate(), contract.getEndDate());
 
         return contractMapper.toContractResponse(contractRepository.save(contract));
     }
@@ -121,45 +134,44 @@ public class ContractServiceImpl implements ContractService {
     }
 
     private boolean validateContractDates(Date start, Date end) {
-        if (end != null && end.before(start)) {
-            throw new IllegalArgumentException();
-        }
-        return true;
+        return end == null || !end.before(start);
     }
 
-
-    @Scheduled(cron = "0 0 0 * * *")
     @Override
-    public void updateContractStatus(){
-        List<Contract> contracts = contractRepository.findContractByContractStatusEnum(ContractStatusEnum.PENDING);
+    public Contract getContractCurrentOfUser(long userId) {
 
-        contracts.forEach(contract ->{
-            if (contract.getEndDate() != null) {
-
-                long numDay = (contract.getEndDate().getTime() - contract.getStartDate().getTime()) / (1000 * 60 * 60 * 24);
-                if (numDay == 30) {
-
-                    contract.setContractStatusEnum(ContractStatusEnum.EXPIRING_SOON);
-                    contractRepository.save(contract);
-
-                    notificationService.createNotification(
-                            notificationContractExpirySoon(contract.getUser().getId(), contract.getEndDate()));
-                }
-            }
-        });
+        return contractRepository.findContractByUserIdAndContractStatusEnum(userId, ContractStatusEnum.PENDING)
+                .orElseThrow(() -> new AppException(ErrorCode.CONTRACT_NOT_FOUND));
     }
 
-    private NotificationRequest notificationContractExpirySoon(long userId, Date endDate){
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");  // Định dạng ngày tháng (có thể thay đổi theo yêu cầu)
-        String formattedEndDate = sdf.format(endDate);  // Chuyển đổi endDate thành chuỗi với định dạng mong muốn
-
-        String content = String.format("Chúng tôi xin thông báo rằng hợp đồng lao động của bạn sẽ hết hạn vào ngày %s. Xin vui lòng xem xét và thực hiện các bước tiếp theo theo quy định để gia hạn hợp đồng nếu cần.", formattedEndDate);
-
-        NotificationRequest notificationRequest = new NotificationRequest();
-        notificationRequest.setTitle("Your contract is about to expire.");
-        notificationRequest.setContent(content);
-        notificationRequest.setReceiverIds(Collections.singletonList(userId));
-
-        return notificationRequest;
+    @Override
+    public List<Contract> getAllContractIsPendingOrExpirySoon() {
+        return contractRepository.findByContractStatusEnumIn(List.of(ContractStatusEnum.PENDING, ContractStatusEnum.EXPIRING_SOON))
+                .stream().toList();
     }
+
+    private void createOrUpdateLeaveBalance(long userId, Date startDate, Date endDate){
+
+        int calculatedDays = LeaveBalanceUtil.calculateLeaveDaysInYear(startDate, endDate);
+
+        try {
+            LeaveBalance leaveBalance = leaveBalanceService.getLeaveBalanceToLeaveBalance(userId);
+
+            int totalLeaveDay = Math.min(12, leaveBalance.getTotalLeaveDay() + calculatedDays);
+            leaveBalance.setTotalLeaveDay(totalLeaveDay);
+
+            leaveBalanceService.updateLeaveBalance(leaveBalance);
+        } catch (AppException e) {
+            LeaveBalanceRequest leaveBalanceRequest = new LeaveBalanceRequest();
+            leaveBalanceRequest.setUserId(userId);
+            leaveBalanceRequest.setUsedLeaveDay(0);
+            leaveBalanceRequest.setCarriedOverDay(0);
+            leaveBalanceRequest.setTotalLeaveDay(calculatedDays);
+
+            leaveBalanceService.createLeaveBalance(leaveBalanceRequest);
+        }
+    }
+
+
+
 }

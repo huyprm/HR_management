@@ -14,5 +14,7 @@ public interface ContractRepository extends JpaRepository<Contract, Integer> {
 
     List<Contract> findContractByContractStatusEnum(ContractStatusEnum contractStatusEnum);
 
+    List<Contract> findByContractStatusEnumIn(List<ContractStatusEnum> statuses);
+
     Optional<Contract> findContractByUserIdAndContractStatusEnum(long userId, ContractStatusEnum contractStatusEnum);
 }

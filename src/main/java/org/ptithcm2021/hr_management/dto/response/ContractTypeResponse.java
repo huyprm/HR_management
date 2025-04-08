@@ -14,4 +14,6 @@ public class ContractTypeResponse {
     private String name;
 
     private String duration;
+
+    private boolean isPolicy;
 }

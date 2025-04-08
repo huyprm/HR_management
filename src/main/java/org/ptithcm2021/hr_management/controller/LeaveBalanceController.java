@@ -14,12 +14,6 @@ import org.springframework.web.bind.annotation.*;
 public class LeaveBalanceController {
     private final LeaveBalanceService leaveBalanceService;
 
-    @PostMapping("/create")
-    public ApiResponse<Void> create(@RequestBody LeaveBalanceRequest leaveBalanceRequest){
-        leaveBalanceService.createLeaveBalance(leaveBalanceRequest);
-        return ApiResponse.<Void>builder().build();
-    }
-
     @GetMapping("/{userId}")
     public ApiResponse<LeaveBalanceResponse> getLeaveBalance (@PathVariable long userId){
         return ApiResponse.<LeaveBalanceResponse>builder()

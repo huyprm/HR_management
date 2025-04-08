@@ -66,11 +66,4 @@ public class ContractController {
                 .data(contractService.getContractIsPendingByUserId(userId))
                 .build();
     }
-
-    @GetMapping("/schedule")
-    public ApiResponse<ContractResponse> updateContractStatus() {
-        contractService.updateContractStatus();
-        return ApiResponse.<ContractResponse>builder()
-                .build();
-    }
 }

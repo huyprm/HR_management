@@ -102,6 +102,7 @@ public class UserServiceImpl implements UserService {
 
         user.setStatus(UserStatusEnum.TERMINATED);
         user.getAccount().setStatus(false);
+        userRepository.save(user);
     }
 
     @Override

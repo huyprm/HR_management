@@ -6,16 +6,19 @@ import org.ptithcm2021.hr_management.dto.response.LeaveBalanceResponse;
 import org.ptithcm2021.hr_management.exception.AppException;
 import org.ptithcm2021.hr_management.exception.ErrorCode;
 import org.ptithcm2021.hr_management.mapper.LeaveBalanceMapper;
+import org.ptithcm2021.hr_management.model.Contract;
 import org.ptithcm2021.hr_management.model.LeaveApplication;
 import org.ptithcm2021.hr_management.model.LeaveBalance;
 import org.ptithcm2021.hr_management.model.User;
 import org.ptithcm2021.hr_management.repository.LeaveApplicationRepository;
 import org.ptithcm2021.hr_management.repository.LeaveBalanceRepository;
+import org.ptithcm2021.hr_management.service.ContractService;
 import org.ptithcm2021.hr_management.service.LeaveBalanceService;
 import org.ptithcm2021.hr_management.service.UserService;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.Year;
 import java.time.ZoneId;
@@ -60,27 +63,14 @@ public class LeaveBalanceServiceImpl implements LeaveBalanceService {
     }
 
     @Override
-    @Scheduled(cron = "0 0 0 1 1 *", zone = "Asia/Ho_Chi_Minh")
-    public void rolloverLeaveBalances() {
-        int lastYear = Year.now().getValue() - 1;
+    public void updateLeaveBalance(LeaveBalance leaveBalance) {
+        leaveBalanceRepository.save(leaveBalance);
+    }
 
-        List<LeaveBalance> leaveBalances = leaveBalanceRepository.findAllByYear(lastYear)
-                .orElseThrow(()->new AppException(ErrorCode.LEAVE_BALANCE_NOT_FOUND));
-
-        leaveBalances.forEach(oldBalance -> {
-            int carried = oldBalance.getRemainingLeave() > 36 ? 0 : oldBalance.getRemainingLeave();
-
-            //contractService.getCurrentContractOfUser(long userId);
-            LeaveBalance newBalance = new LeaveBalance();
-            newBalance.setUsedLeaveDay(0);
-            newBalance.setYear(Year.now().getValue());
-
-            //ChronoUnit.MONTHS.between(now, contrac.getEndDate()) + 1 ? 12
-            newBalance.setTotalLeaveDay(oldBalance.getTotalLeaveDay());
-            newBalance.setCarriedOverDay(carried);
-
-            leaveBalanceRepository.save(newBalance);
-        });
+    @Override
+    public LeaveBalance getLeaveBalanceToLeaveBalance(long userId) {
+        return leaveBalanceRepository.findByUserIdAndYear(userId, Year.now().getValue())
+                .orElseThrow(() -> new AppException(ErrorCode.LEAVE_BALANCE_NOT_FOUND));
     }
 
     @Override
@@ -90,6 +80,4 @@ public class LeaveBalanceServiceImpl implements LeaveBalanceService {
 
         return leaveBalanceMapper.toLeaveBalanceResponse(leaveBalance);
     }
-
-
 }

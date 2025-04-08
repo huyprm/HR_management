@@ -15,7 +15,9 @@ public interface LeaveBalanceService {
 
     void dayOff(int year, LeaveApplication leaveApplication);
 
-    void rolloverLeaveBalances();
+    void updateLeaveBalance(LeaveBalance leaveBalance);
+
+    LeaveBalance getLeaveBalanceToLeaveBalance(long userId);
 
     @PreAuthorize("T(String).valueOf(#userId) == authentication.name")
     LeaveBalanceResponse getLeaveBalance(long userId);
