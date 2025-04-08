@@ -29,6 +29,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -45,6 +46,9 @@ public class ContractServiceImpl implements ContractService {
 
     @Override
     public ContractResponse createContract(ContractRequest contractRequest, boolean isExtend) {
+
+        validateNoActiveContract(contractRequest.getUserId(), contractRequest.getStartDate(), contractRequest.getEndDate());
+
         User user = userService.getUserToUser(contractRequest.getUserId());
         User signer = userService.getUserToUser(contractRequest.getSignerId());
 
@@ -145,8 +149,8 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public List<Contract> getAllContractIsPendingOrExpirySoon() {
-        return contractRepository.findByContractStatusEnumIn(List.of(ContractStatusEnum.PENDING, ContractStatusEnum.EXPIRING_SOON))
+    public List<Contract> getAllContractIsPending() {
+        return contractRepository.findContractByContractStatusEnum(ContractStatusEnum.PENDING)
                 .stream().toList();
     }
 
@@ -169,6 +173,25 @@ public class ContractServiceImpl implements ContractService {
             leaveBalanceRequest.setTotalLeaveDay(calculatedDays);
 
             leaveBalanceService.createLeaveBalance(leaveBalanceRequest);
+        }
+    }
+
+    private void validateNoActiveContract(long userId, Date startDate, Date endDate) {
+        Optional<Contract> optionalContract = contractRepository
+                .findContractByUserIdAndContractStatusEnum(userId, ContractStatusEnum.PENDING);
+
+        if (optionalContract.isEmpty()) {
+            if (startDate.after(endDate)) throw new AppException(ErrorCode.CONTRACT_OVERLAP);
+        };
+
+        Contract contract = optionalContract.get();
+        boolean overlaps =
+                (endDate.after(startDate) && contract.getEndDate().after(startDate))
+                        || contract.getStartDate().equals(startDate)
+                        || contract.getEndDate().equals(endDate);
+
+        if (overlaps) {
+            throw new AppException(ErrorCode.CONTRACT_OVERLAP);
         }
     }
 

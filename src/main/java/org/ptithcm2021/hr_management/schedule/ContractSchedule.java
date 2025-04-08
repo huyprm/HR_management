@@ -30,8 +30,8 @@ public class ContractSchedule {
                 long numDayLeft = (contract.getEndDate().getTime() - System.currentTimeMillis()) / (1000 * 60 * 60 * 24);
                 if (numDayLeft == 30) {
 
-                    contract.setContractStatusEnum(ContractStatusEnum.EXPIRING_SOON);
-                    contractRepository.save(contract);
+//                    contract.setContractStatusEnum(ContractStatusEnum.EXPIRING_SOON);
+//                    contractRepository.save(contract);
 
                     notificationService.createNotification(
                             notificationContractExpirySoon(contract.getUser().getId(), contract.getEndDate()));

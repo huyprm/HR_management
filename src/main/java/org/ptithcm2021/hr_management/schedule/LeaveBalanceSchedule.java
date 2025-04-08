@@ -27,11 +27,11 @@ public class LeaveBalanceSchedule {
     private final LeaveBalanceRepository leaveBalanceRepository;
     private final ContractService contractService;
 
-    @Scheduled(cron = "0 0 0 1 1 *", zone = "Asia/Ho_Chi_Minh")
+    @Scheduled(cron = "0 43 22 * * *", zone = "Asia/Ho_Chi_Minh")
     public void rolloverLeaveBalances() {
         int lastYear = Year.now().getValue() - 1;
 
-        List<Contract> contracts = contractService.getAllContractIsPendingOrExpirySoon();
+        List<Contract> contracts = contractService.getAllContractIsPending();
 
         Map<Long, Contract> contractMap = contracts.stream()
                 .collect(Collectors.toMap(contract -> contract.getUser().getId(), contract -> contract));

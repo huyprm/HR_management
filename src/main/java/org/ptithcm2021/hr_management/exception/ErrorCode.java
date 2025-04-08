@@ -36,8 +36,8 @@ public enum ErrorCode {
     LEAVE_DAY_NOT_FOUND(1027, "Leave day not found", HttpStatus.NOT_FOUND),
     SENIORITY_ALLOWANCE_RULE_NOT_FOUND(1028, "Seniority allowance rule not found", HttpStatus.NOT_FOUND),
     CONTRACT_NOT_FOUND(1029, "Contract not found", HttpStatus.NOT_FOUND),
-    EXTEND_CONTRACT(1029, "The contract is still valid and cannot be renewed.", HttpStatus.CONFLICT),
-    ;
+    EXTEND_CONTRACT(1030, "The contract is still valid and cannot be renewed.", HttpStatus.CONFLICT),
+    CONTRACT_OVERLAP(1031, "Contract overlap",HttpStatus.CONFLICT);
 
     ErrorCode(int code, String message, HttpStatus status){
         this.code = code;

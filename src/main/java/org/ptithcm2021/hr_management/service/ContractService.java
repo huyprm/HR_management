@@ -32,5 +32,5 @@ public interface ContractService {
 
     Contract getContractCurrentOfUser(long userId);
 
-    List<Contract> getAllContractIsPendingOrExpirySoon();
+    List<Contract> getAllContractIsPending();
 }
