@@ -4,6 +4,7 @@ import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.ptithcm2021.hr_management.dto.request.ChangePasswordRequest;
 import org.ptithcm2021.hr_management.dto.request.UserRequest;
+import org.ptithcm2021.hr_management.dto.request.UserUpdateRequest;
 import org.ptithcm2021.hr_management.dto.response.NotificationRecipientResponse;
 import org.ptithcm2021.hr_management.dto.response.UserResponse;
 import org.ptithcm2021.hr_management.enums.UserStatusEnum;
@@ -81,7 +82,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponse updateUser(long id, UserRequest userRequest) {
+    public UserResponse updateUser(long id, UserUpdateRequest userRequest) {
         User user = userRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
         userMapper.updateUser(user, userRequest);
 
@@ -138,11 +139,6 @@ public class UserServiceImpl implements UserService {
         if(user.getStatus().equals(UserStatusEnum.TERMINATED)) throw new AppException(ErrorCode.USER_TERMINATED);
 
         return user;
-    }
-
-    @Override
-    public List<User> getAllUser1() {
-        return new ArrayList<>(userRepository.findAll());
     }
 
     private List<NotificationRecipientResponse> getTop5NotificationRecipient(long userId) {

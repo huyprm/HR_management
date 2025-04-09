@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.ptithcm2021.hr_management.dto.request.ChangePasswordRequest;
 import org.ptithcm2021.hr_management.dto.request.UserRequest;
+import org.ptithcm2021.hr_management.dto.request.UserUpdateRequest;
 import org.ptithcm2021.hr_management.dto.response.ApiResponse;
 import org.ptithcm2021.hr_management.dto.response.UserResponse;
 import org.ptithcm2021.hr_management.model.User;
@@ -37,7 +38,7 @@ public class UserController {
     }
 
     @PatchMapping("/{id}")
-    public ApiResponse<UserResponse> updateUser(@PathVariable long id, @RequestBody @Valid UserRequest userRequest){
+    public ApiResponse<UserResponse> updateUser(@PathVariable long id, @RequestBody @Valid UserUpdateRequest userRequest){
         return ApiResponse.<UserResponse>builder().data(userService.updateUser(id, userRequest)).build();
     }
 
@@ -61,10 +62,5 @@ public class UserController {
     @GetMapping("")
     public ApiResponse<List<UserResponse>> getAllUser(){
         return ApiResponse.<List<UserResponse>>builder().data(userService.getAllUser()).build();
-    }
-
-    @GetMapping("/1")
-    public ApiResponse<List<User>> getAllUser1(){
-        return ApiResponse.<List<User>>builder().data(userService.getAllUser1()).build();
     }
 }

@@ -7,6 +7,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.ptithcm2021.hr_management.dto.request.UserRequest;
+import org.ptithcm2021.hr_management.dto.request.UserUpdateRequest;
 import org.ptithcm2021.hr_management.dto.response.UserResponse;
 import org.ptithcm2021.hr_management.model.User;
 
@@ -16,5 +17,5 @@ public interface UserMapper {
     UserResponse toUserResponse (User user);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    void updateUser(@MappingTarget User user, UserRequest userRequest);
+    void updateUser(@MappingTarget User user, UserUpdateRequest userRequest);
 }

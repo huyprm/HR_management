@@ -4,6 +4,7 @@ import jakarta.mail.MessagingException;
 import org.aspectj.weaver.patterns.IToken;
 import org.ptithcm2021.hr_management.dto.request.ChangePasswordRequest;
 import org.ptithcm2021.hr_management.dto.request.UserRequest;
+import org.ptithcm2021.hr_management.dto.request.UserUpdateRequest;
 import org.ptithcm2021.hr_management.dto.response.UserResponse;
 import org.ptithcm2021.hr_management.model.User;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,7 +20,7 @@ public interface UserService {
     UserResponse getUser(long id);
 
     @PreAuthorize("hasAnyAuthority('SCOPE_STAFF', 'SCOPE_ADMIN')")
-    UserResponse updateUser(long id, UserRequest userRequest);
+    UserResponse updateUser(long id, UserUpdateRequest userRequest);
 
     @PreAuthorize("hasAnyAuthority('SCOPE_STAFF', 'SCOPE_ADMIN')")
     void deleteUser(long id);
@@ -32,8 +33,6 @@ public interface UserService {
     @PreAuthorize("hasAnyAuthority('SCOPE_STAFF', 'SCOPE_ADMIN')")
     List<UserResponse> getAllUser();
 
-    //@PreAuthorize("hasAnyAuthority('SCOPE_STAFF', 'SCOPE_ADMIN')")
-    List<User> getAllUser1();
 
     User getUserToUser(long id);
 }
