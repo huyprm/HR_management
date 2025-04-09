@@ -54,7 +54,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public String generateToken(Account account){
-        String subject= account.getUsername().equals("admin") ? null : String.valueOf(account.getUser().getId());
+        String subject= account.getUsername().equals("admin") ? "system" : String.valueOf(account.getUser().getId());
 
         JWSHeader header = new JWSHeader.Builder(JWSAlgorithm.HS512).type(JOSEObjectType.JWT).build();
 
