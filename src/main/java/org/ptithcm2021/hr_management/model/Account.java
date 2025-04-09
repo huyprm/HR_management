@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import org.ptithcm2021.hr_management.enums.RoleEnum;
 
 @Entity(name = "accounts")
 @NoArgsConstructor
@@ -23,9 +24,9 @@ public class Account {
     @Builder.Default
     private Boolean status = true;
 
-    @ManyToOne
-    @JoinColumn(name = "roleId")
-    private Role role;
+    @Enumerated(EnumType.STRING)
+    @Builder.Default
+    private RoleEnum role = RoleEnum.USER;
 
     @OneToOne(mappedBy = "account")
     private User user;

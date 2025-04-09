@@ -25,4 +25,8 @@ public class Position {
     @JoinColumn(name = "departmentId")
     private Department department;
 
+    @ManyToOne
+    @JoinColumn(name = "roleId")
+    private Role role;
+
 }

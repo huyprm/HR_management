@@ -44,15 +44,13 @@ public class UserServiceImpl implements UserService {
     public UserResponse createUser(UserRequest userRequest) throws MessagingException {
         User user = userMapper.toUser(userRequest);
 
-        Role role = roleRepository.findById(userRequest.getRoleId()).orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_FOUND));
-
         Random random = new Random();
         String password = String.format("%08d", random.nextInt(100_000_000));
 
         Account account = Account.builder()
                 .username(user.getEmail())
                 .password(passwordEncoder.encode(password))
-                .role(role).build();
+                .build();
 
         user.setAccount(account);
 
@@ -85,13 +83,6 @@ public class UserServiceImpl implements UserService {
     public UserResponse updateUser(long id, UserRequest userRequest) {
         User user = userRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
         userMapper.updateUser(user, userRequest);
-
-        if(userRequest.getRoleId() != null){
-            Role role = roleRepository.findById(userRequest.getRoleId())
-                    .orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_FOUND));
-
-            user.getAccount().setRole(role);
-        }
 
         return userMapper.toUserResponse(userRepository.save(user));
     }

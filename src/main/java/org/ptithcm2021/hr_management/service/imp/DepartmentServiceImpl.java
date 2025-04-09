@@ -2,6 +2,7 @@ package org.ptithcm2021.hr_management.service.imp;
 
 import lombok.RequiredArgsConstructor;
 import org.ptithcm2021.hr_management.dto.request.DepartmentRequest;
+import org.ptithcm2021.hr_management.dto.request.UpdateNameAndDescriptionRequest;
 import org.ptithcm2021.hr_management.dto.response.DepartmentResponse;
 import org.ptithcm2021.hr_management.exception.AppException;
 import org.ptithcm2021.hr_management.exception.ErrorCode;
@@ -31,15 +32,12 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
-    public DepartmentResponse updateDepartment(String id, DepartmentRequest departmentRequest) {
-        if (departmentRepository.existsByName(departmentRequest.getName())){
-            throw new AppException(ErrorCode.DEPARTMENT_NAME_EXIST);
-        }
+    public DepartmentResponse updateDepartment(String id, UpdateNameAndDescriptionRequest request) {
 
         Department department = departmentRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.DEPARTMENT_NOT_FOUND));
 
-        departmentMapper.updateDepartment(department, departmentRequest);
+        departmentMapper.updateDepartment(department, request);
 
         departmentRepository.save(department);
 

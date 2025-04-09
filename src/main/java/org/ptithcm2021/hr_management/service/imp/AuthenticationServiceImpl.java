@@ -63,7 +63,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .issueTime(new Date())
                 .jwtID(UUID.randomUUID().toString())
                 .expirationTime(new Date(Instant.now().plus(expiration, ChronoUnit.SECONDS).toEpochMilli()))
-                .claim("scope", account.getRole().getId())
+                .claim("scope", account.getRole())
                 .build();
 
         Payload payload = new Payload(jwtClaimsSet.toJSONObject());
@@ -88,12 +88,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             throw new AppException(ErrorCode.INVALID_JWT);
         }
 
-        if(redisTemplate.opsForValue().get(signedJWT.getJWTClaimsSet().getJWTID()) != null){
+        log.info("toen"+(String) redisTemplate.opsForValue().get(signedJWT.getJWTClaimsSet().getJWTID()));
+
+        if (redisTemplate.opsForValue().get(signedJWT.getJWTClaimsSet().getSubject()) != null){
             throw new AppException(ErrorCode.INVALID_JWT);
         }
 
         return true;
-
     }
 
     @Override

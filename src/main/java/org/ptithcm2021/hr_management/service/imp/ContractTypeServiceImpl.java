@@ -33,20 +33,6 @@ public class ContractTypeServiceImpl implements ContractTypeService {
     }
 
     @Override
-    public ContractTypeResponse updateContractType(String id, ContractTypeRequest contractTypeRequest) {
-        if (contractTypeRepository.existsByName(contractTypeRequest.getName())) {
-            throw new AppException(ErrorCode.CONTRACT_TYPE_NAME_EXISTED);
-        }
-
-        ContractType contractType = contractTypeRepository.findById(id)
-                .orElseThrow(() -> new AppException(ErrorCode.CONTRACT_TYPE_NOT_FOUND));
-
-        contractTypeMapper.updateContractType(contractType, contractTypeRequest);
-
-        return contractTypeMapper.toContractTypeResponse(contractTypeRepository.save(contractType));
-    }
-
-    @Override
     public void deleteContractType(String id) {
         try{
             contractTypeRepository.deleteById(id);

@@ -3,6 +3,7 @@ package org.ptithcm2021.hr_management.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.ptithcm2021.hr_management.dto.request.DepartmentRequest;
+import org.ptithcm2021.hr_management.dto.request.UpdateNameAndDescriptionRequest;
 import org.ptithcm2021.hr_management.dto.response.ApiResponse;
 import org.ptithcm2021.hr_management.dto.response.DepartmentResponse;
 import org.ptithcm2021.hr_management.service.DepartmentService;
@@ -23,10 +24,10 @@ public class DepartmentController {
     }
 
     @PutMapping("/{id}")
-    public ApiResponse<DepartmentResponse> updateDepartment(@RequestBody @Valid DepartmentRequest departmentRequest,
+    public ApiResponse<DepartmentResponse> updateDepartment(@RequestBody @Valid UpdateNameAndDescriptionRequest request,
                                                             @PathVariable String id){
         return ApiResponse.<DepartmentResponse>builder()
-                .data(departmentService.updateDepartment(id, departmentRequest)).build();
+                .data(departmentService.updateDepartment(id, request)).build();
     }
 
     @DeleteMapping("/{id}")

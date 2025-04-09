@@ -1,22 +1,23 @@
 package org.ptithcm2021.hr_management.service.imp;
 
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import org.ptithcm2021.hr_management.dto.request.PositionRequest;
+import org.ptithcm2021.hr_management.dto.request.UpdateNameAndDescriptionRequest;
 import org.ptithcm2021.hr_management.dto.response.PositionResponse;
 import org.ptithcm2021.hr_management.exception.AppException;
 import org.ptithcm2021.hr_management.exception.ErrorCode;
 import org.ptithcm2021.hr_management.mapper.PositionMapper;
 import org.ptithcm2021.hr_management.model.Department;
 import org.ptithcm2021.hr_management.model.Position;
+import org.ptithcm2021.hr_management.model.Role;
 import org.ptithcm2021.hr_management.repository.DepartmentRepository;
 import org.ptithcm2021.hr_management.repository.PositionRepository;
+import org.ptithcm2021.hr_management.repository.RoleRepository;
 import org.ptithcm2021.hr_management.service.PositionService;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
 
 
 @Service
@@ -25,6 +26,7 @@ public class PositionServiceImpl implements PositionService {
     private final PositionRepository positionRepository;
     private final PositionMapper positionMapper;
     private final DepartmentRepository departmentRepository;
+    private final RoleRepository roleRepository;
 
     @Override
     public PositionResponse createPosition(PositionRequest positionRequest) {
@@ -36,27 +38,20 @@ public class PositionServiceImpl implements PositionService {
         Department department = departmentRepository.findById(positionRequest.getDepartmentId())
                 .orElseThrow(() -> new AppException(ErrorCode.DEPARTMENT_NOT_FOUND));
 
+        Role role = roleRepository.findById(positionRequest.getRoleId()).orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_FOUND));
+
         position.setDepartment(department);
+        position.setRole(role);
 
         return positionMapper.toPositionResponse(positionRepository.save(position));
     }
 
     @Override
-    public PositionResponse updatePosition(String positionId, PositionRequest positionRequest) {
-        if (positionRepository.existsByName(positionRequest.getName()))
-            throw new AppException(ErrorCode.POSITION_NAME_EXISTS);
-
+    public PositionResponse updatePosition(String positionId, UpdateNameAndDescriptionRequest request) {
         Position position = positionRepository.findById(positionId)
                 .orElseThrow(() -> new AppException(ErrorCode.POSITION_NOT_FOUND));
 
-        if (position.getDepartment().getId() != positionRequest.getDepartmentId()) {
-            Department department = departmentRepository.findById(positionRequest.getDepartmentId())
-                    .orElseThrow(() -> new AppException(ErrorCode.DEPARTMENT_NOT_FOUND));
-
-            position.setDepartment(department);
-        }
-
-        positionMapper.updatePosition(position, positionRequest);
+        positionMapper.updatePosition(position, request);
 
         return positionMapper.toPositionResponse(positionRepository.save(position));
     }

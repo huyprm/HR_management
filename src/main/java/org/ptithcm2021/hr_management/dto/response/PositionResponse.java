@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.ptithcm2021.hr_management.model.Department;
+import org.ptithcm2021.hr_management.model.Role;
 
 @Data
 @NoArgsConstructor
@@ -15,4 +16,5 @@ public class PositionResponse {
     private String name;
     private String description;
     private DepartmentResponse department;
+    private Role role;
 }

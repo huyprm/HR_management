@@ -20,13 +20,6 @@ import org.ptithcm2021.hr_management.util.LeaveBalanceUtil;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.Year;
-import java.time.ZoneId;
-import java.time.temporal.ChronoUnit;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -45,41 +38,46 @@ public class ContractServiceImpl implements ContractService {
     private final LeaveBalanceService leaveBalanceService;
 
     @Override
-    public ContractResponse createContract(ContractRequest contractRequest, boolean isExtend) {
+    public ContractResponse createContract(ContractRequest request, boolean isExtend) {
+        validateNoActiveContract(request.getUserId(), request.getStartDate(), request.getEndDate());
 
-        validateNoActiveContract(contractRequest.getUserId(), contractRequest.getStartDate(), contractRequest.getEndDate());
+        User user = userService.getUserToUser(request.getUserId());
+        User signer = userService.getUserToUser(request.getSignerId());
 
-        User user = userService.getUserToUser(contractRequest.getUserId());
-        User signer = userService.getUserToUser(contractRequest.getSignerId());
-
-        Position position = positionRepository.findById(contractRequest.getPositionId())
+        Position position = positionRepository.findById(request.getPositionId())
                 .orElseThrow(() -> new AppException(ErrorCode.POSITION_NOT_FOUND));
 
-        ContractType contractType = contractTypeRepository.findById(contractRequest.getContractTypeId())
+        ContractType contractType = contractTypeRepository.findById(request.getContractTypeId())
                 .orElseThrow(() -> new AppException(ErrorCode.CONTRACT_TYPE_NOT_FOUND));
 
-        JobGrade jobGrade = jobGradeRepository.findById(contractRequest.getJobGradeId())
+        JobGrade jobGrade = jobGradeRepository.findById(request.getJobGradeId())
                 .orElseThrow(() -> new AppException(ErrorCode.JOB_GRADE_NOT_FOUND));
 
-        validateContractDates(contractRequest.getStartDate(), contractRequest.getEndDate());
-
-        Contract contract = contractMapper.toContract(contractRequest);
-
-        contract.setContractType(contractType);
+        Contract contract = contractMapper.toContract(request);
         contract.setUser(user);
         contract.setSigner(signer);
         contract.setPosition(position);
+        contract.setContractType(contractType);
         contract.setJobGrade(jobGrade);
 
+        // Update role for user's account
+        user.getAccount().setRole(position.getRole().getId());
+
+        // Set hire date only for new contracts (not extensions)
         if (!isExtend) {
             user.getSeniorityAllowance().setHireDate(contract.getStartDate());
-            userRepository.save(user);
         }
 
-        if(contract.getContractType().isPolicy())
+        // Create or update leave balance for policy-based contracts
+        if (contractType.isPolicy()) {
             createOrUpdateLeaveBalance(user.getId(), contract.getStartDate(), contract.getEndDate());
+        }
 
-        return contractMapper.toContractResponse(contractRepository.save(contract));
+        // Save updated user and contract
+        userRepository.save(user);
+        Contract savedContract = contractRepository.save(contract);
+
+        return contractMapper.toContractResponse(savedContract);
     }
 
     @Override
@@ -115,17 +113,19 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public ContractResponse extendContract(int contractId, ContractRequest contractRequest) {
-        Contract oldContract = contractRepository.findById(contractId)
+    public ContractResponse extendContract(int contractId, ContractRequest request) {
+        Contract existingContract = contractRepository.findById(contractId)
                 .orElseThrow(() -> new AppException(ErrorCode.CONTRACT_NOT_FOUND));
 
-        if (oldContract.getContractStatusEnum().equals(ContractStatusEnum.PENDING))
-            throw  new AppException(ErrorCode.EXTEND_CONTRACT);
+        if (existingContract.getContractStatusEnum() == ContractStatusEnum.PENDING) {
+            throw new AppException(ErrorCode.EXTEND_CONTRACT);
+        }
 
-        oldContract.setContractStatusEnum(ContractStatusEnum.RENEWED);
-        contractRepository.save(oldContract);
+        existingContract.setContractStatusEnum(ContractStatusEnum.RENEWED);
+        contractRepository.save(existingContract);
 
-        return createContract(contractRequest, true);
+        // Create a new contract as an extension
+        return createContract(request, true);
     }
 
     @Override

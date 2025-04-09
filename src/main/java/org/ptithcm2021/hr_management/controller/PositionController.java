@@ -4,6 +4,7 @@ import com.cloudinary.Api;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.ptithcm2021.hr_management.dto.request.PositionRequest;
+import org.ptithcm2021.hr_management.dto.request.UpdateNameAndDescriptionRequest;
 import org.ptithcm2021.hr_management.dto.response.ApiResponse;
 import org.ptithcm2021.hr_management.dto.response.PositionResponse;
 import org.ptithcm2021.hr_management.service.PositionService;
@@ -24,9 +25,9 @@ public class PositionController {
     }
 
     @PutMapping("/{id}")
-    public ApiResponse<PositionResponse> updatePosition(@PathVariable String id, @RequestBody @Valid PositionRequest positionRequest){
+    public ApiResponse<PositionResponse> updatePosition(@PathVariable String id, @RequestBody @Valid UpdateNameAndDescriptionRequest request){
         return ApiResponse.<PositionResponse>builder()
-                .data(positionService.updatePosition(id, positionRequest)).build();
+                .data(positionService.updatePosition(id, request)).build();
     }
 
     @DeleteMapping("/{id}")

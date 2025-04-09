@@ -37,13 +37,11 @@ public class InitialDataConfig {
 
             }
             if (accountRepository.findById("admin").isEmpty()){
-                Role role = roleRepository.findById(RoleEnum.ADMIN)
-                        .orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_FOUND));
 
                 Account account = Account.builder()
                         .username("admin")
                         .password(passwordEncoder.encode("admin"))
-                        .role(role)
+                        .role(RoleEnum.ADMIN)
                         .build();
 
                 accountRepository.save(account);

@@ -22,13 +22,6 @@ public class ContractTypeController {
                 .data(contractTypeService.createContractType(contractTypeRequest)).build();
     }
 
-    @PutMapping("/{id}")
-    public ApiResponse<ContractTypeResponse> updateContractType(@PathVariable String  id,
-                                                                @RequestBody @Valid ContractTypeRequest contractTypeRequest){
-        return ApiResponse.<ContractTypeResponse>builder()
-                .data(contractTypeService.updateContractType(id,contractTypeRequest)).build();
-    }
-
     @DeleteMapping("/{id}")
     public ApiResponse<Void> deleteContractType(@PathVariable String id){
         contractTypeService.deleteContractType(id);
