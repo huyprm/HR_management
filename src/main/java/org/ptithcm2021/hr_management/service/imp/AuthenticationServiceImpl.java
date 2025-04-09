@@ -89,7 +89,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             throw new AppException(ErrorCode.INVALID_JWT);
         }
 
-        if (redisTemplate.opsForValue().get(signedJWT.getJWTClaimsSet().getSubject()) != null){
+        if (redisTemplate.opsForValue().get(signedJWT.getJWTClaimsSet().getJWTID()) != null){
             throw new AppException(ErrorCode.INVALID_JWT);
         }
 
@@ -114,7 +114,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         String jwtID = signedJWT.getJWTClaimsSet().getJWTID();
         Instant jwtExpirationTime = signedJWT.getJWTClaimsSet().getExpirationTime().toInstant();
         long duration = Duration.between(Instant.now(), jwtExpirationTime).getSeconds();
-        redisTemplate.opsForValue().set(signedJWT.getJWTClaimsSet().getSubject(), jwtID, duration, TimeUnit.SECONDS);
+        redisTemplate.opsForValue().set(signedJWT.getJWTClaimsSet().getJWTID(), jwtID, duration, TimeUnit.SECONDS);
     }
 
     @Override

@@ -63,4 +63,8 @@ public class UserController {
         return ApiResponse.<List<UserResponse>>builder().data(userService.getAllUser()).build();
     }
 
+    @GetMapping("/1")
+    public ApiResponse<List<User>> getAllUser1(){
+        return ApiResponse.<List<User>>builder().data(userService.getAllUser1()).build();
+    }
 }

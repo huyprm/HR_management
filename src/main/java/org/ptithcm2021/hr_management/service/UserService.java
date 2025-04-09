@@ -32,5 +32,8 @@ public interface UserService {
     @PreAuthorize("hasAnyAuthority('SCOPE_STAFF', 'SCOPE_ADMIN')")
     List<UserResponse> getAllUser();
 
+    //@PreAuthorize("hasAnyAuthority('SCOPE_STAFF', 'SCOPE_ADMIN')")
+    List<User> getAllUser1();
+
     User getUserToUser(long id);
 }

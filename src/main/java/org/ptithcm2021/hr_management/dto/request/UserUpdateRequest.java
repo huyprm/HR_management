@@ -26,6 +26,4 @@ public class UserUpdateRequest {
     private String degree;
     private String taxCode;
 
-    @NotNull(message = "Role cannot be empty")
-    private RoleEnum roleId;
 }

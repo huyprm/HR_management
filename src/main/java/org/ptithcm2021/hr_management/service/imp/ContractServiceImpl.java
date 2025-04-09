@@ -62,6 +62,7 @@ public class ContractServiceImpl implements ContractService {
 
         // Update role for user's account
         user.getAccount().setRole(position.getRole().getId());
+        user.setDepartment(position.getDepartment());
 
         // Set hire date only for new contracts (not extensions)
         if (!isExtend) {
@@ -182,7 +183,8 @@ public class ContractServiceImpl implements ContractService {
 
         if (optionalContract.isEmpty()) {
             if (startDate.after(endDate)) throw new AppException(ErrorCode.CONTRACT_OVERLAP);
-        };
+            return;
+        }
 
         Contract contract = optionalContract.get();
         boolean overlaps =

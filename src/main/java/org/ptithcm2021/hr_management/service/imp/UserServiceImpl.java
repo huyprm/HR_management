@@ -24,6 +24,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -137,6 +138,11 @@ public class UserServiceImpl implements UserService {
         if(user.getStatus().equals(UserStatusEnum.TERMINATED)) throw new AppException(ErrorCode.USER_TERMINATED);
 
         return user;
+    }
+
+    @Override
+    public List<User> getAllUser1() {
+        return new ArrayList<>(userRepository.findAll());
     }
 
     private List<NotificationRecipientResponse> getTop5NotificationRecipient(long userId) {
