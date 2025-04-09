@@ -1,5 +1,6 @@
 package org.ptithcm2021.hr_management.repository;
 
+import jakarta.validation.constraints.Email;
 import org.ptithcm2021.hr_management.controller.UserController;
 import org.ptithcm2021.hr_management.model.Account;
 import org.ptithcm2021.hr_management.model.User;
@@ -12,4 +13,5 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long> {
 
 
+    boolean existsUserByEmail(@Email(message = "Email invalid") String email);
 }

@@ -37,7 +37,8 @@ public enum ErrorCode {
     SENIORITY_ALLOWANCE_RULE_NOT_FOUND(1028, "Seniority allowance rule not found", HttpStatus.NOT_FOUND),
     CONTRACT_NOT_FOUND(1029, "Contract not found", HttpStatus.NOT_FOUND),
     EXTEND_CONTRACT(1030, "The contract is still valid and cannot be renewed.", HttpStatus.CONFLICT),
-    CONTRACT_OVERLAP(1031, "Contract overlap",HttpStatus.CONFLICT);
+    CONTRACT_OVERLAP(1031, "Contract overlap",HttpStatus.CONFLICT),
+    EMAIL_NOT_FOUND(1032,"Email does not exist" ,HttpStatus.NOT_FOUND);
 
     ErrorCode(int code, String message, HttpStatus status){
         this.code = code;

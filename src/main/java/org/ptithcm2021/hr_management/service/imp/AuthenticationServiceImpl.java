@@ -43,6 +43,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final RedisTemplate<String, Object> redisTemplate;
     private final AccountRepository accountRepository;
     private final MailService mailService;
+    private final UserRepository userRepository;
 
 
     @Value("${jwt.signer_key}")
@@ -88,8 +89,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             throw new AppException(ErrorCode.INVALID_JWT);
         }
 
-        log.info("toen"+(String) redisTemplate.opsForValue().get(signedJWT.getJWTClaimsSet().getJWTID()));
-
         if (redisTemplate.opsForValue().get(signedJWT.getJWTClaimsSet().getSubject()) != null){
             throw new AppException(ErrorCode.INVALID_JWT);
         }
@@ -110,7 +109,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public void logout(String token) throws ParseException {
-        log.info(token);
         SignedJWT signedJWT = SignedJWT.parse(token);
 
         String jwtID = signedJWT.getJWTClaimsSet().getJWTID();
@@ -121,6 +119,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public void forgotPassword(String email) throws MessagingException {
+        if(!userRepository.existsUserByEmail(email)) throw new AppException(ErrorCode.EMAIL_NOT_FOUND);
+
         String otp = generateOTP(email);
         String content = getOtpEmailContent(otp);
         mailService.sendMimeEmail(email, content, "\"Mã OTP Xác Nhận Quên Mật Khẩu\"");

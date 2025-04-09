@@ -13,7 +13,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class LoginRequest {
     @NotBlank(message = "Username cannot be empty")
-    @Email(message = "Email is in wrong format")
     private String username;
 
     @NotBlank(message = "Password not empty")
