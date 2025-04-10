@@ -9,8 +9,10 @@ import org.ptithcm2021.hr_management.exception.AppException;
 import org.ptithcm2021.hr_management.exception.ErrorCode;
 import org.ptithcm2021.hr_management.mapper.LeaveApplicationMapper;
 import org.ptithcm2021.hr_management.model.LeaveApplication;
+import org.ptithcm2021.hr_management.model.LeaveType;
 import org.ptithcm2021.hr_management.model.User;
 import org.ptithcm2021.hr_management.repository.LeaveApplicationRepository;
+import org.ptithcm2021.hr_management.repository.LeaveTypeRepository;
 import org.ptithcm2021.hr_management.repository.UserRepository;
 import org.ptithcm2021.hr_management.service.LeaveApplicationService;
 import org.ptithcm2021.hr_management.service.LeaveBalanceService;
@@ -30,13 +32,19 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
     private final UserRepository userRepository;
     private final UserService userService;
     private final LeaveBalanceService leaveBalanceService;
+    private final LeaveTypeRepository leaveTypeRepository;
 
     @Override
     public LeaveApplicationResponse createApplication(LeaveApplicationRequest leaveApplicationRequest) {
         LeaveApplication leaveApplication = leaveApplicationMapper.toLeaveApplication(leaveApplicationRequest);
 
         User user = userService.getUserToUser(leaveApplicationRequest.getUserId());
+        LeaveType leaveType = leaveTypeRepository.findById(leaveApplicationRequest.getLeaveTypeId())
+                .orElseThrow(() -> new AppException(ErrorCode.LEAVE_TYPE_NOT_FOUND));
+
         leaveApplication.setUser(user);
+        leaveApplication.setLeaveType(leaveType);
+
 
         return leaveApplicationMapper.toLeaveTypeApplicationResponse(
                 leaveApplicationRepository.save(leaveApplication)

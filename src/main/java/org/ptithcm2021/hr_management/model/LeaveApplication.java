@@ -45,11 +45,11 @@ public class LeaveApplication{
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name ="userId")
     private User user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "leaveType")
     private LeaveType leaveType;
 }
