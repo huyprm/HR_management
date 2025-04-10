@@ -25,7 +25,7 @@ public class Position {
     @JoinColumn(name = "departmentId")
     private Department department;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "roleId", nullable = false)
     private Role role;
 

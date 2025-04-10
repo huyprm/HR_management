@@ -1,5 +1,7 @@
 package org.ptithcm2021.hr_management.dto.request;
 
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotBlank;
@@ -23,6 +25,7 @@ public class PositionRequest {
     @NotNull(message = "Department position cannot be empty")
     private String departmentId;
 
-    @NotNull(message = "Role cannot be empty")
+    @NotNull(message = "Role must be selected")
+    @Enumerated(EnumType.STRING)
     private RoleEnum roleId;
 }
