@@ -111,6 +111,7 @@ public class ContractServiceImpl implements ContractService {
                 .orElseThrow(() -> new AppException(ErrorCode.CONTRACT_NOT_FOUND));
 
         contract.setContractStatusEnum(ContractStatusEnum.TERMINATED);
+        contractRepository.save(contract);
     }
 
     @Override
