@@ -7,15 +7,14 @@ import org.ptithcm2021.hr_management.dto.request.UserRequest;
 import org.ptithcm2021.hr_management.dto.request.UserUpdateRequest;
 import org.ptithcm2021.hr_management.dto.response.NotificationRecipientResponse;
 import org.ptithcm2021.hr_management.dto.response.UserResponse;
+import org.ptithcm2021.hr_management.enums.ContractStatusEnum;
 import org.ptithcm2021.hr_management.enums.UserStatusEnum;
 import org.ptithcm2021.hr_management.exception.AppException;
 import org.ptithcm2021.hr_management.exception.ErrorCode;
 import org.ptithcm2021.hr_management.mapper.UserMapper;
 import org.ptithcm2021.hr_management.model.*;
-import org.ptithcm2021.hr_management.repository.AccountRepository;
-import org.ptithcm2021.hr_management.repository.NotificationRecipientRepository;
-import org.ptithcm2021.hr_management.repository.RoleRepository;
-import org.ptithcm2021.hr_management.repository.UserRepository;
+import org.ptithcm2021.hr_management.repository.*;
+import org.ptithcm2021.hr_management.service.ContractService;
 import org.ptithcm2021.hr_management.service.MailService;
 import org.ptithcm2021.hr_management.service.SeniorityAllowanceService;
 import org.ptithcm2021.hr_management.service.UserService;
@@ -25,9 +24,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.time.Year;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -39,7 +37,10 @@ public class UserServiceImpl implements UserService {
     private final RoleRepository roleRepository;
     private final MailService mailService;
     private final NotificationRecipientRepository notificationRecipientRepository;
-
+    private final ContractRepository contractRepository;
+    private final RewardAssignmentRepository rewardAssignmentRepository;
+    private final DisciplineAssignmentRepository disciplineAssignmentRepository;
+    private final LeaveBalanceRepository leaveBalanceRepository;
 
 
     @Override
@@ -100,17 +101,56 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponse fetchInfoUser() {
-        String securityContext = SecurityContextHolder.getContext().getAuthentication().getName();
-        if(securityContext == null) throw new AppException(ErrorCode.UNAUTHORIZED);
+        String userIdStr = SecurityContextHolder.getContext().getAuthentication().getName();
+        if (userIdStr == null) throw new AppException(ErrorCode.UNAUTHORIZED);
 
-        User user = userRepository.findById(Long.parseLong(securityContext)).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
-
+        long userId = Long.parseLong(userIdStr);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
 
         UserResponse userResponse = userMapper.toUserResponse(user);
-        userResponse.setRecipientResponse(getTop5NotificationRecipient(user.getId()));
+        userResponse.setRecipientResponse(getTop5NotificationRecipient(userId));
+
+        // Basic Info
+        userResponse.setDepartmentName(
+                Optional.ofNullable(user.getDepartment())
+                        .map(Department::getName)
+                        .orElse(null)
+        );
+
+        // Seniority Info
+        SeniorityAllowance seniority = user.getSeniorityAllowance();
+        userResponse.setServiceDuration(Optional.ofNullable(seniority).map(SeniorityAllowance::getServiceDuration).orElse(0));
+        userResponse.setHireDate(Objects.requireNonNull(seniority).getHireDate());
+
+        SeniorityAllowanceRule rule = Optional.of(seniority)
+                .map(SeniorityAllowance::getSeniorityAllowanceRule)
+                .orElse(null);
+
+        userResponse.setSeniorityPercentage(rule != null ? rule.getSeniorityPercentage() : 0);
+        userResponse.setSeniorityLeaveDay(rule != null ? rule.getSeniorityLeaveDay() : 0);
+
+        // Position Info
+        Contract contract = contractRepository.findContractByUserIdAndContractStatusEnum(userId, ContractStatusEnum.PENDING)
+                .orElseThrow(() -> new AppException(ErrorCode.CONTRACT_NOT_FOUND));
+        userResponse.setPositionName(
+                Optional.ofNullable(contract.getPosition())
+                        .map(Position::getName)
+                        .orElse(null)
+        );
+
+        // Rewards & Discipline
+        userResponse.setNumReward(Math.toIntExact(rewardAssignmentRepository.countByUserId(userId)));
+        userResponse.setNumDiscipline(Math.toIntExact(disciplineAssignmentRepository.countByUserId(userId)));
+
+        // Leave Balance
+        LeaveBalance leave = leaveBalanceRepository.findByUserIdAndYear(userId, Year.now().getValue()).orElse(null);
+        userResponse.setUsedLeaveDay(leave != null ? leave.getUsedLeaveDay() : 0);
+        userResponse.setCarriedOverDay(leave != null ? leave.getCarriedOverDay() : 0);
 
         return userResponse;
     }
+
 
     @Override
     public void changePassword(ChangePasswordRequest changePasswordRequest) {

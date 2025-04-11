@@ -5,9 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.ptithcm2021.hr_management.enums.UserStatusEnum;
-import org.ptithcm2021.hr_management.model.NotificationRecipient;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -30,5 +28,15 @@ public class UserResponse {
     private String degree;
     private UserStatusEnum status;
     private String avatar;
+    private String departmentName;
+    private String positionName;
+    private int numReward;
+    private int numDiscipline;
+    private Date hireDate;
+    private int serviceDuration;
+    private double seniorityPercentage;
+    private int seniorityLeaveDay;
+    private int carriedOverDay;
+    private int usedLeaveDay;
     private List<NotificationRecipientResponse> recipientResponse;
 }

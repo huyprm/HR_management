@@ -30,4 +30,5 @@ public interface RewardAssignmentRepository extends JpaRepository<RewardAssignme
                              @Param("newRewardDecision") String newRewardDecision);
 
     Optional<List<RewardAssignment>> findAllByUserId(long userId);
+    int countByUserId(long userId);
 }

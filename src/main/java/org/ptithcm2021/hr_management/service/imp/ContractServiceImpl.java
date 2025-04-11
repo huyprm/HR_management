@@ -189,9 +189,7 @@ public class ContractServiceImpl implements ContractService {
 
         Contract contract = optionalContract.get();
         boolean overlaps =
-                (endDate.after(startDate) && contract.getEndDate().after(startDate))
-                        || contract.getStartDate().equals(startDate)
-                        || contract.getEndDate().equals(endDate);
+                startDate.before(contract.getEndDate()) && endDate.after(contract.getStartDate());
 
         if (overlaps) {
             throw new AppException(ErrorCode.CONTRACT_OVERLAP);

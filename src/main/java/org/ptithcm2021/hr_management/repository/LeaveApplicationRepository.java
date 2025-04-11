@@ -11,4 +11,5 @@ import java.util.Optional;
 @Repository
 public interface LeaveApplicationRepository extends JpaRepository<LeaveApplication, Long> {
     List<LeaveApplication> getAllByFormStatusEnum(FormStatusEnum formStatusEnum);
+    List<LeaveApplication> findAllByUserId(long userId);
 }

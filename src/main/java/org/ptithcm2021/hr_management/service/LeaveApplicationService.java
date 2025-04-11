@@ -19,4 +19,7 @@ public interface LeaveApplicationService {
     List<LeaveApplicationResponse> getApplicationIsPending(FormStatusEnum formStatusEnum);
 
     LeaveApplicationResponse getApplication(long applicationId);
+
+    @PreAuthorize("T(String).valueOf(#userId) == authentication.name")
+    List<LeaveApplicationResponse> getApplicationByUserId(long userId);
 }

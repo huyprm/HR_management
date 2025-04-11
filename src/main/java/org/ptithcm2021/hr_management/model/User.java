@@ -24,7 +24,10 @@ public class User extends Base{
     @NotNull
     private String numberCCCD;
     private String phoneNumber;
+
+    @Temporal(TemporalType.DATE)
     private Date dob;
+
     private String gender;
     private String address;
     private String ethnicity;

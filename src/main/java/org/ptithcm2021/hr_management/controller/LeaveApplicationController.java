@@ -50,5 +50,11 @@ public class LeaveApplicationController {
         return ApiResponse.<LeaveApplicationResponse>builder()
                 .data(leaveApplicationService.getApplication(applicationId)).build();
     }
+
+    @GetMapping("/user/{userId}")
+    public ApiResponse<List<LeaveApplicationResponse>> getApplicationByUser(@PathVariable long userId) {
+        return ApiResponse.<List<LeaveApplicationResponse>>builder()
+                .data(leaveApplicationService.getApplicationByUserId(userId)).build();
+    }
 }
 

@@ -12,6 +12,7 @@ import org.ptithcm2021.hr_management.model.LeaveApplication;
 import org.ptithcm2021.hr_management.model.LeaveType;
 import org.ptithcm2021.hr_management.model.User;
 import org.ptithcm2021.hr_management.repository.LeaveApplicationRepository;
+import org.ptithcm2021.hr_management.repository.LeaveBalanceRepository;
 import org.ptithcm2021.hr_management.repository.LeaveTypeRepository;
 import org.ptithcm2021.hr_management.repository.UserRepository;
 import org.ptithcm2021.hr_management.service.LeaveApplicationService;
@@ -33,6 +34,7 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
     private final UserService userService;
     private final LeaveBalanceService leaveBalanceService;
     private final LeaveTypeRepository leaveTypeRepository;
+    private final LeaveBalanceRepository leaveBalanceRepository;
 
     @Override
     public LeaveApplicationResponse createApplication(LeaveApplicationRequest leaveApplicationRequest) {
@@ -84,5 +86,11 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
         return leaveApplicationMapper.toLeaveTypeApplicationResponse(
                 leaveApplicationRepository.save(leaveApplication)
         );
+    }
+
+    @Override
+    public List<LeaveApplicationResponse> getApplicationByUserId(long userId) {
+        return leaveApplicationRepository.findAllByUserId(userId)
+                .stream().map(leaveApplicationMapper::toLeaveTypeApplicationResponse).toList();
     }
 }

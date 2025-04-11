@@ -9,7 +9,7 @@ import java.time.YearMonth;
 import java.util.List;
 
 public interface LeaveDayService {
-    @PreAuthorize("hasAnyAuthority('SCOPE_AMIN', 'SCOPE_STAFF')")
+    @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN', 'SCOPE_STAFF')")
     LeaveDayResponse createLeaveDay(LeaveDayRequest leaveDayRequest);
 
     @PreAuthorize("hasAnyAuthority('SCOPE_AMIN', 'SCOPE_STAFF')")

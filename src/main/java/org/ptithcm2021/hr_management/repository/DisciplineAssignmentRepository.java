@@ -10,4 +10,5 @@ import java.util.Optional;
 
 public interface DisciplineAssignmentRepository extends JpaRepository<DisciplineAssignment, AssignmentId> {
     Optional<List<DisciplineAssignment>> findAllByUserId(long userId);
+    int countByUserId(long userId);
 }
