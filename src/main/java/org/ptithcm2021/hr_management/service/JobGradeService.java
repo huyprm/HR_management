@@ -1,6 +1,7 @@
 package org.ptithcm2021.hr_management.service;
 
 import org.ptithcm2021.hr_management.dto.request.JobGradeRequest;
+import org.ptithcm2021.hr_management.dto.request.UpdateNameAndDescriptionRequest;
 import org.ptithcm2021.hr_management.dto.response.JobGradeResponse;
 import org.springframework.security.access.prepost.PreAuthorize;
 
@@ -10,7 +11,7 @@ import java.util.List;
 public interface JobGradeService {
     JobGradeResponse createJobGrade(JobGradeRequest jobGradeRequest);
 
-    JobGradeResponse updateJobGrade(String id, JobGradeRequest jobGradeRequest);
+    JobGradeResponse updateJobGrade(String id, UpdateNameAndDescriptionRequest jobGradeRequest);
 
     void deleteJobGrade(String id);
 

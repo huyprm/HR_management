@@ -3,6 +3,7 @@ package org.ptithcm2021.hr_management.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.ptithcm2021.hr_management.dto.request.JobGradeRequest;
+import org.ptithcm2021.hr_management.dto.request.UpdateNameAndDescriptionRequest;
 import org.ptithcm2021.hr_management.dto.response.ApiResponse;
 import org.ptithcm2021.hr_management.dto.response.JobGradeResponse;
 import org.ptithcm2021.hr_management.service.JobGradeService;
@@ -24,7 +25,7 @@ public class JobGradeController {
 
     @PutMapping("/{id}")
     public ApiResponse<JobGradeResponse> updateJobGrade(@PathVariable String id,
-                                                        @RequestBody @Valid JobGradeRequest jobGradeRequest) {
+                                                        @RequestBody @Valid UpdateNameAndDescriptionRequest jobGradeRequest) {
         return ApiResponse.<JobGradeResponse>builder()
                 .data(jobGradeService.updateJobGrade(id, jobGradeRequest)).build();
     }

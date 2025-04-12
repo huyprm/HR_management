@@ -22,6 +22,9 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Override
     public DepartmentResponse createDepartment(DepartmentRequest departmentRequest) {
+        if(departmentRepository.existsById(departmentRequest.getId()))
+            throw new AppException(ErrorCode.DEPARTMENT_ID_EXIST);
+
         if (departmentRepository.existsByName(departmentRequest.getName())){
             throw new AppException(ErrorCode.DEPARTMENT_NAME_EXIST);
         }
@@ -33,6 +36,9 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Override
     public DepartmentResponse updateDepartment(String id, UpdateNameAndDescriptionRequest request) {
+//        if (departmentRepository.existsByName(request.getName())){
+//            throw new AppException(ErrorCode.DEPARTMENT_NAME_EXIST);
+//        }
 
         Department department = departmentRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.DEPARTMENT_NOT_FOUND));

@@ -2,6 +2,7 @@ package org.ptithcm2021.hr_management.service.imp;
 
 import lombok.RequiredArgsConstructor;
 import org.ptithcm2021.hr_management.dto.request.JobGradeRequest;
+import org.ptithcm2021.hr_management.dto.request.UpdateNameAndDescriptionRequest;
 import org.ptithcm2021.hr_management.dto.response.JobGradeResponse;
 import org.ptithcm2021.hr_management.exception.AppException;
 import org.ptithcm2021.hr_management.exception.ErrorCode;
@@ -25,6 +26,9 @@ public class JobGradeServiceImpl implements JobGradeService {
 
     @Override
     public JobGradeResponse createJobGrade(JobGradeRequest jobGradeRequest) {
+        if(jobGradeRepository.existsById(jobGradeRequest.getId()))
+            throw new AppException(ErrorCode.JOB_GRADE_ID_EXISTS);
+
         if (jobGradeRepository.existsByName(jobGradeRequest.getName()))
             throw new AppException(ErrorCode.JOB_GRADE_NAME_EXISTS);
 
@@ -34,9 +38,9 @@ public class JobGradeServiceImpl implements JobGradeService {
     }
 
     @Override
-    public JobGradeResponse updateJobGrade(String id, JobGradeRequest jobGradeRequest) {
-        if (jobGradeRepository.existsByName(jobGradeRequest.getName()))
-            throw new AppException(ErrorCode.JOB_GRADE_NAME_EXISTS);
+    public JobGradeResponse updateJobGrade(String id, UpdateNameAndDescriptionRequest jobGradeRequest) {
+//        if (jobGradeRepository.existsByName(jobGradeRequest.getName()))
+//            throw new AppException(ErrorCode.JOB_GRADE_NAME_EXISTS);
 
         JobGrade jobGrade = jobGradeRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.JOB_GRADE_NOT_FOUND));

@@ -30,6 +30,9 @@ public class PositionServiceImpl implements PositionService {
 
     @Override
     public PositionResponse createPosition(PositionRequest positionRequest) {
+        if(positionRepository.existsById(positionRequest.getDepartmentId()))
+            throw new AppException(ErrorCode.POSITION_ID_EXISTS);
+
         if (positionRepository.existsByName(positionRequest.getName()))
             throw new AppException(ErrorCode.POSITION_NAME_EXISTS);
 
@@ -48,6 +51,9 @@ public class PositionServiceImpl implements PositionService {
 
     @Override
     public PositionResponse updatePosition(String positionId, UpdateNameAndDescriptionRequest request) {
+//        if(positionRepository.existsById(request.getName()))
+//            throw new AppException(ErrorCode.POSITION_NAME_EXISTS);
+
         Position position = positionRepository.findById(positionId)
                 .orElseThrow(() -> new AppException(ErrorCode.POSITION_NOT_FOUND));
 

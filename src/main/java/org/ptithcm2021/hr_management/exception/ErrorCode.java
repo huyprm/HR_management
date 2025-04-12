@@ -38,7 +38,10 @@ public enum ErrorCode {
     CONTRACT_NOT_FOUND(1029, "Contract not found", HttpStatus.NOT_FOUND),
     EXTEND_CONTRACT(1030, "The contract is still valid and cannot be renewed.", HttpStatus.CONFLICT),
     CONTRACT_OVERLAP(1031, "Contract overlap",HttpStatus.CONFLICT),
-    EMAIL_NOT_FOUND(1032,"Email does not exist" ,HttpStatus.NOT_FOUND);
+    EMAIL_NOT_FOUND(1032,"Email does not exist" ,HttpStatus.NOT_FOUND),
+    JOB_GRADE_ID_EXISTS(1033,"Job grade id exists" ,HttpStatus.CONFLICT ),
+    POSITION_ID_EXISTS(1034, "Position id exists",HttpStatus.CONFLICT ),
+    DEPARTMENT_ID_EXIST(1035,"Department id exists" , HttpStatus.CONFLICT);
 
     ErrorCode(int code, String message, HttpStatus status){
         this.code = code;
