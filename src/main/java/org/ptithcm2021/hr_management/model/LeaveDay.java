@@ -9,12 +9,12 @@ import org.ptithcm2021.hr_management.enums.LeaveDayTypeEnum;
 
 import java.util.Date;
 
-@Entity(name = "leaveDays")
+@Entity
 @Setter
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(indexes = {
+@Table(name = "leaveDays", indexes = {
         @Index(name = "idx_leave_day_date", columnList = "date")
 })
 public class LeaveDay {

@@ -7,7 +7,8 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Entity(name = "notifications")
+@Entity
+@Table(name = "notifications")
 @Setter
 @Getter
 @NoArgsConstructor

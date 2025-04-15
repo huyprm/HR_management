@@ -12,10 +12,10 @@ import java.util.List;
 
 @Repository
 public interface NotificationRecipientRepository extends JpaRepository<NotificationRecipient, Long> {
-    @Query("select nr from notificationRecipients nr where " +
+    @Query("select nr from NotificationRecipient nr where " +
             "nr.user.id = :userId ORDER BY nr.notification.sendDate DESC")
     List<NotificationRecipient> findTop5ByUserId(@Param("userId")long userId, Pageable pageable);
 
-    @Query("select nr from notificationRecipients nr where nr.user.id = :userId ")
+    @Query("select nr from NotificationRecipient nr where nr.user.id = :userId ")
     List<NotificationRecipient> finAllByUserId(@Param("userId")long userId);
 }

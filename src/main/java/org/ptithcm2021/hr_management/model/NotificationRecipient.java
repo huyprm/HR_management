@@ -7,7 +7,8 @@ import lombok.*;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity(name = "notificationRecipients")
+@Entity
+@Table(name = "notificationRecipients")
 @Builder
 public class NotificationRecipient {
     @Id

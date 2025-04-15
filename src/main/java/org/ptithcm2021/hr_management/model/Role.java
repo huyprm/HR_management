@@ -4,7 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.ptithcm2021.hr_management.enums.RoleEnum;
 
-@Entity(name = "roles")
+@Entity
+@Table(name = "roles")
 @NoArgsConstructor
 @AllArgsConstructor
 @Setter

@@ -8,7 +8,8 @@ import lombok.Setter;
 
 import java.util.Date;
 
-@Entity(name = "seniorityAllowanceRules")
+@Entity
+@Table(name = "seniorityAllowanceRules")
 @Setter
 @Getter
 @NoArgsConstructor

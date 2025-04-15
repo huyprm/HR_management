@@ -13,6 +13,6 @@ import java.util.List;
 
 @Repository
 public interface LeaveDayRepository extends JpaRepository<LeaveDay, Integer> {
-    @Query("select ld from leaveDays ld where ld.date between :start and :end")
+    @Query("select ld from LeaveDay ld where ld.date between :start and :end")
     List<LeaveDay> findAllByMonth(@Param("start") LocalDate start, @Param("end") LocalDate end);
 }

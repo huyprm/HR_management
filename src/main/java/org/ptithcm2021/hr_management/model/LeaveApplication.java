@@ -16,7 +16,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
 import java.util.Date;
 
-@Entity(name = "leaveApplications")
+@Entity
+@Table(name = "leaveApplications")
 @Getter
 @Setter
 @NoArgsConstructor

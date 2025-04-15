@@ -7,12 +7,12 @@ import lombok.*;
 import java.time.Year;
 import java.util.Date;
 
-@Entity(name = "leaveBalances")
+@Entity
 @Setter
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"userId", "year"})})
+@Table(name = "leaveBalances", uniqueConstraints = {@UniqueConstraint(columnNames = {"userId", "year"})})
 public class LeaveBalance {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

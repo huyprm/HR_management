@@ -8,7 +8,8 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.ptithcm2021.hr_management.enums.RoleEnum;
 
-@Entity(name = "accounts")
+@Entity
+@Table(name = "accounts")
 @NoArgsConstructor
 @AllArgsConstructor
 @Setter

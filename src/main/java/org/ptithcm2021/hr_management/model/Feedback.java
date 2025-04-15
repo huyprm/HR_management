@@ -11,7 +11,8 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Date;
 
-@Entity(name = "feedbacks")
+@Entity
+@Table (name = "feedbacks")
 @Setter
 @Getter
 @NoArgsConstructor
