@@ -8,7 +8,8 @@ import lombok.Setter;
 
 import java.util.List;
 
-@Entity(name = "departments")
+@Entity
+@Table(name = "departments")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -23,7 +24,4 @@ public class Department{
 
     @OneToMany(mappedBy = "department")
     private List<Position> positions;
-
-    @OneToMany(mappedBy = "department")
-    private List<User> users;
 }

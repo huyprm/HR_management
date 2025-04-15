@@ -6,6 +6,7 @@ import org.ptithcm2021.hr_management.dto.request.ChangePasswordRequest;
 import org.ptithcm2021.hr_management.dto.request.UserRequest;
 import org.ptithcm2021.hr_management.dto.request.UserUpdateRequest;
 import org.ptithcm2021.hr_management.dto.response.UserResponse;
+import org.ptithcm2021.hr_management.dto.response.WorkLogResponse;
 import org.ptithcm2021.hr_management.model.User;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -33,6 +34,8 @@ public interface UserService {
     @PreAuthorize("hasAnyAuthority('SCOPE_STAFF', 'SCOPE_ADMIN')")
     List<UserResponse> getAllUser();
 
-
     User getUserToUser(long id);
+
+    @PreAuthorize("T(String).valueOf(#userId) == authentication.name")
+    List<WorkLogResponse> getWorkLogByUserId(long userId);
 }

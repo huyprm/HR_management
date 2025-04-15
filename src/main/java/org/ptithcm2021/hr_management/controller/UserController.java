@@ -11,6 +11,7 @@ import org.ptithcm2021.hr_management.dto.request.UserRequest;
 import org.ptithcm2021.hr_management.dto.request.UserUpdateRequest;
 import org.ptithcm2021.hr_management.dto.response.ApiResponse;
 import org.ptithcm2021.hr_management.dto.response.UserResponse;
+import org.ptithcm2021.hr_management.dto.response.WorkLogResponse;
 import org.ptithcm2021.hr_management.model.User;
 import org.ptithcm2021.hr_management.service.UserService;
 import org.springframework.security.core.Authentication;
@@ -62,5 +63,10 @@ public class UserController {
     @GetMapping("")
     public ApiResponse<List<UserResponse>> getAllUser(){
         return ApiResponse.<List<UserResponse>>builder().data(userService.getAllUser()).build();
+    }
+
+    @GetMapping("/work-log")
+    public ApiResponse<List<WorkLogResponse>> getWorkLogByUserId(@RequestParam long userId){
+        return ApiResponse.<List<WorkLogResponse>>builder().data(userService.getWorkLogByUserId(userId)).build();
     }
 }

@@ -19,6 +19,6 @@ public class ContractTypeRequest {
 
     private String duration;
 
-    @NotNull(message = "Are employees entitled to the policy?")
-    private Boolean isPolicy;
+    //@NotNull(message = "Are employees entitled to the policy?")
+    private boolean isPolicy;
 }

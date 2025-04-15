@@ -1,12 +1,12 @@
 package org.ptithcm2021.hr_management.service.imp;
 
-import io.micrometer.common.lang.Nullable;
 import lombok.RequiredArgsConstructor;
 import org.ptithcm2021.hr_management.dto.request.ContractRequest;
 import org.ptithcm2021.hr_management.dto.request.LeaveBalanceRequest;
-import org.ptithcm2021.hr_management.dto.request.NotificationRequest;
 import org.ptithcm2021.hr_management.dto.response.ContractResponse;
 import org.ptithcm2021.hr_management.enums.ContractStatusEnum;
+import org.ptithcm2021.hr_management.enums.UserStatusEnum;
+import org.ptithcm2021.hr_management.enums.WorkLogTypeEnum;
 import org.ptithcm2021.hr_management.exception.AppException;
 import org.ptithcm2021.hr_management.exception.ErrorCode;
 import org.ptithcm2021.hr_management.mapper.ContractMapper;
@@ -17,7 +17,6 @@ import org.ptithcm2021.hr_management.service.LeaveBalanceService;
 import org.ptithcm2021.hr_management.service.NotificationService;
 import org.ptithcm2021.hr_management.service.UserService;
 import org.ptithcm2021.hr_management.util.LeaveBalanceUtil;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -34,8 +33,8 @@ public class ContractServiceImpl implements ContractService {
     private final ContractTypeRepository contractTypeRepository;
     private final JobGradeRepository jobGradeRepository;
     private final UserRepository userRepository;
-    private final NotificationService notificationService;
     private final LeaveBalanceService leaveBalanceService;
+    private final WorkLogRepository workLogRepository;
 
     @Override
     public ContractResponse createContract(ContractRequest request, boolean isExtend) {
@@ -62,13 +61,27 @@ public class ContractServiceImpl implements ContractService {
 
         // Update role for user's account
         user.getAccount().setRole(position.getRole().getId());
-        user.setDepartment(position.getDepartment());
+        user.setPosition(position);
 
         // Set hire date only for new contracts (not extensions)
         if (!isExtend) {
-            user.getSeniorityAllowance().setHireDate(contract.getStartDate());
+            user.setHireDate(contract.getStartDate());
+            workLogRepository.save(
+                    WorkingHistory.builder()
+                            .type(WorkLogTypeEnum.CONTRACT_SIGN)
+                            .user(user)
+                            .contract(contract)
+                            .build()
+            );
+        } else {
+            workLogRepository.save(
+                    WorkingHistory.builder()
+                            .type(WorkLogTypeEnum.CONTRACT_RENEWAL)
+                            .user(user)
+                            .contract(contract)
+                            .build()
+            );
         }
-
         // Create or update leave balance for policy-based contracts
         if (contractType.isPolicy()) {
             createOrUpdateLeaveBalance(user.getId(), contract.getStartDate(), contract.getEndDate());
@@ -111,6 +124,9 @@ public class ContractServiceImpl implements ContractService {
                 .orElseThrow(() -> new AppException(ErrorCode.CONTRACT_NOT_FOUND));
 
         contract.setContractStatusEnum(ContractStatusEnum.TERMINATED);
+
+        contract.getUser().setStatus(UserStatusEnum.TERMINATED);
+        contract.getUser().getAccount().setStatus(false);
         contractRepository.save(contract);
     }
 
@@ -119,7 +135,15 @@ public class ContractServiceImpl implements ContractService {
         Contract existingContract = contractRepository.findById(contractId)
                 .orElseThrow(() -> new AppException(ErrorCode.CONTRACT_NOT_FOUND));
 
-        if (existingContract.getContractStatusEnum() == ContractStatusEnum.PENDING) {
+        Date currentDate = new Date();
+        long daysBeforeEnd = (existingContract.getEndDate().getTime() - currentDate.getTime()) / (1000 * 60 * 60 * 24);
+
+        // Allow renewal only if the contract is within 30 days of expiration or already expired
+        if (daysBeforeEnd > 30) {
+            throw new AppException(ErrorCode.CONTRACT_NOT_ELIGIBLE_FOR_RENEWAL);
+        }
+
+        if (existingContract.getContractStatusEnum() == ContractStatusEnum.TERMINATED) {
             throw new AppException(ErrorCode.EXTEND_CONTRACT);
         }
 
@@ -137,10 +161,6 @@ public class ContractServiceImpl implements ContractService {
 
         return contractMapper.toContractResponse(contract);
 
-    }
-
-    private boolean validateContractDates(Date start, Date end) {
-        return end == null || !end.before(start);
     }
 
     @Override

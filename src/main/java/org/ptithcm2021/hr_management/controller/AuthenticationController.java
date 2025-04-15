@@ -1,5 +1,6 @@
 package org.ptithcm2021.hr_management.controller;
 
+import com.nimbusds.jose.JOSEException;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.Cookie;
@@ -50,5 +51,10 @@ public class AuthenticationController {
     @PostMapping("/resetPassword")
     public ApiResponse<String> resetPassword(@RequestParam String newPass, @RequestParam String email){
         return ApiResponse.<String>builder().data(authenticationService.resetPassword(newPass, email)).build();
+    }
+
+    @GetMapping("/role")
+    public ApiResponse<String> getRole(@RequestParam String token) throws ParseException, JOSEException {
+        return ApiResponse.<String>builder().data(authenticationService.getRoleByToken(token)).build();
     }
 }

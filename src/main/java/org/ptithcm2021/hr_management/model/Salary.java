@@ -5,17 +5,16 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.ptithcm2021.hr_management.enums.PaymentStatusEnum;
 
 import java.time.YearMonth;
 import java.util.Date;
 
-@Entity(name = "salaries")
+@Entity
+@Table(name = "salaries")
 @Setter
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table()
 public class Salary {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -16,4 +16,5 @@ public interface AuthenticationService {
     void forgotPassword(String email) throws MessagingException;
     boolean verifyOTP(String email, String otp);
     String resetPassword(String newPass, String email);
+    String getRoleByToken(String token) throws ParseException, JOSEException;
 }

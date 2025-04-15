@@ -7,7 +7,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
 
-@PreAuthorize("hasAnyAuthority('SCOPE_ADMIN', 'SCOPE_STAFF')")
+@PreAuthorize("hasAnyAuthority('SCOPE_ADMIN')")
 public interface JobGradeService {
     JobGradeResponse createJobGrade(JobGradeRequest jobGradeRequest);
 

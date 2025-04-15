@@ -10,7 +10,8 @@ import org.ptithcm2021.hr_management.enums.ContractStatusEnum;
 import java.time.Instant;
 import java.util.Date;
 
-@Entity(name = "contracts")
+@Entity
+@Table(name = "contracts")
 @Setter
 @Getter
 @NoArgsConstructor
@@ -36,7 +37,7 @@ public class Contract{
     @JoinColumn(name = "contractTypeId")
     private ContractType contractType ;
 
-    @ManyToOne()
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "userId")
     private User user;
 

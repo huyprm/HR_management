@@ -7,9 +7,9 @@ import lombok.*;
 import org.ptithcm2021.hr_management.enums.UserStatusEnum;
 
 import java.util.Date;
-import java.util.List;
 
-@Entity(name = "users")
+@Entity
+@Table(name = "users")
 @NoArgsConstructor
 @AllArgsConstructor
 @Setter
@@ -46,10 +46,17 @@ public class User extends Base{
     private Account account;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "departmentId")
-    private Department department;
+    @JoinColumn(name = "positionId")
+    private Position position;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "seniorityAllowanceId")
-    private SeniorityAllowance seniorityAllowance;
+    @Temporal(TemporalType.DATE)
+    private Date hireDate;
+
+    private int serviceDuration;
+
+    private double salaryBasic;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "seniorityAllowanceRuleId")
+    private SeniorityAllowanceRule seniorityAllowanceRule;
 }

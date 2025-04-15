@@ -145,6 +145,15 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return generateToken(account);
     }
 
+    @Override
+    public String getRoleByToken(String token) throws ParseException, JOSEException {
+        if(verifyToken(token)){
+            SignedJWT signedJWT = SignedJWT.parse(token);
+            return signedJWT.getJWTClaimsSet().getStringClaim("scope");
+        }
+        throw new AppException(ErrorCode.INVALID_JWT);
+    }
+
     private String getOtp(String email){
         return Objects.requireNonNull(redisTemplate.opsForValue().get("otp:" + email)).toString();
     }

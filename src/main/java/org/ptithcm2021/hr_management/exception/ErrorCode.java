@@ -41,7 +41,11 @@ public enum ErrorCode {
     EMAIL_NOT_FOUND(1032,"Email does not exist" ,HttpStatus.NOT_FOUND),
     JOB_GRADE_ID_EXISTS(1033,"Job grade id exists" ,HttpStatus.CONFLICT ),
     POSITION_ID_EXISTS(1034, "Position id exists",HttpStatus.CONFLICT ),
-    DEPARTMENT_ID_EXIST(1035,"Department id exists" , HttpStatus.CONFLICT);
+    DEPARTMENT_ID_EXIST(1035,"Department id exists" , HttpStatus.CONFLICT),
+    CONTRACT_NOT_ELIGIBLE_FOR_RENEWAL(1036, "Contract not eligible for renewal",HttpStatus.CONFLICT ),
+    INVALID_DECISION_TYPE(1037,"Invalid decision type" , HttpStatus.BAD_REQUEST ),
+    DECISION_ALREADY_EXISTS(1038, "Decision already exists",HttpStatus.BAD_REQUEST),
+    DECISION_NOT_FOUND(1039, "Decision not found", HttpStatus.NOT_FOUND );
 
     ErrorCode(int code, String message, HttpStatus status){
         this.code = code;

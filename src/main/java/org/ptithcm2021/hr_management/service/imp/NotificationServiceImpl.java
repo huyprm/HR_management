@@ -55,16 +55,16 @@ public class NotificationServiceImpl implements NotificationService {
             });
             notification.setInfoReceiver("Personal");
         }
-        if (notificationRequest.getDepartmentIs() != null){
-            notificationRequest.getDepartmentIs().forEach(s -> {
-                Department department = departmentRepository.findById(s)
-                        .orElseThrow(() -> new AppException(ErrorCode.DEPARTMENT_NOT_FOUND));
-
-                receivers.addAll(department.getUsers().stream()
-                        .filter(user -> user.getStatus().equals(UserStatusEnum.PENDING)).toList());
-            });
-            notification.setInfoReceiver("Department");
-        }
+//        if (notificationRequest.getDepartmentIs() != null){
+//            notificationRequest.getDepartmentIs().forEach(s -> {
+//                Department department = departmentRepository.findById(s)
+//                        .orElseThrow(() -> new AppException(ErrorCode.DEPARTMENT_NOT_FOUND));
+//
+//                receivers.addAll(department.getUsers().stream()
+//                        .filter(user -> user.getStatus().equals(UserStatusEnum.PENDING)).toList());
+//            });
+//            notification.setInfoReceiver("Department");
+//        }
 
         if (notificationRequest.getPositionIs() !=null){
 

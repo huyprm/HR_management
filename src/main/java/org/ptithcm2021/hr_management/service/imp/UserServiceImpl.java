@@ -7,16 +7,16 @@ import org.ptithcm2021.hr_management.dto.request.UserRequest;
 import org.ptithcm2021.hr_management.dto.request.UserUpdateRequest;
 import org.ptithcm2021.hr_management.dto.response.NotificationRecipientResponse;
 import org.ptithcm2021.hr_management.dto.response.UserResponse;
+import org.ptithcm2021.hr_management.dto.response.WorkLogResponse;
 import org.ptithcm2021.hr_management.enums.ContractStatusEnum;
 import org.ptithcm2021.hr_management.enums.UserStatusEnum;
 import org.ptithcm2021.hr_management.exception.AppException;
 import org.ptithcm2021.hr_management.exception.ErrorCode;
 import org.ptithcm2021.hr_management.mapper.UserMapper;
+import org.ptithcm2021.hr_management.mapper.WorkLogMapper;
 import org.ptithcm2021.hr_management.model.*;
 import org.ptithcm2021.hr_management.repository.*;
-import org.ptithcm2021.hr_management.service.ContractService;
 import org.ptithcm2021.hr_management.service.MailService;
-import org.ptithcm2021.hr_management.service.SeniorityAllowanceService;
 import org.ptithcm2021.hr_management.service.UserService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -34,13 +34,14 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
-    private final RoleRepository roleRepository;
     private final MailService mailService;
     private final NotificationRecipientRepository notificationRecipientRepository;
     private final ContractRepository contractRepository;
-    private final RewardAssignmentRepository rewardAssignmentRepository;
-    private final DisciplineAssignmentRepository disciplineAssignmentRepository;
+//    private final RewardAssignmentRepository rewardAssignmentRepository;
+//    private final DisciplineAssignmentRepository disciplineAssignmentRepository;
     private final LeaveBalanceRepository leaveBalanceRepository;
+    private final WorkLogRepository workLogRepository;
+    private final WorkLogMapper workLogMapper;
 
 
     @Override
@@ -56,11 +57,6 @@ public class UserServiceImpl implements UserService {
                 .build();
 
         user.setAccount(account);
-
-        SeniorityAllowance seniorityAllowance = new SeniorityAllowance();
-        seniorityAllowance.setUser(user);
-
-        user.setSeniorityAllowance(seniorityAllowance);
 
         User result = userRepository.save(user);
 
@@ -111,37 +107,28 @@ public class UserServiceImpl implements UserService {
         UserResponse userResponse = userMapper.toUserResponse(user);
         userResponse.setRecipientResponse(getTop5NotificationRecipient(userId));
 
-        // Basic Info
-        userResponse.setDepartmentName(
-                Optional.ofNullable(user.getDepartment())
-                        .map(Department::getName)
-                        .orElse(null)
-        );
-
-        // Seniority Info
-        SeniorityAllowance seniority = user.getSeniorityAllowance();
-        userResponse.setServiceDuration(Optional.ofNullable(seniority).map(SeniorityAllowance::getServiceDuration).orElse(0));
-        userResponse.setHireDate(Objects.requireNonNull(seniority).getHireDate());
-
-        SeniorityAllowanceRule rule = Optional.of(seniority)
-                .map(SeniorityAllowance::getSeniorityAllowanceRule)
-                .orElse(null);
-
-        userResponse.setSeniorityPercentage(rule != null ? rule.getSeniorityPercentage() : 0);
-        userResponse.setSeniorityLeaveDay(rule != null ? rule.getSeniorityLeaveDay() : 0);
+        //Seniority Info
+        SeniorityAllowanceRule rule;
+        if( (rule = user.getSeniorityAllowanceRule()) != null){
+            userResponse.setSeniorityPercentage(rule.getSeniorityPercentage());
+            userResponse.setSeniorityLeaveDay(rule.getSeniorityLeaveDay());
+        }
 
         // Position Info
-        Contract contract = contractRepository.findContractByUserIdAndContractStatusEnum(userId, ContractStatusEnum.PENDING)
-                .orElseThrow(() -> new AppException(ErrorCode.CONTRACT_NOT_FOUND));
-        userResponse.setPositionName(
-                Optional.ofNullable(contract.getPosition())
-                        .map(Position::getName)
-                        .orElse(null)
-        );
+        userResponse.setPositionName(user.getPosition().getName());
+
+        //Department Info
+        userResponse.setDepartmentName(user.getPosition().getDepartment().getName());
+
+        List<Object[]> decisionCounts = workLogRepository.countRewardAndDisciplineByUserId(userId);
+
+        Map<String, Integer> decisionCountMap = decisionCounts.stream().collect(Collectors.toMap(o -> String.valueOf(o[0]),  o -> ((Number) o[1]).intValue()));
+        userResponse.setNumReward(decisionCountMap.getOrDefault("AWARD", 0));
+        userResponse.setNumDiscipline(decisionCountMap.getOrDefault("DISCIPLINE", 0));
 
         // Rewards & Discipline
-        userResponse.setNumReward(Math.toIntExact(rewardAssignmentRepository.countByUserId(userId)));
-        userResponse.setNumDiscipline(Math.toIntExact(disciplineAssignmentRepository.countByUserId(userId)));
+//        userResponse.setNumReward(Math.toIntExact(rewardAssignmentRepository.countByUserId(userId)));
+//        userResponse.setNumDiscipline(Math.toIntExact(disciplineAssignmentRepository.countByUserId(userId)));
 
         // Leave Balance
         LeaveBalance leave = leaveBalanceRepository.findByUserIdAndYear(userId, Year.now().getValue()).orElse(null);
@@ -179,6 +166,15 @@ public class UserServiceImpl implements UserService {
         if(user.getStatus().equals(UserStatusEnum.TERMINATED)) throw new AppException(ErrorCode.USER_TERMINATED);
 
         return user;
+    }
+
+    @Override
+    public List<WorkLogResponse> getWorkLogByUserId(long userId) {
+        return workLogRepository
+                .findAllByUserId(userId)
+                .stream()
+                .map(workLogMapper::toWorkLogResponse)
+                .collect(Collectors.toList());
     }
 
     private List<NotificationRecipientResponse> getTop5NotificationRecipient(long userId) {
