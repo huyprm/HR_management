@@ -115,10 +115,15 @@ public class UserServiceImpl implements UserService {
         }
 
         // Position Info
-        userResponse.setPositionName(user.getPosition().getName());
+        if (user.getPosition() == null) {
+            userResponse.setPositionName("Chưa có chức vụ");
+            userResponse.setDepartmentName("Chưa có phòng ban");
+        } else {
+            userResponse.setPositionName(user.getPosition().getName());
 
-        //Department Info
-        userResponse.setDepartmentName(user.getPosition().getDepartment().getName());
+            //Department Info
+            userResponse.setDepartmentName(user.getPosition().getDepartment().getName());
+        }
 
         List<Object[]> decisionCounts = workLogRepository.countRewardAndDisciplineByUserId(userId);
 
