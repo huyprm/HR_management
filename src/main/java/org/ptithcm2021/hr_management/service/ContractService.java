@@ -10,6 +10,12 @@ import java.util.List;
 
 public interface ContractService {
     @PreAuthorize("hasAnyAuthority('SCOPE_STAFF', 'SCOPE_ADMIN')")
+    ContractResponse createDraftContract(ContractRequest contractRequest, boolean isExtend);
+
+    @PreAuthorize("hasAnyAuthority('SCOPE_STAFF', 'SCOPE_ADMIN')")
+    ContractResponse signContract(int contractId);
+
+    @PreAuthorize("hasAnyAuthority('SCOPE_STAFF', 'SCOPE_ADMIN')")
     ContractResponse createContract(ContractRequest contractRequest, boolean isExtend);
 
     @PreAuthorize("hasAnyAuthority('SCOPE_STAFF', 'SCOPE_ADMIN')")
