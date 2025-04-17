@@ -21,6 +21,7 @@ public class DecisionRequest {
     @NotBlank(message = "Decision code cannot be empty")
     private String id;
 
+    // Dành cho quyết định có giá trị như reward hoặc discipline
     private double value;
     private String content;
 
@@ -33,7 +34,7 @@ public class DecisionRequest {
     @NotNull(message ="User id cannot be empty")
     private long userId;
 
-    private String salaryPromotionId;
+    private int salaryPromotionId;
 
     private String positionId;
 

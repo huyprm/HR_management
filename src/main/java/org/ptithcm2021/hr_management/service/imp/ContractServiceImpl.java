@@ -197,6 +197,17 @@ public class ContractServiceImpl implements ContractService {
             );
         }
 
+        
+        // Create or update leave balance for policy-based contracts
+        if (contractType.isPolicy()) {
+            createOrUpdateLeaveBalance(user.getId(), contract.getStartDate(), contract.getEndDate());
+        }
+
+        // Save updated user and contract
+        userRepository.save(user);
+        Contract savedContract = contractRepository.save(contract);
+
+
         return contractMapper.toContractResponse(savedContract);
     }
 
@@ -303,6 +314,25 @@ public class ContractServiceImpl implements ContractService {
         // Kết hợp cả hai danh sách
         pendingContracts.addAll(signedPendingContracts);
         return pendingContracts;
+    }
+
+    @Override
+    public ContractResponse updateContractWithPromotion(int contractId, String newJobGradeId) {
+        Contract contract = contractRepository.findById(contractId)
+                .orElseThrow(() -> new AppException(ErrorCode.CONTRACT_NOT_FOUND));
+
+        JobGrade newJobGrade = jobGradeRepository.findById(newJobGradeId)
+                .orElseThrow(() -> new AppException(ErrorCode.JOB_GRADE_NOT_FOUND));
+
+        JobGrade oldJobGrade = contract.getJobGrade();
+        double oldSalary = contract.getBasicSalary();
+
+        contract.setJobGrade(newJobGrade);
+        
+        // Lưu hợp đồng đã cập nhật
+        Contract updatedContract = contractRepository.save(contract);
+        
+        return contractMapper.toContractResponse(updatedContract);
     }
 
     /**

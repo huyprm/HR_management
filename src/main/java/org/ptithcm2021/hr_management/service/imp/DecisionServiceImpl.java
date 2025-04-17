@@ -12,10 +12,7 @@ import org.ptithcm2021.hr_management.exception.AppException;
 import org.ptithcm2021.hr_management.exception.ErrorCode;
 import org.ptithcm2021.hr_management.mapper.DecisionMapper;
 import org.ptithcm2021.hr_management.model.*;
-import org.ptithcm2021.hr_management.repository.DecisionRepository;
-import org.ptithcm2021.hr_management.repository.PositionRepository;
-import org.ptithcm2021.hr_management.repository.SeniorityAllowanceRuleRepository;
-import org.ptithcm2021.hr_management.repository.WorkLogRepository;
+import org.ptithcm2021.hr_management.repository.*;
 import org.ptithcm2021.hr_management.service.DecisionService;
 import org.ptithcm2021.hr_management.service.UserService;
 import org.springframework.stereotype.Repository;
@@ -35,6 +32,7 @@ public class DecisionServiceImpl implements DecisionService {
     private final PositionRepository positionRepository;
     private final SeniorityAllowanceRuleRepository seniorityAllowanceRuleRepository;
     private final WorkLogRepository workLogRepository;
+    private final SalaryPromotionRepository salaryPromotionRepository;
 
     @Override
     public DecisionResponse createDecision(DecisionRequest decisionRequest) {
@@ -53,16 +51,19 @@ public class DecisionServiceImpl implements DecisionService {
                     .orElseThrow(() -> new AppException(ErrorCode.POSITION_NOT_FOUND));
 
             decision.setPosition(position);
+            decision.setProcessed(false);
         } else if (decision.getSeniorityAllowanceRule() != null) {
             SeniorityAllowanceRule seniorityAllowanceRule = seniorityAllowanceRuleRepository.findById(decisionRequest.getSeniorityAllowanceRuleId())
                     .orElseThrow(() -> new AppException(ErrorCode.SENIORITY_ALLOWANCE_RULE_NOT_FOUND));
 
             decision.setSeniorityAllowanceRule(seniorityAllowanceRule);
+            decision.setProcessed(false);
         } else if (decision.getSalaryPromotion() != null) {
-//            SalaryPromotion salaryPromotion = salaryPromotionRepository.findById(decisionRequest.getSalaryPromotionId())
-//                    .orElseThrow(() -> new AppException(ErrorCode.SALARY_PROMOTION_NOT_FOUND));
-//
-//            decision.setSalaryPromotion(salaryPromotion);
+            SalaryPromotion salaryPromotion = salaryPromotionRepository.findById(decisionRequest.getSalaryPromotionId())
+                    .orElseThrow(() -> new AppException(ErrorCode.SALARY_PROMOTION_NOT_FOUND));
+
+            decision.setSalaryPromotion(salaryPromotion);
+            decision.setProcessed(false);
         } else {
             throw new AppException(ErrorCode.INVALID_DECISION_TYPE);
 
