@@ -10,6 +10,7 @@ import org.ptithcm2021.hr_management.model.SalaryPromotion;
 import org.ptithcm2021.hr_management.repository.ContractRepository;
 import org.ptithcm2021.hr_management.repository.DecisionRepository;
 import org.ptithcm2021.hr_management.service.ContractService;
+
 import org.ptithcm2021.hr_management.service.SalaryService;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -17,6 +18,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.YearMonth;
 import java.util.Date;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.List;
 
 @Component
@@ -26,7 +30,7 @@ public class SalarySchedule {
     private final SalaryService salaryService;
     private final ContractRepository contractRepository;
     private final DecisionRepository decisionRepository;
-    private final ContractService contractService;
+
     
     /**
      * Tự động tạo lương vào ngày cuối cùng của mỗi tháng lúc 23:00
@@ -107,4 +111,5 @@ public class SalarySchedule {
             log.error("Error in pending salary changes processing job: {}", e.getMessage(), e);
         }
     }
+
 }

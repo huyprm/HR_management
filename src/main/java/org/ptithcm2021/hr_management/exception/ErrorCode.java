@@ -55,6 +55,7 @@ public enum ErrorCode {
     CONTRACT_UPDATE_FAILED(1046, "Failed to update contract with new salary and job grade", HttpStatus.INTERNAL_SERVER_ERROR),
     DECISION_CREATION_FAILED(1047, "Failed to create salary change decision", HttpStatus.INTERNAL_SERVER_ERROR);
 
+
     ErrorCode(int code, String message, HttpStatus status){
         this.code = code;
         this.message = message;

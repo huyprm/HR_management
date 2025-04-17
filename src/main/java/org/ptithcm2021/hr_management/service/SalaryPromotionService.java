@@ -7,6 +7,7 @@ import org.ptithcm2021.hr_management.enums.FormStatusEnum;
 import org.ptithcm2021.hr_management.model.SalaryPromotion;
 import org.springframework.security.access.prepost.PreAuthorize;
 
+
 import java.util.List;
 
 public interface SalaryPromotionService {
@@ -26,5 +27,4 @@ public interface SalaryPromotionService {
 
     @PreAuthorize("hasAnyAuthority('SCOPE_MANAGER', 'SCOPE_ADMIN')")
     List<SalaryPromotionResponse> getSalaryPromotionByStatusAndSignId(long signer, FormStatusEnum formStatus);
-
 }

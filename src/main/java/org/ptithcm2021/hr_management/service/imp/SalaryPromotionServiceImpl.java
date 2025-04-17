@@ -77,6 +77,7 @@ public class SalaryPromotionServiceImpl implements SalaryPromotionService {
         promotion = salaryPromotionRepository.save(promotion);
 
         return salaryPromotionMapper.toSalaryPromotionResponse(salaryPromotionRepository.save(promotion));
+
     }
 
     @Override
