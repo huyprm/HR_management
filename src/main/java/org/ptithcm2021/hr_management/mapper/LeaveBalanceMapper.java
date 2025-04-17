@@ -11,5 +11,6 @@ public interface LeaveBalanceMapper {
     LeaveBalance toLeaveBalance(LeaveBalanceRequest leaveBalanceRequest);
 
     @Mapping(target = "remainingLeave", expression = "java(leaveBalance.getRemainingLeave())")
+    @Mapping(target = "userId", expression = "java(leaveBalance.getUser().getId())")
     LeaveBalanceResponse toLeaveBalanceResponse(LeaveBalance leaveBalance);
 }

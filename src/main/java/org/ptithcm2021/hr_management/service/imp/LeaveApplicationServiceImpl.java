@@ -20,7 +20,9 @@ import org.ptithcm2021.hr_management.service.LeaveBalanceService;
 import org.ptithcm2021.hr_management.service.UserService;
 import org.springframework.stereotype.Service;
 
+import java.time.Month;
 import java.time.Year;
+import java.time.YearMonth;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -60,8 +62,11 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
 
         leaveApplication.setFormStatusEnum(formStatusEnum);
 
-        if (FormStatusEnum.APPROVED.equals(formStatusEnum))
-            leaveBalanceService.dayOff(Year.now().getValue(), leaveApplication);
+
+        if (FormStatusEnum.APPROVED.equals(formStatusEnum)){
+            int month = leaveApplication.getStartDate().getMonth() + 1;
+            leaveBalanceService.dayOff(Year.now().getValue(), month, leaveApplication);
+        }
 
         return leaveApplicationMapper.toLeaveTypeApplicationResponse(
                 leaveApplicationRepository.save(leaveApplication)

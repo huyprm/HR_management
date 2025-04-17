@@ -12,4 +12,6 @@ public class LeaveTypeRequest {
     @NotBlank(message = "Leave type name cannot be blank")
     private String name;
     private String description;
+    private boolean affectLeaveBalance = true;
+
 }

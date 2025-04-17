@@ -21,6 +21,6 @@ public class DecisionResponse {
     private UserSummaryResponse signer;
     private UserSummaryResponse user;
     private SeniorityAllowanceRuleResponse seniorityAllowanceRule;
-    //private SalaryPromotionResponse salaryPromotion;
+    private SalaryPromotionResponse salaryPromotion;
     private PositionResponse position;
 }
