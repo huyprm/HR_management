@@ -41,5 +41,5 @@ public interface ContractService {
     List<Contract> getAllContractIsPending();
 
     @PreAuthorize("hasAnyAuthority('SCOPE_STAFF', 'SCOPE_ADMIN')")
-    ContractResponse updateContractWithPromotion(int contractId, String newJobGradeId, Double newSalary);
+    ContractResponse updateContractWithPromotion(int contractId, String newJobGradeId);
 }

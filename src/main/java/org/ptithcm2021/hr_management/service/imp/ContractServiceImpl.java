@@ -306,51 +306,17 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public ContractResponse updateContractWithPromotion(int contractId, String newJobGradeId, Double newSalary) {
-        // Lấy hợp đồng hiện tại cần cập nhật
+    public ContractResponse updateContractWithPromotion(int contractId, String newJobGradeId) {
         Contract contract = contractRepository.findById(contractId)
                 .orElseThrow(() -> new AppException(ErrorCode.CONTRACT_NOT_FOUND));
-        
-        // Lấy JobGrade mới theo ID
+
         JobGrade newJobGrade = jobGradeRepository.findById(newJobGradeId)
                 .orElseThrow(() -> new AppException(ErrorCode.JOB_GRADE_NOT_FOUND));
-        
-        // Lưu thông tin JobGrade cũ để ghi log
+
         JobGrade oldJobGrade = contract.getJobGrade();
         double oldSalary = contract.getBasicSalary();
-        
-        // Tính toán mức lương mới dựa trên hệ số nếu không được chỉ định
-        if (newSalary == null) {
-            // Tính lương mới dựa trên hệ số của cấp bậc mới
-            double oldCoefficient = oldJobGrade.getCoefficient();
-            double newCoefficient = newJobGrade.getCoefficient();
-            newSalary = (oldSalary / oldCoefficient) * newCoefficient;
-        }
-        
-        // Cập nhật hợp đồng với JobGrade và lương mới
+
         contract.setJobGrade(newJobGrade);
-        contract.setBasicSalary(newSalary);
-        
-        // Tạo ghi chú cho việc thay đổi
-        String updateNote = "Cập nhật từ cấp " + oldJobGrade.getName() + 
-                " (hệ số " + oldJobGrade.getCoefficient() + ") lên cấp " + 
-                newJobGrade.getName() + " (hệ số " + newJobGrade.getCoefficient() + "). " +
-                "Lương cơ bản thay đổi từ " + oldSalary + " lên " + newSalary;
-        
-        if (contract.getClause() == null) {
-            contract.setClause(updateNote);
-        } else {
-            contract.setClause(contract.getClause() + "; " + updateNote);
-        }
-        
-        // Lưu lịch sử thay đổi
-        workLogRepository.save(
-                WorkingHistory.builder()
-                        .type(WorkLogTypeEnum.PROMOTION)
-                        .user(contract.getUser())
-                        .contract(contract)
-                        .build()
-        );
         
         // Lưu hợp đồng đã cập nhật
         Contract updatedContract = contractRepository.save(contract);

@@ -47,6 +47,7 @@ public class ContractSchedule {
     /**
      * Cập nhật trạng thái hợp đồng vào ngày đầu tiên của mỗi tháng lúc 00:01
      * Chuyển hợp đồng từ "đã ký chờ hiệu lực" sang "đang có hiệu lực"
+     * Áp dụng cho các hợp đồng được ký lại do thăng chức hoặc gia hạn
      */
     @Scheduled(cron = "0 1 0 1 * ?", zone = "Asia/Ho_Chi_Minh")
     @Transactional

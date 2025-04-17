@@ -27,6 +27,4 @@ public interface SalaryPromotionService {
     @PreAuthorize("hasAnyAuthority('SCOPE_MANAGER', 'SCOPE_ADMIN')")
     List<SalaryPromotionResponse> getSalaryPromotionByStatusAndSignId(long signer, FormStatusEnum formStatus);
 
-    @PreAuthorize("hasAnyAuthority('SCOPE_MANAGER', 'SCOPE_ADMIN')")
-    SalaryPromotionResponse approveAndApplySalaryPromotion(int id, SalaryPromotionUpdateRequest updateRequest);
 }

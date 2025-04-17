@@ -12,10 +12,10 @@ public interface LeaveApplicationService {
     @PreAuthorize("T(String).valueOf(#leaveApplicationRequest.userId) == authentication.name")
     LeaveApplicationResponse createApplication(LeaveApplicationRequest leaveApplicationRequest);
 
-    @PreAuthorize("hasAuthority('SCOPE_MANAGER')")
+    @PreAuthorize("hasAnyAuthority('SCOPE_MANAGER', 'SCOPE_ADMIN')")
     LeaveApplicationResponse confirmApplication (FormStatusEnum formStatusEnum, long applicationId);
 
-    @PreAuthorize("hasAuthority('SCOPE_MANAGER')")
+    @PreAuthorize("hasAnyAuthority('SCOPE_MANAGER', 'SCOPE_ADMIN')")
     List<LeaveApplicationResponse> getApplicationIsPending(FormStatusEnum formStatusEnum);
 
     LeaveApplicationResponse getApplication(long applicationId);

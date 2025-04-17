@@ -85,7 +85,7 @@ public class SalarySchedule {
                         double newBasicSalary = (currentBasicSalary / oldCoefficient) * newCoefficient;
                         
                         // Áp dụng thay đổi vào hợp đồng
-                        contractService.updateContractWithPromotion(contract.getId(), newJobGradeId, newBasicSalary);
+                        contractService.updateContractWithPromotion(contract.getId(), newJobGradeId);
                         
                         // Đánh dấu quyết định đã được xử lý
                         decision.setProcessed(true);
