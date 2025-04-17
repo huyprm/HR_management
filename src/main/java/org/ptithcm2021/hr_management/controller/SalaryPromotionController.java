@@ -59,4 +59,14 @@ public class SalaryPromotionController {
         return ApiResponse.<List<SalaryPromotionResponse>>builder()
                 .data(salaryPromotionService.getSalaryPromotionByStatusAndSignId(signerId, status)).build();
     }
+
+    @PutMapping("/{id}/approve")
+    public ApiResponse<SalaryPromotionResponse> approveSalaryPromotion(
+            @PathVariable int id,
+            @RequestBody @Valid SalaryPromotionUpdateRequest updateRequest) {
+        return ApiResponse.<SalaryPromotionResponse>builder()
+                .data(salaryPromotionService.approveAndApplySalaryPromotion(id, updateRequest))
+                .message("Promotion request processed successfully")
+                .build();
+    }
 }

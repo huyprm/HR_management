@@ -50,7 +50,10 @@ public enum ErrorCode {
     SALARY_NOT_FOUND(1041, "Salary not found", HttpStatus.NOT_FOUND),
     SALARY_ALREADY_EXISTS(1042, "Salary for this month already exists", HttpStatus.CONFLICT),
     INVALID_CONTRACT_USER(1043, "The contract does not belong to the specified user", HttpStatus.BAD_REQUEST),
-    CONTRACT_INVALID_STATUS(1044,"Contract invalid status" ,HttpStatus.BAD_REQUEST);
+    CONTRACT_INVALID_STATUS(1044,"Contract invalid status" ,HttpStatus.BAD_REQUEST),
+    PROMOTION_ALREADY_PROCESSED(1045, "The promotion request has already been processed", HttpStatus.CONFLICT),
+    CONTRACT_UPDATE_FAILED(1046, "Failed to update contract with new salary and job grade", HttpStatus.INTERNAL_SERVER_ERROR),
+    DECISION_CREATION_FAILED(1047, "Failed to create salary change decision", HttpStatus.INTERNAL_SERVER_ERROR);
 
     ErrorCode(int code, String message, HttpStatus status){
         this.code = code;

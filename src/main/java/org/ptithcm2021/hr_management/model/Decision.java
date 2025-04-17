@@ -23,6 +23,11 @@ public class Decision {
 
     @Temporal(TemporalType.DATE)
     private Date date;
+    
+    @Temporal(TemporalType.DATE)
+    private Date effectiveDate;
+    
+    private boolean processed = true;
 
     @Enumerated(EnumType.STRING)
     private DecisionEnum type;
