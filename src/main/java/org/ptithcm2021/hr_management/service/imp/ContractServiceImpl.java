@@ -203,11 +203,6 @@ public class ContractServiceImpl implements ContractService {
             createOrUpdateLeaveBalance(user.getId(), contract.getStartDate(), contract.getEndDate());
         }
 
-        // Save updated user and contract
-        userRepository.save(user);
-        Contract savedContract = contractRepository.save(contract);
-
-
         return contractMapper.toContractResponse(savedContract);
     }
 

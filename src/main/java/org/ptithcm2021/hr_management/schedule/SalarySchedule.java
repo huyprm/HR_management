@@ -28,7 +28,7 @@ import java.util.List;
 @Slf4j
 public class SalarySchedule {
     private final SalaryService salaryService;
-    private final ContractRepository contractRepository;
+    private final ContractService contractService;
     private final DecisionRepository decisionRepository;
 
     

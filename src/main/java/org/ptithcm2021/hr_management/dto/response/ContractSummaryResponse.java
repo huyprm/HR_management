@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ContractSummaryResponse {
     private int id;
-    private String contractType;
+    private String contractTypeName;
     private double basicSalary;
     private String jobGradeName;
     private double coefficient;
