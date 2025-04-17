@@ -25,14 +25,6 @@ public class SalaryController {
                 .data(salaryService.createSalary(request)).build();
     }
 
-    @PutMapping("/{id}")
-    public ApiResponse<SalaryResponse> updateSalary(
-            @PathVariable int id,
-            @RequestBody @Valid SalaryRequest request) {
-        return ApiResponse.<SalaryResponse>builder()
-                .data(salaryService.updateSalary(id, request)).build();
-    }
-
     @DeleteMapping("/{id}")
     public ApiResponse<Void> deleteSalary(@PathVariable int id) {
         salaryService.deleteSalary(id);
