@@ -2,6 +2,7 @@ package org.ptithcm2021.hr_management.service.imp;
 
 import lombok.RequiredArgsConstructor;
 import org.ptithcm2021.hr_management.dto.request.LeaveTypeRequest;
+import org.ptithcm2021.hr_management.dto.request.UpdateNameAndDescriptionRequest;
 import org.ptithcm2021.hr_management.dto.response.LeaveTypeResponse;
 import org.ptithcm2021.hr_management.exception.AppException;
 import org.ptithcm2021.hr_management.exception.ErrorCode;
@@ -24,15 +25,19 @@ public class LeaveTypeServiceImpl implements LeaveTypeService {
 
     @Override
     public LeaveTypeResponse createLeaveType(LeaveTypeRequest leaveTypeRequest) {
+        if (leaveTypeRepository.existsByName(leaveTypeRequest.getName()))
+            throw new AppException(ErrorCode.LEAVE_TYPE_ALREADY_EXISTS);
+
         LeaveType leaveType = leaveTypeMapper.toLeaveType(leaveTypeRequest);
         return leaveTypeMapper.toLeaveTypeResponse(leaveTypeRepository.save(leaveType));
     }
 
     @Override
-    public LeaveTypeResponse updateLeaveType(LeaveTypeRequest leaveTypeRequest, int id) {
+    public LeaveTypeResponse updateLeaveType(LeaveTypeRequest request, int id) {
+
         LeaveType leaveType = leaveTypeRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.LEAVE_TYPE_NOT_FOUND));
 
-        leaveTypeMapper.updateLeaveType(leaveType, leaveTypeRequest);
+        leaveTypeMapper.updateLeaveType(leaveType, request);
 
         return leaveTypeMapper.toLeaveTypeResponse(leaveTypeRepository.save(leaveType));
     }

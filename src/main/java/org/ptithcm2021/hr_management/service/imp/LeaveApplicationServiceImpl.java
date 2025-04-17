@@ -60,6 +60,9 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
         LeaveApplication leaveApplication = leaveApplicationRepository.findById(applicationId)
                 .orElseThrow(() -> new AppException(ErrorCode.LEAVE_APPLICATION_NOT_FOUND));
 
+        if(leaveApplication.getFormStatusEnum() != FormStatusEnum.PENDING)
+            throw new AppException(ErrorCode.FORM_STATUS_INVALID);
+
         leaveApplication.setFormStatusEnum(formStatusEnum);
 
 

@@ -12,7 +12,7 @@ import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {ContractMapper.class, UserMapper.class})
 public interface SalaryMapper {
     
     @Mapping(target = "user", ignore = true)
@@ -24,6 +24,13 @@ public interface SalaryMapper {
     @Mapping(target = "salaryMonth", source = "salaryMonth", qualifiedByName = "formatYearMonth")
     @Mapping(target = "paymentDate", source = "paymentDate", qualifiedByName = "formatDate")
     @Mapping(target = "totalSalary", expression = "java(calculateTotalSalary(salary))")
+    @Mapping(target = "user.fullName", source = "user.fullName")
+    @Mapping(target = "user.id", source = "user.id")
+    @Mapping(target = "contract.id", source = "contract.id")
+    @Mapping(target = "contract.contractTypeName", source = "contract.contractType.name")
+    @Mapping(target = "contract.jobGradeName", source = "contract.jobGrade.name")
+    @Mapping(target = "contract.basicSalary", source = "contract.basicSalary")
+    @Mapping(target = "contract.coefficient", source = "contract.jobGrade.coefficient")
     SalaryResponse toSalaryResponse(Salary salary);
     
     @Named("formatYearMonth")

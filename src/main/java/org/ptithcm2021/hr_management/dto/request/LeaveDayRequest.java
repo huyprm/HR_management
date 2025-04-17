@@ -17,6 +17,7 @@ public class LeaveDayRequest {
     @NotNull(message = "Day off cannot be empty")
     private Date date;
 
+
     private String name;
 
     private String description;

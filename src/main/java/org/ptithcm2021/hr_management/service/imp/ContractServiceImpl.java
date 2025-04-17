@@ -167,6 +167,15 @@ public class ContractServiceImpl implements ContractService {
         // Update role for user's account
         user.getAccount().setRole(position.getRole().getId());
         user.setPosition(position);
+        
+        // Create or update leave balance for policy-based contracts
+        if (contractType.isPolicy()) {
+            createOrUpdateLeaveBalance(user.getId(), contract.getStartDate(), contract.getEndDate());
+        }
+
+        // Save updated user and contract
+        userRepository.save(user);
+        Contract savedContract = contractRepository.save(contract);
 
         // Set hire date only for new contracts (not extensions)
         if (!isExtend) {
@@ -187,15 +196,12 @@ public class ContractServiceImpl implements ContractService {
                             .build()
             );
         }
+
         
         // Create or update leave balance for policy-based contracts
         if (contractType.isPolicy()) {
             createOrUpdateLeaveBalance(user.getId(), contract.getStartDate(), contract.getEndDate());
         }
-
-        // Save updated user and contract
-        userRepository.save(user);
-        Contract savedContract = contractRepository.save(contract);
 
         return contractMapper.toContractResponse(savedContract);
     }
