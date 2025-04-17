@@ -1,6 +1,7 @@
 package org.ptithcm2021.hr_management.schedule;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.ptithcm2021.hr_management.dto.request.NotificationRequest;
 import org.ptithcm2021.hr_management.enums.ContractStatusEnum;
 import org.ptithcm2021.hr_management.model.Contract;
@@ -8,12 +9,15 @@ import org.ptithcm2021.hr_management.repository.ContractRepository;
 import org.ptithcm2021.hr_management.service.NotificationService;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class ContractSchedule {
@@ -21,7 +25,7 @@ public class ContractSchedule {
     private final NotificationService notificationService;
 
     @Scheduled(cron = "0 0 0 * * *")
-    public void updateContractStatus(){
+    public void  notiContractStatus(){
         List<Contract> contracts = contractRepository.findContractByContractStatusEnum(ContractStatusEnum.PENDING);
 
         contracts.forEach(contract ->{
@@ -38,6 +42,40 @@ public class ContractSchedule {
                 }
             }
         });
+    }
+
+    /**
+     * Cập nhật trạng thái hợp đồng vào ngày đầu tiên của mỗi tháng lúc 00:01
+     * Chuyển hợp đồng từ "đã ký chờ hiệu lực" sang "đang có hiệu lực"
+     */
+    @Scheduled(cron = "0 1 0 1 * ?", zone = "Asia/Ho_Chi_Minh")
+    @Transactional
+    public void updateContractStatus() {
+        LocalDate firstDayOfMonth = LocalDate.now().withDayOfMonth(1);
+        log.info("Updating contract statuses on the first day of month: {}", firstDayOfMonth);
+
+        try {
+            // Lấy danh sách hợp đồng đã ký nhưng chưa có hiệu lực
+            List<Contract> pendingContracts = contractRepository.findAllByContractStatusEnum(
+                    ContractStatusEnum.SIGNED_PENDING_EFFECTIVE);
+
+            if (pendingContracts.isEmpty()) {
+                log.info("No pending contracts to activate");
+                return;
+            }
+
+            // Cập nhật trạng thái của các hợp đồng này thành ACTIVE
+            for (Contract contract : pendingContracts) {
+                contract.setContractStatusEnum(ContractStatusEnum.ACTIVE);
+                contractRepository.save(contract);
+                log.info("Contract ID {} for user ID {} has been activated",
+                        contract.getId(), contract.getUser().getId());
+            }
+
+            log.info("Successfully updated {} contracts to ACTIVE status", pendingContracts.size());
+        } catch (Exception e) {
+            log.error("Error updating contract statuses: {}", e.getMessage(), e);
+        }
     }
 
     private NotificationRequest notificationContractExpirySoon(long userId, Date endDate){

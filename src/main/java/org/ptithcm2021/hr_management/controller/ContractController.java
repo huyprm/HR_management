@@ -7,6 +7,7 @@ import org.ptithcm2021.hr_management.dto.response.ApiResponse;
 import org.ptithcm2021.hr_management.dto.response.ContractResponse;
 import org.ptithcm2021.hr_management.enums.ContractStatusEnum;
 import org.ptithcm2021.hr_management.service.ContractService;
+import org.ptithcm2021.hr_management.service.imp.ContractServiceImpl;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,6 +18,20 @@ import java.util.List;
 public class ContractController {
 
     private final ContractService contractService;
+
+    @PostMapping("/draft")
+    public ApiResponse<ContractResponse> createDraftContract(@RequestBody @Valid ContractRequest contractRequest) {
+        return ApiResponse.<ContractResponse>builder()
+                .data(contractService.createDraftContract(contractRequest, false))
+                .build();
+    }
+
+    @PostMapping("/{contractId}/sign")
+    public ApiResponse<ContractResponse> signContract(@PathVariable int contractId) {
+        return ApiResponse.<ContractResponse>builder()
+                .data(contractService.signContract(contractId))
+                .build();
+    }
 
     @PostMapping("/create")
     public ApiResponse<ContractResponse> createContract(@RequestBody @Valid ContractRequest contractRequest) {

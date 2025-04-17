@@ -45,7 +45,12 @@ public enum ErrorCode {
     CONTRACT_NOT_ELIGIBLE_FOR_RENEWAL(1036, "Contract not eligible for renewal",HttpStatus.CONFLICT ),
     INVALID_DECISION_TYPE(1037,"Invalid decision type" , HttpStatus.BAD_REQUEST ),
     DECISION_ALREADY_EXISTS(1038, "Decision already exists",HttpStatus.BAD_REQUEST),
-    DECISION_NOT_FOUND(1039, "Decision not found", HttpStatus.NOT_FOUND );
+    DECISION_NOT_FOUND(1039, "Decision not found", HttpStatus.NOT_FOUND ),
+    SALARY_PROMOTION_NOT_FOUND(1040, "Salary promotion not found", HttpStatus.NOT_FOUND),
+    SALARY_NOT_FOUND(1041, "Salary not found", HttpStatus.NOT_FOUND),
+    SALARY_ALREADY_EXISTS(1042, "Salary for this month already exists", HttpStatus.CONFLICT),
+    INVALID_CONTRACT_USER(1043, "The contract does not belong to the specified user", HttpStatus.BAD_REQUEST),
+    CONTRACT_INVALID_STATUS(1044,"Contract invalid status" ,HttpStatus.BAD_REQUEST);
 
     ErrorCode(int code, String message, HttpStatus status){
         this.code = code;

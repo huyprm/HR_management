@@ -1,3 +1,13 @@
+/**
+ * Quy trình xử lý hợp đồng trong hệ thống HR Management:
+ * 
+ * 1. PENDING: Hợp đồng mới được tạo, đang chờ phê duyệt hoặc chờ ký kết
+ * 2. SIGNED_PENDING_EFFECTIVE: Hợp đồng đã được ký, nhưng chưa có hiệu lực, sẽ có hiệu lực từ tháng sau
+ * 3. ACTIVE: Hợp đồng đang có hiệu lực, là cơ sở để tính lương và phúc lợi
+ * 4. EXPIRED: Hợp đồng đã hết hạn theo thời gian quy định
+ * 5. TERMINATED: Hợp đồng bị chấm dứt trước thời hạn
+ * 6. RENEWED: Hợp đồng đã được gia hạn bằng một hợp đồng mới
+ */
 package org.ptithcm2021.hr_management.service.imp;
 
 import lombok.RequiredArgsConstructor;
@@ -36,6 +46,91 @@ public class ContractServiceImpl implements ContractService {
     private final LeaveBalanceService leaveBalanceService;
     private final WorkLogRepository workLogRepository;
 
+    /**
+     * Tạo hợp đồng mới với trạng thái PENDING (chờ phê duyệt/ký kết)
+     */
+    @Override
+    public ContractResponse createDraftContract(ContractRequest request, boolean isExtend) {
+        validateNoActiveContract(request.getUserId(), request.getStartDate(), request.getEndDate());
+
+        User user = userService.getUserToUser(request.getUserId());
+        User signer = userService.getUserToUser(request.getSignerId());
+
+        Position position = positionRepository.findById(request.getPositionId())
+                .orElseThrow(() -> new AppException(ErrorCode.POSITION_NOT_FOUND));
+
+        ContractType contractType = contractTypeRepository.findById(request.getContractTypeId())
+                .orElseThrow(() -> new AppException(ErrorCode.CONTRACT_TYPE_NOT_FOUND));
+
+        JobGrade jobGrade = jobGradeRepository.findById(request.getJobGradeId())
+                .orElseThrow(() -> new AppException(ErrorCode.JOB_GRADE_NOT_FOUND));
+
+        Contract contract = contractMapper.toContract(request);
+        contract.setUser(user);
+        contract.setSigner(signer);
+        contract.setPosition(position);
+        contract.setContractType(contractType);
+        contract.setJobGrade(jobGrade);
+        
+        // Thiết lập trạng thái PENDING cho hợp đồng đang chờ phê duyệt/ký kết
+        contract.setContractStatusEnum(ContractStatusEnum.PENDING);
+
+        // Save contract
+        Contract savedContract = contractRepository.save(contract);
+
+        return contractMapper.toContractResponse(savedContract);
+    }
+
+    /**
+     * Ký hợp đồng - chuyển từ PENDING sang SIGNED_PENDING_EFFECTIVE
+     */
+    @Override
+    public ContractResponse signContract(int contractId) {
+        Contract contract = contractRepository.findById(contractId)
+                .orElseThrow(() -> new AppException(ErrorCode.CONTRACT_NOT_FOUND));
+        
+        // Chỉ cho phép ký hợp đồng ở trạng thái PENDING
+        if (contract.getContractStatusEnum() != ContractStatusEnum.PENDING) {
+            throw new AppException(ErrorCode.CONTRACT_INVALID_STATUS);
+        }
+        
+        // Cập nhật trạng thái hợp đồng thành đã ký, chờ hiệu lực
+        contract.setContractStatusEnum(ContractStatusEnum.SIGNED_PENDING_EFFECTIVE);
+        
+        // Cập nhật thông tin người dùng
+        User user = contract.getUser();
+        Position position = contract.getPosition();
+        
+        // Update role for user's account
+        user.getAccount().setRole(position.getRole().getId());
+        user.setPosition(position);
+        
+        // Set hire date for new employees
+        if (user.getHireDate() == null) {
+            user.setHireDate(contract.getStartDate());
+        }
+        
+        // Log event
+        workLogRepository.save(
+                WorkingHistory.builder()
+                        .type(WorkLogTypeEnum.CONTRACT_SIGN)
+                        .user(user)
+                        .contract(contract)
+                        .build()
+        );
+        
+        // Create or update leave balance for policy-based contracts
+        if (contract.getContractType().isPolicy()) {
+            createOrUpdateLeaveBalance(user.getId(), contract.getStartDate(), contract.getEndDate());
+        }
+        
+        // Save updated user and contract
+        userRepository.save(user);
+        Contract savedContract = contractRepository.save(contract);
+        
+        return contractMapper.toContractResponse(savedContract);
+    }
+
     @Override
     public ContractResponse createContract(ContractRequest request, boolean isExtend) {
         validateNoActiveContract(request.getUserId(), request.getStartDate(), request.getEndDate());
@@ -58,10 +153,29 @@ public class ContractServiceImpl implements ContractService {
         contract.setPosition(position);
         contract.setContractType(contractType);
         contract.setJobGrade(jobGrade);
+        
+        boolean isFirstContract = isFirstContract(user.getId());
+        
+        // Nếu là hợp đồng đầu tiên hoặc gia hạn hợp đồng -> có hiệu lực ngay
+        // Nếu là hợp đồng thay đổi chức vụ -> chỉ có hiệu lực từ đầu tháng sau
+        if (isFirstContract || isExtend) {
+            contract.setContractStatusEnum(ContractStatusEnum.ACTIVE);
+        } else {
+            contract.setContractStatusEnum(ContractStatusEnum.SIGNED_PENDING_EFFECTIVE);
+        }
 
         // Update role for user's account
         user.getAccount().setRole(position.getRole().getId());
         user.setPosition(position);
+        
+        // Create or update leave balance for policy-based contracts
+        if (contractType.isPolicy()) {
+            createOrUpdateLeaveBalance(user.getId(), contract.getStartDate(), contract.getEndDate());
+        }
+
+        // Save updated user and contract
+        userRepository.save(user);
+        Contract savedContract = contractRepository.save(contract);
 
         // Set hire date only for new contracts (not extensions)
         if (!isExtend) {
@@ -82,14 +196,6 @@ public class ContractServiceImpl implements ContractService {
                             .build()
             );
         }
-        // Create or update leave balance for policy-based contracts
-        if (contractType.isPolicy()) {
-            createOrUpdateLeaveBalance(user.getId(), contract.getStartDate(), contract.getEndDate());
-        }
-
-        // Save updated user and contract
-        userRepository.save(user);
-        Contract savedContract = contractRepository.save(contract);
 
         return contractMapper.toContractResponse(savedContract);
     }
@@ -165,15 +271,48 @@ public class ContractServiceImpl implements ContractService {
 
     @Override
     public Contract getContractCurrentOfUser(long userId) {
-
-        return contractRepository.findContractByUserIdAndContractStatusEnum(userId, ContractStatusEnum.PENDING)
+        // Đầu tiên tìm hợp đồng ACTIVE
+        Optional<Contract> activeContract = contractRepository.findContractByUserIdAndContractStatusEnum(
+                userId, ContractStatusEnum.ACTIVE);
+        
+        if (activeContract.isPresent()) {
+            return activeContract.get();
+        }
+        
+        // Nếu không có hợp đồng ACTIVE, tìm hợp đồng đã ký chờ hiệu lực
+        Optional<Contract> signedPendingContract = contractRepository.findContractByUserIdAndContractStatusEnum(
+                userId, ContractStatusEnum.SIGNED_PENDING_EFFECTIVE);
+        
+        if (signedPendingContract.isPresent()) {
+            return signedPendingContract.get();
+        }
+        
+        // Cuối cùng tìm hợp đồng PENDING (trạng thái cũ)
+        return contractRepository.findContractByUserIdAndContractStatusEnum(
+                userId, ContractStatusEnum.PENDING)
                 .orElseThrow(() -> new AppException(ErrorCode.CONTRACT_NOT_FOUND));
     }
 
     @Override
     public List<Contract> getAllContractIsPending() {
-        return contractRepository.findContractByContractStatusEnum(ContractStatusEnum.PENDING)
-                .stream().toList();
+        // Lấy cả hợp đồng đang chờ duyệt và hợp đồng đã ký chờ hiệu lực
+        List<Contract> pendingContracts = contractRepository.findContractByContractStatusEnum(ContractStatusEnum.PENDING);
+        List<Contract> signedPendingContracts = contractRepository.findContractByContractStatusEnum(
+                ContractStatusEnum.SIGNED_PENDING_EFFECTIVE);
+        
+        // Kết hợp cả hai danh sách
+        pendingContracts.addAll(signedPendingContracts);
+        return pendingContracts;
+    }
+
+    /**
+     * Kiểm tra xem đây có phải là hợp đồng đầu tiên của người dùng không
+     * @param userId ID của người dùng
+     * @return true nếu là hợp đồng đầu tiên, false nếu người dùng đã có hợp đồng trước đó
+     */
+    private boolean isFirstContract(long userId) {
+        List<Contract> userContracts = contractRepository.findContractByUserId(userId);
+        return userContracts.isEmpty();
     }
 
     private void createOrUpdateLeaveBalance(long userId, Date startDate, Date endDate){
@@ -199,23 +338,30 @@ public class ContractServiceImpl implements ContractService {
     }
 
     private void validateNoActiveContract(long userId, Date startDate, Date endDate) {
-        Optional<Contract> optionalContract = contractRepository
-                .findContractByUserIdAndContractStatusEnum(userId, ContractStatusEnum.PENDING);
-
-        if (optionalContract.isEmpty()) {
-            if (startDate.after(endDate)) throw new AppException(ErrorCode.CONTRACT_OVERLAP);
-            return;
+        // Kiểm tra xem người dùng đã có hợp đồng nào đang hoạt động hoặc chờ kích hoạt không
+        List<Contract> existingContracts = contractRepository.findContractByUserId(userId);
+        
+        for (Contract contract : existingContracts) {
+            ContractStatusEnum status = contract.getContractStatusEnum();
+            
+            // Kiểm tra nếu hợp đồng đang ACTIVE hoặc SIGNED_PENDING_EFFECTIVE
+            if (status == ContractStatusEnum.ACTIVE || 
+                status == ContractStatusEnum.SIGNED_PENDING_EFFECTIVE || 
+                status == ContractStatusEnum.PENDING) {
+                
+                boolean overlaps = startDate.before(contract.getEndDate()) && 
+                                  endDate.after(contract.getStartDate());
+                
+                if (overlaps) {
+                    throw new AppException(ErrorCode.CONTRACT_OVERLAP);
+                }
+            }
         }
-
-        Contract contract = optionalContract.get();
-        boolean overlaps =
-                startDate.before(contract.getEndDate()) && endDate.after(contract.getStartDate());
-
-        if (overlaps) {
+        
+        // Kiểm tra ngày bắt đầu phải trước ngày kết thúc
+        if (startDate.after(endDate)) {
             throw new AppException(ErrorCode.CONTRACT_OVERLAP);
         }
     }
-
-
 
 }
