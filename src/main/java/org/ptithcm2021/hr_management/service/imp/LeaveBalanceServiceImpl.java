@@ -18,11 +18,9 @@ import org.ptithcm2021.hr_management.service.UserService;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.Year;
-import java.time.ZoneId;
+import java.time.*;
 import java.time.temporal.ChronoUnit;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -48,15 +46,18 @@ public class LeaveBalanceServiceImpl implements LeaveBalanceService {
         LeaveBalance leaveBalance = leaveBalanceRepository.findByUserIdAndYear(leaveApplication.getUser().getId(), year)
                 .orElseThrow(() -> new AppException(ErrorCode.LEAVE_BALANCE_NOT_FOUND));
 
-        LocalDateTime startDate = leaveApplication.getStartDate().toInstant()
-                .atZone(ZoneId.systemDefault())
-                .toLocalDateTime();
+        Date startDate = leaveApplication.getStartDate();
+        Date endDate = leaveApplication.getEndDate();
 
-        LocalDateTime endDate = leaveApplication.getEndDate().toInstant()
-                .atZone(ZoneId.systemDefault())
-                .toLocalDateTime();
+        LocalDate startLocalDate = startDate != null ?
+                new java.sql.Date(startDate.getTime()).toLocalDate() :
+                LocalDate.now();
+        LocalDate endLocalDate = endDate != null ?
+                new java.sql.Date(endDate.getTime()).toLocalDate() :
+                LocalDate.now();
+        
+        long numDay = ChronoUnit.DAYS.between(startLocalDate, endLocalDate);
 
-        long numDay = ChronoUnit.DAYS.between(startDate, endDate);
         leaveBalance.setUsedLeaveDay(leaveBalance.getUsedLeaveDay() + (int)numDay + 1);
 
         leaveBalanceRepository.save(leaveBalance);

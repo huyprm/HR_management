@@ -53,8 +53,9 @@ public enum ErrorCode {
     CONTRACT_INVALID_STATUS(1044,"Contract invalid status" ,HttpStatus.BAD_REQUEST),
     PROMOTION_ALREADY_PROCESSED(1045, "The promotion request has already been processed", HttpStatus.CONFLICT),
     CONTRACT_UPDATE_FAILED(1046, "Failed to update contract with new salary and job grade", HttpStatus.INTERNAL_SERVER_ERROR),
-    DECISION_CREATION_FAILED(1047, "Failed to create salary change decision", HttpStatus.INTERNAL_SERVER_ERROR);
-
+    DECISION_CREATION_FAILED(1047, "Failed to create salary change decision", HttpStatus.INTERNAL_SERVER_ERROR),
+    LEAVE_TYPE_ALREADY_EXISTS(1048, "Leave type already exists", HttpStatus.BAD_REQUEST),
+    FORM_STATUS_INVALID(1049,"Form status invalid" ,HttpStatus.BAD_REQUEST );
 
     ErrorCode(int code, String message, HttpStatus status){
         this.code = code;
