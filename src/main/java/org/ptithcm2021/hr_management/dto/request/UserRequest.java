@@ -28,6 +28,7 @@ public class UserRequest {
     private String email;
 
     private Date dob;
+    private String nationality;
     private String gender;
     private String address;
     private String ethnicity ;
