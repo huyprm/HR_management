@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.Instant;
 import java.time.Year;
+import java.time.YearMonth;
 import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.Date;
@@ -29,16 +30,22 @@ public class LeaveBalanceSchedule {
 
     @Scheduled(cron = "0 43 22 * * *", zone = "Asia/Ho_Chi_Minh")
     public void rolloverLeaveBalances() {
+        YearMonth now = YearMonth.now().minusMonths(1);
+        int year = now.getYear();
+        int month = now.getMonthValue();
         int lastYear = Year.now().getValue() - 1;
 
-        List<Contract> contracts = contractService.getAllContractIsPending();
+        List<Contract> contracts = contractService.getAllContractIsActive();
 
         Map<Long, Contract> contractMap = contracts.stream()
                 .collect(Collectors.toMap(contract -> contract.getUser().getId(), contract -> contract));
 
-        List<LeaveBalance> leaveBalances = leaveBalanceRepository.findAllByYear(lastYear)
-                .orElseThrow(()->new AppException(ErrorCode.LEAVE_BALANCE_NOT_FOUND));
+        List<LeaveBalance> leaveBalances = leaveBalanceRepository.findAllByYearAndMonth(year, month)
+                .orElse(null);
 
+        if (leaveBalances == null) {
+
+        }
         leaveBalances.forEach(oldBalance -> {
 
             Contract contract = contractMap.get(oldBalance.getUser().getId());

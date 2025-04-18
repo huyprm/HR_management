@@ -24,7 +24,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.Month;
 import java.time.Year;
+import java.time.YearMonth;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -36,9 +39,7 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final MailService mailService;
     private final NotificationRecipientRepository notificationRecipientRepository;
-    private final ContractRepository contractRepository;
-//    private final RewardAssignmentRepository rewardAssignmentRepository;
-//    private final DisciplineAssignmentRepository disciplineAssignmentRepository;
+    private final LeaveApplicationRepository leaveApplicationRepository;
     private final LeaveBalanceRepository leaveBalanceRepository;
     private final WorkLogRepository workLogRepository;
     private final WorkLogMapper workLogMapper;
@@ -136,9 +137,21 @@ public class UserServiceImpl implements UserService {
 //        userResponse.setNumDiscipline(Math.toIntExact(disciplineAssignmentRepository.countByUserId(userId)));
 
         // Leave Balance
-        LeaveBalance leave = leaveBalanceRepository.findByUserIdAndYear(userId, Year.now().getValue()).orElse(null);
-        userResponse.setUsedLeaveDay(leave != null ? leave.getUsedLeaveDay() : 0);
+        YearMonth currentMonth = YearMonth.now();
+        YearMonth preMonth = YearMonth.now();
+
+        LocalDate startDate = currentMonth.atEndOfMonth();
+        LocalDate endDate = currentMonth.atDay(1);
+
+        LeaveBalance leave = leaveBalanceRepository.findByUserIdAndYearAndMonth
+                (userId, preMonth.getYear(), preMonth.getMonthValue()).orElse(null);
+
         userResponse.setCarriedOverDay(leave != null ? leave.getCarriedOverDay() : 0);
+
+        int numLeave = leaveApplicationRepository
+                .findApprovedLeavesByUserAndMonth(userId, Year.now().getValue(), YearMonth.now().getMonthValue(), startDate, endDate).size();
+
+        userResponse.setUsedLeaveDay(numLeave);
 
         return userResponse;
     }

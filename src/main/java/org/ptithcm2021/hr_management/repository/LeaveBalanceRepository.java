@@ -18,6 +18,6 @@ public interface LeaveBalanceRepository extends JpaRepository<LeaveBalance, Inte
     List<LeaveBalance> findAllByUserIdAndYear(long userId, int year);
     
     // Các phương thức cũ được giữ lại để tương thích ngược
-    Optional<LeaveBalance> findByUserIdAndYear(long userId, int year);
-    Optional<List<LeaveBalance>> findAllByYear(int year);
+//    Optional<LeaveBalance> findByUserIdAndYear(long userId, int year);
+//    Optional<List<LeaveBalance>> findAllByYear(int year);
 }

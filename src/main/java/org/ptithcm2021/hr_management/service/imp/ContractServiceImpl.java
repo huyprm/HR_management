@@ -307,15 +307,9 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public List<Contract> getAllContractIsPending() {
-        // Lấy cả hợp đồng đang chờ duyệt và hợp đồng đã ký chờ hiệu lực
-        List<Contract> pendingContracts = contractRepository.findContractByContractStatusEnum(ContractStatusEnum.PENDING);
-        List<Contract> signedPendingContracts = contractRepository.findContractByContractStatusEnum(
-                ContractStatusEnum.SIGNED_PENDING_EFFECTIVE);
-        
-        // Kết hợp cả hai danh sách
-        pendingContracts.addAll(signedPendingContracts);
-        return pendingContracts;
+    public List<Contract> getAllContractIsActive() {
+        // Lấy cả hợp đồng đang hiệu lực
+        return contractRepository.findContractByContractStatusEnum(ContractStatusEnum.ACTIVE);
     }
 
     @Override

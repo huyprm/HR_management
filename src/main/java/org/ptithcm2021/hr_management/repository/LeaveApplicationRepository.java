@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -26,8 +27,8 @@ public interface LeaveApplicationRepository extends JpaRepository<LeaveApplicati
             @Param("userId") Long userId, 
             @Param("year") int year, 
             @Param("month") int month,
-            @Param("startOfMonth") Date startOfMonth,
-            @Param("endOfMonth") Date endOfMonth);
+            @Param("startOfMonth") LocalDate startOfMonth,
+            @Param("endOfMonth") LocalDate endOfMonth);
 
     @Query("SELECT la FROM LeaveApplication la WHERE " +
             "la.formStatusEnum = 'APPROVED' " +
@@ -37,6 +38,6 @@ public interface LeaveApplicationRepository extends JpaRepository<LeaveApplicati
     List<LeaveApplication> findApprovedLeavesByMonth(
             @Param("year") int year,
             @Param("month") int month,
-            @Param("startOfMonth") Date startOfMonth,
-            @Param("endOfMonth") Date endOfMonth);
+            @Param("startOfMonth") LocalDate startOfMonth,
+            @Param("endOfMonth") LocalDate endOfMonth);
 }

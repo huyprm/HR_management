@@ -57,13 +57,9 @@ public class LeaveBalanceServiceImpl implements LeaveBalanceService {
                 .orElseThrow(() -> new AppException(ErrorCode.LEAVE_BALANCE_NOT_FOUND));
 
         // Tính số ngày nghỉ
-        LocalDate endDate = Instant.ofEpochMilli(leaveApplication.getEndDate().getTime())
-                .atZone(ZoneId.systemDefault())
-                .toLocalDate();
+        LocalDate endDate = leaveApplication.getEndDate();
 
-        LocalDate startDate = Instant.ofEpochMilli(leaveApplication.getStartDate().getTime())
-                .atZone(ZoneId.systemDefault())
-                .toLocalDate();
+        LocalDate startDate = leaveApplication.getStartDate();
 
         // Tạo đối tượng YearMonth
         YearMonth yearMonth = YearMonth.of(year, month);

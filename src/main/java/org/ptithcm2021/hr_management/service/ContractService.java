@@ -38,7 +38,7 @@ public interface ContractService {
 
     Contract getContractCurrentOfUser(long userId);
 
-    List<Contract> getAllContractIsPending();
+    List<Contract> getAllContractIsActive();
 
     @PreAuthorize("hasAnyAuthority('SCOPE_STAFF', 'SCOPE_ADMIN')")
     ContractResponse updateContractWithPromotion(int contractId, String newJobGradeId);
