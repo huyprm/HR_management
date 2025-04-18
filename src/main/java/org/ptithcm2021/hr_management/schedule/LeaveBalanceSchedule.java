@@ -45,7 +45,7 @@ public class LeaveBalanceSchedule {
 
             if (contract == null) return;
 
-            int carried = oldBalance.getRemainingLeave() > 36 ? 0 : oldBalance.getRemainingLeave();
+            int carried = oldBalance.getRemainingLeaveDay() > 36 ? 0 : oldBalance.getRemainingLeaveDay();
 
             int leaveDay = LeaveBalanceUtil.calculateLeaveDaysInYear(new Date(), contract.getEndDate());
 
@@ -59,4 +59,33 @@ public class LeaveBalanceSchedule {
             leaveBalanceRepository.save(newBalance);
         });
     }
+
+//    void processMonthlyLeaveBalance(User user, YearMonth ym) {
+//        // 1. Tính tổng ngày nghỉ trong tháng đó (truy vấn đơn nghỉ đã approved, giao với ngày từ 1->endOfMonth)
+//        int used = leaveApplicationRepository.countLeaveDaysInMonth(user, ym);
+//
+//        // 2. Cộng thêm ngày phép mới (ví dụ 1 ngày/tháng nếu làm đủ)
+//        int accrued = 1;
+//
+//        // 3. Lấy carriedOver từ tháng trước
+//        LeaveBalance previous = leaveBalanceRepository.findByUserAndYearMonth(user, ym.minusMonths(1));
+//        int carried = previous != null ? previous.getRemainingDays() : 0;
+//
+//        // 4. Tính lại remaining
+//        int remaining = accrued + carried - used;
+//        if (remaining < 0) remaining = 0;
+//
+//        // 5. Lưu lại bảng phép
+//        LeaveBalance lb = new LeaveBalance();
+//        lb.setUser(user);
+//        lb.setYearMonth(ym);
+//        lb.setAccruedDays(accrued);
+//        lb.setUsedDays(used);
+//        lb.setCarriedOver(carried);
+//        lb.setRemainingDays(remaining);
+//        lb.setCalculatedAt(LocalDate.now());
+//
+//        leaveBalanceRepository.save(lb);
+//    }
+
 }

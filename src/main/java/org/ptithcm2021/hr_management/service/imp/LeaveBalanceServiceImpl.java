@@ -89,12 +89,6 @@ public class LeaveBalanceServiceImpl implements LeaveBalanceService {
             leaveBalance.setUsedLeaveDay(leaveBalance.getUsedLeaveDay() + workActualDays);
             leaveBalanceRepository.save(leaveBalance);
         }
-
-        // Nếu là nghỉ BHXH hoặc loại nghỉ phép không ảnh hưởng đến số ngày nghỉ phép
-        if (leaveApplication.getLeaveType() != null && !leaveApplication.getLeaveType().isAffectLeaveBalance()) {
-            leaveBalance.setUsedBHXH(leaveBalance.getUsedBHXH() + workActualDays);
-            leaveBalanceRepository.save(leaveBalance);
-        }
     }
 
     @Override

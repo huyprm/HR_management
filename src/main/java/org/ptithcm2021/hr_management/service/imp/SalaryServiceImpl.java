@@ -258,7 +258,6 @@ public class SalaryServiceImpl implements SalaryService {
                 LeaveBalance leaveBalance = leaveBalanceOpt.get();
                 int totalLeaveDay = leaveBalance.getTotalLeaveDay() + leaveBalance.getCarriedOverDay();
                 int usedLeaveDay = leaveBalance.getUsedLeaveDay();
-                int usedBHXH = leaveBalance.getUsedBHXH();
                 
                 // Nếu số ngày nghỉ đã sử dụng vượt quá tổng số ngày cho phép, tính khấu trừ
                 if (usedLeaveDay > totalLeaveDay) {
@@ -266,8 +265,6 @@ public class SalaryServiceImpl implements SalaryService {
                     totalDeduction += dailySalary * unpaidLeaveDays;
                 }
 
-                //Trừ ngày nghỉ bảo hiểm xã hội
-                totalDeduction += dailySalary * usedBHXH;
             }
 
             return totalDeduction;

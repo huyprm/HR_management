@@ -10,7 +10,6 @@ import org.ptithcm2021.hr_management.model.LeaveBalance;
 public interface LeaveBalanceMapper {
     LeaveBalance toLeaveBalance(LeaveBalanceRequest leaveBalanceRequest);
 
-    @Mapping(target = "remainingLeave", expression = "java(leaveBalance.getRemainingLeave())")
     @Mapping(target = "userId", expression = "java(leaveBalance.getUser().getId())")
     LeaveBalanceResponse toLeaveBalanceResponse(LeaveBalance leaveBalance);
 }

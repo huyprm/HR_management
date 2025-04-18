@@ -19,23 +19,19 @@ public class LeaveBalance {
     private int id;
 
     @Column
-    private int year = Year.now().getValue();
+    private int year;
     
     @Column
-    private int month = LocalDate.now().getMonthValue();
+    private int month;
 
     private int totalLeaveDay;
     private int carriedOverDay;
     private int usedLeaveDay;
-    private int usedBHXH;
+    private int remainingLeaveDay;
 
     @ManyToOne
     @JoinColumn(name ="userId")
     private User user;
-
-    public int getRemainingLeave() {
-        return totalLeaveDay + carriedOverDay - usedLeaveDay;
-    }
 
     public YearMonth getYearMonth() {
         return YearMonth.of(year, month);

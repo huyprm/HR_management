@@ -18,5 +18,5 @@ public class LeaveBalanceResponse {
     private int carriedOverDay;
     private int usedLeaveDay;
     private int usedBHXH;
-    public int remainingLeave;
+    public int remainingLeaveDay;
 }

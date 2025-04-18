@@ -18,7 +18,6 @@ public class LeaveBalanceRequest {
     private int totalLeaveDay;
     private int carriedOverDay;
     private int usedLeaveDay;
-    private int usedBHXH;
     private long userId;
     private int year = Year.now().getValue();
     private int month = LocalDate.now().getMonthValue();

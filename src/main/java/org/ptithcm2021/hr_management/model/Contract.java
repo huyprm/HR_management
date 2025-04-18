@@ -49,7 +49,7 @@ public class Contract{
     @JoinColumn(name = "positionId")
     private Position position;
 
-    @ManyToOne()
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "jobGradeId")
     private JobGrade jobGrade;
 }

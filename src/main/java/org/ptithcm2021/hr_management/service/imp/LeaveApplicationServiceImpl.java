@@ -65,12 +65,6 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
 
         leaveApplication.setFormStatusEnum(formStatusEnum);
 
-
-        if (FormStatusEnum.APPROVED.equals(formStatusEnum)){
-            int month = leaveApplication.getStartDate().getMonth() + 1;
-            leaveBalanceService.dayOff(Year.now().getValue(), month, leaveApplication);
-        }
-
         return leaveApplicationMapper.toLeaveTypeApplicationResponse(
                 leaveApplicationRepository.save(leaveApplication)
         );

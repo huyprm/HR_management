@@ -52,7 +52,7 @@ public class LeaveBalanceController {
                         .totalLeaveDay(lb.getTotalLeaveDay())
                         .carriedOverDay(lb.getCarriedOverDay())
                         .usedLeaveDay(lb.getUsedLeaveDay())
-                        .remainingLeave(lb.getRemainingLeave())
+                        .remainingLeaveDay(lb.getRemainingLeaveDay())
                         .build())
                 .collect(Collectors.toList());
                 
