@@ -1,4 +1,4 @@
-package org.ptithcm2021.hr_management.service.imp;
+package org.ptithcm2021.hr_management.service.impl;
 
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
@@ -9,8 +9,6 @@ import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.ptithcm2021.hr_management.dto.request.LoginRequest;
-import org.ptithcm2021.hr_management.dto.response.UserResponse;
-import org.ptithcm2021.hr_management.enums.RoleEnum;
 import org.ptithcm2021.hr_management.exception.AppException;
 import org.ptithcm2021.hr_management.exception.ErrorCode;
 import org.ptithcm2021.hr_management.model.Account;
@@ -18,7 +16,6 @@ import org.ptithcm2021.hr_management.repository.AccountRepository;
 import org.ptithcm2021.hr_management.repository.UserRepository;
 import org.ptithcm2021.hr_management.service.AuthenticationService;
 import org.ptithcm2021.hr_management.service.MailService;
-import org.ptithcm2021.hr_management.service.UserService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;

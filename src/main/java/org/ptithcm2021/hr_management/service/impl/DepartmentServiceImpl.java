@@ -1,4 +1,4 @@
-package org.ptithcm2021.hr_management.service.imp;
+package org.ptithcm2021.hr_management.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.ptithcm2021.hr_management.dto.request.DepartmentRequest;

@@ -3,20 +3,14 @@ package org.ptithcm2021.hr_management.controller;
 import com.nimbusds.jose.JOSEException;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.mail.MessagingException;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.ptithcm2021.hr_management.dto.request.LoginRequest;
 import org.ptithcm2021.hr_management.dto.response.ApiResponse;
-import org.ptithcm2021.hr_management.model.Account;
-import org.ptithcm2021.hr_management.service.imp.AuthenticationServiceImpl;
+import org.ptithcm2021.hr_management.service.impl.AuthenticationServiceImpl;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
-
-import static com.cloudinary.AccessControlRule.AccessType.token;
 
 @RestController
 @RequestMapping("/api/auth")

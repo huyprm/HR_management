@@ -1,4 +1,4 @@
-package org.ptithcm2021.hr_management.service.imp;
+package org.ptithcm2021.hr_management.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.ptithcm2021.hr_management.dto.request.ContractTypeRequest;
@@ -11,9 +11,7 @@ import org.ptithcm2021.hr_management.repository.ContractTypeRepository;
 import org.ptithcm2021.hr_management.service.ContractTypeService;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor

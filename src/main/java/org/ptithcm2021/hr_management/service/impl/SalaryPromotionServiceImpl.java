@@ -1,6 +1,5 @@
-package org.ptithcm2021.hr_management.service.imp;
+package org.ptithcm2021.hr_management.service.impl;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.ptithcm2021.hr_management.dto.request.SalaryPromotionRequest;
 import org.ptithcm2021.hr_management.dto.request.SalaryPromotionUpdateRequest;
@@ -16,7 +15,6 @@ import org.ptithcm2021.hr_management.model.Decision;
 import org.ptithcm2021.hr_management.enums.DecisionEnum;
 import org.ptithcm2021.hr_management.model.WorkingHistory;
 import org.ptithcm2021.hr_management.repository.SalaryPromotionRepository;
-import org.ptithcm2021.hr_management.repository.JobGradeRepository;
 import org.ptithcm2021.hr_management.repository.DecisionRepository;
 import org.ptithcm2021.hr_management.repository.WorkLogRepository;
 import org.ptithcm2021.hr_management.service.ContractService;

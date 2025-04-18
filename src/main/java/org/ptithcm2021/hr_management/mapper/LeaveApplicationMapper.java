@@ -13,5 +13,7 @@ public interface LeaveApplicationMapper {
     @Mapping(source = "leaveType.name", target = "leaveTypeName")
     @Mapping(source = "user.id", target = "user.id")
     @Mapping(source ="user.fullName", target = "user.fullName")
+    @Mapping(source = "signer.id", target = "signer.id")
+    @Mapping(source ="signer.fullName", target = "signer.fullName")
     LeaveApplicationResponse toLeaveTypeApplicationResponse (LeaveApplication leaveApplication);
 }

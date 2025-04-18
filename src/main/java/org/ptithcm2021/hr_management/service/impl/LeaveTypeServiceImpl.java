@@ -1,8 +1,7 @@
-package org.ptithcm2021.hr_management.service.imp;
+package org.ptithcm2021.hr_management.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.ptithcm2021.hr_management.dto.request.LeaveTypeRequest;
-import org.ptithcm2021.hr_management.dto.request.UpdateNameAndDescriptionRequest;
 import org.ptithcm2021.hr_management.dto.response.LeaveTypeResponse;
 import org.ptithcm2021.hr_management.exception.AppException;
 import org.ptithcm2021.hr_management.exception.ErrorCode;
@@ -12,10 +11,7 @@ import org.ptithcm2021.hr_management.repository.LeaveTypeRepository;
 import org.ptithcm2021.hr_management.service.LeaveTypeService;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor

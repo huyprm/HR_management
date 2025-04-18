@@ -1,4 +1,4 @@
-package org.ptithcm2021.hr_management.service.imp;
+package org.ptithcm2021.hr_management.service.impl;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -15,10 +15,8 @@ import org.ptithcm2021.hr_management.model.*;
 import org.ptithcm2021.hr_management.repository.*;
 import org.ptithcm2021.hr_management.service.DecisionService;
 import org.ptithcm2021.hr_management.service.UserService;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
-import java.beans.Transient;
 import java.util.List;
 import java.util.stream.Collectors;
 

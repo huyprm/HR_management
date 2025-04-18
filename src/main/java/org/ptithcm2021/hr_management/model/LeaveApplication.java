@@ -41,8 +41,9 @@ public class LeaveApplication{
     @Enumerated(EnumType.STRING)
     private FormStatusEnum formStatusEnum = FormStatusEnum.PENDING;
 
-    @LastModifiedBy
-    private String updatedBy;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name ="signerId")
+    private User signer;
 
     @LastModifiedDate
     private LocalDateTime updatedAt;

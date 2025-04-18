@@ -1,4 +1,4 @@
-package org.ptithcm2021.hr_management.service.imp;
+package org.ptithcm2021.hr_management.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.ptithcm2021.hr_management.dto.request.LeaveBalanceRequest;
@@ -6,23 +6,18 @@ import org.ptithcm2021.hr_management.dto.response.LeaveBalanceResponse;
 import org.ptithcm2021.hr_management.exception.AppException;
 import org.ptithcm2021.hr_management.exception.ErrorCode;
 import org.ptithcm2021.hr_management.mapper.LeaveBalanceMapper;
-import org.ptithcm2021.hr_management.model.Contract;
 import org.ptithcm2021.hr_management.model.LeaveApplication;
 import org.ptithcm2021.hr_management.model.LeaveBalance;
 import org.ptithcm2021.hr_management.model.User;
 import org.ptithcm2021.hr_management.repository.LeaveApplicationRepository;
 import org.ptithcm2021.hr_management.repository.LeaveBalanceRepository;
 import org.ptithcm2021.hr_management.repository.LeaveDayRepository;
-import org.ptithcm2021.hr_management.service.ContractService;
 import org.ptithcm2021.hr_management.service.LeaveBalanceService;
 import org.ptithcm2021.hr_management.service.UserService;
 import org.ptithcm2021.hr_management.util.LeaveBalanceUtil;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.*;
-import java.time.temporal.ChronoUnit;
-import java.util.Date;
 import java.util.List;
 
 @Service

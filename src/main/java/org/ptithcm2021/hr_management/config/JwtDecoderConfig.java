@@ -1,8 +1,7 @@
 package org.ptithcm2021.hr_management.config;
 
 import com.nimbusds.jose.JOSEException;
-import org.ptithcm2021.hr_management.service.imp.AuthenticationServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.ptithcm2021.hr_management.service.impl.AuthenticationServiceImpl;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.Jwt;

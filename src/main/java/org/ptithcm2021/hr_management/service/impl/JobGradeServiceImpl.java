@@ -1,4 +1,4 @@
-package org.ptithcm2021.hr_management.service.imp;
+package org.ptithcm2021.hr_management.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.ptithcm2021.hr_management.dto.request.JobGradeRequest;
@@ -8,14 +8,11 @@ import org.ptithcm2021.hr_management.exception.AppException;
 import org.ptithcm2021.hr_management.exception.ErrorCode;
 import org.ptithcm2021.hr_management.mapper.JobGradeMapper;
 import org.ptithcm2021.hr_management.model.JobGrade;
-import org.ptithcm2021.hr_management.model.Position;
 import org.ptithcm2021.hr_management.repository.JobGradeRepository;
 import org.ptithcm2021.hr_management.service.JobGradeService;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor

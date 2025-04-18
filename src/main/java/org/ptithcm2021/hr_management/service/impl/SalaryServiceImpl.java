@@ -1,4 +1,4 @@
-package org.ptithcm2021.hr_management.service.imp;
+package org.ptithcm2021.hr_management.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.ptithcm2021.hr_management.dto.request.SalaryRequest;
@@ -10,16 +10,12 @@ import org.ptithcm2021.hr_management.exception.ErrorCode;
 import org.ptithcm2021.hr_management.mapper.SalaryMapper;
 import org.ptithcm2021.hr_management.model.Contract;
 import org.ptithcm2021.hr_management.model.LeaveBalance;
-import org.ptithcm2021.hr_management.model.LeaveApplication;
 import org.ptithcm2021.hr_management.model.Salary;
 import org.ptithcm2021.hr_management.model.User;
 import org.ptithcm2021.hr_management.repository.*;
-import org.ptithcm2021.hr_management.schedule.SalarySchedule;
 import org.ptithcm2021.hr_management.service.SalaryService;
-import org.ptithcm2021.hr_management.service.SeniorityAllowanceRuleService;
 import org.ptithcm2021.hr_management.service.UserService;
 import org.ptithcm2021.hr_management.util.LeaveBalanceUtil;
-import org.ptithcm2021.hr_management.util.SalaryUtil;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;

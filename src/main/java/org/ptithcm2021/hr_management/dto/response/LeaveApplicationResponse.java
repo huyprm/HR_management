@@ -21,6 +21,7 @@ public class LeaveApplicationResponse {
     private FormStatusEnum formStatusEnum;
 
     private UserSummaryResponse user;
+    private UserSummaryResponse signer;
 
     private String leaveTypeName;
 }

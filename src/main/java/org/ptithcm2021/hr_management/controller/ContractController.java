@@ -7,7 +7,6 @@ import org.ptithcm2021.hr_management.dto.response.ApiResponse;
 import org.ptithcm2021.hr_management.dto.response.ContractResponse;
 import org.ptithcm2021.hr_management.enums.ContractStatusEnum;
 import org.ptithcm2021.hr_management.service.ContractService;
-import org.ptithcm2021.hr_management.service.imp.ContractServiceImpl;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

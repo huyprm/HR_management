@@ -8,7 +8,7 @@
  * 5. TERMINATED: Hợp đồng bị chấm dứt trước thời hạn
  * 6. RENEWED: Hợp đồng đã được gia hạn bằng một hợp đồng mới
  */
-package org.ptithcm2021.hr_management.service.imp;
+package org.ptithcm2021.hr_management.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.ptithcm2021.hr_management.dto.request.ContractRequest;
@@ -24,9 +24,7 @@ import org.ptithcm2021.hr_management.model.*;
 import org.ptithcm2021.hr_management.repository.*;
 import org.ptithcm2021.hr_management.service.ContractService;
 import org.ptithcm2021.hr_management.service.LeaveBalanceService;
-import org.ptithcm2021.hr_management.service.NotificationService;
 import org.ptithcm2021.hr_management.service.UserService;
-import org.ptithcm2021.hr_management.util.LeaveBalanceUtil;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;

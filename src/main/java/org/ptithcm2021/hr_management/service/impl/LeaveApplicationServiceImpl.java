@@ -1,9 +1,8 @@
-package org.ptithcm2021.hr_management.service.imp;
+package org.ptithcm2021.hr_management.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.ptithcm2021.hr_management.dto.request.LeaveApplicationRequest;
 import org.ptithcm2021.hr_management.dto.response.LeaveApplicationResponse;
-import org.ptithcm2021.hr_management.dto.response.LeaveTypeResponse;
 import org.ptithcm2021.hr_management.enums.FormStatusEnum;
 import org.ptithcm2021.hr_management.exception.AppException;
 import org.ptithcm2021.hr_management.exception.ErrorCode;
@@ -18,14 +17,11 @@ import org.ptithcm2021.hr_management.repository.UserRepository;
 import org.ptithcm2021.hr_management.service.LeaveApplicationService;
 import org.ptithcm2021.hr_management.service.LeaveBalanceService;
 import org.ptithcm2021.hr_management.service.UserService;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.time.Month;
-import java.time.Year;
-import java.time.YearMonth;
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -57,6 +53,14 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
 
     @Override
     public LeaveApplicationResponse confirmApplication(FormStatusEnum formStatusEnum, long applicationId) {
+        String userIdStr = SecurityContextHolder.getContext().getAuthentication().getName();
+        if (userIdStr == null) throw new AppException(ErrorCode.UNAUTHORIZED);
+
+        long userId = Long.parseLong(userIdStr);
+        User signer = userRepository.findById(userId)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+
+
         LeaveApplication leaveApplication = leaveApplicationRepository.findById(applicationId)
                 .orElseThrow(() -> new AppException(ErrorCode.LEAVE_APPLICATION_NOT_FOUND));
 
@@ -64,6 +68,7 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
             throw new AppException(ErrorCode.FORM_STATUS_INVALID);
 
         leaveApplication.setFormStatusEnum(formStatusEnum);
+        leaveApplication.setSigner(signer);
 
         return leaveApplicationMapper.toLeaveTypeApplicationResponse(
                 leaveApplicationRepository.save(leaveApplication)
