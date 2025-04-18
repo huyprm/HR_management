@@ -113,16 +113,16 @@ public class UserServiceImpl implements UserService {
             userResponse.setSeniorityLeaveDay(rule.getSeniorityLeaveDay());
         }
 
-        // Position Info
-        if (user.getPosition() == null) {
-            userResponse.setPositionName("Chưa có chức vụ");
-            userResponse.setDepartmentName("Chưa có phòng ban");
-        } else {
-            userResponse.setPositionName(user.getPosition().getName());
-
-            //Department Info
-            userResponse.setDepartmentName(user.getPosition().getDepartment().getName());
-        }
+//        // Position Info
+//        if (user.getPosition() == null) {
+//            userResponse.setPositionName("Chưa có chức vụ");
+//            userResponse.setDepartmentName("Chưa có phòng ban");
+//        } else {
+//            userResponse.setPositionName(user.getPosition().getName());
+//
+//            //Department Info
+//            userResponse.setDepartmentName(user.getPosition().getDepartment().getName());
+//        }
 
         List<Object[]> decisionCounts = workLogRepository.countRewardAndDisciplineByUserId(userId);
 
