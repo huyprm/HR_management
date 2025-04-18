@@ -108,16 +108,23 @@ public class ContractServiceImpl implements ContractService {
         // Set hire date for new employees
         if (user.getHireDate() == null) {
             user.setHireDate(contract.getStartDate());
+
+            workLogRepository.save(
+                    WorkingHistory.builder()
+                            .type(WorkLogTypeEnum.CONTRACT_SIGN)
+                            .user(user)
+                            .contract(contract)
+                            .build()
+            );
+        }else {
+            workLogRepository.save(
+                    WorkingHistory.builder()
+                            .type(WorkLogTypeEnum.CONTRACT_RENEWAL)
+                            .user(user)
+                            .contract(contract)
+                            .build()
+            );
         }
-        
-        // Log event
-        workLogRepository.save(
-                WorkingHistory.builder()
-                        .type(WorkLogTypeEnum.CONTRACT_SIGN)
-                        .user(user)
-                        .contract(contract)
-                        .build()
-        );
         
         // Create or update leave balance for policy-based contracts
         if (contract.getContractType().isPolicy()) {
@@ -319,9 +326,6 @@ public class ContractServiceImpl implements ContractService {
         JobGrade newJobGrade = jobGradeRepository.findById(newJobGradeId)
                 .orElseThrow(() -> new AppException(ErrorCode.JOB_GRADE_NOT_FOUND));
 
-        JobGrade oldJobGrade = contract.getJobGrade();
-        double oldSalary = contract.getBasicSalary();
-
         contract.setJobGrade(newJobGrade);
         
         // Lưu hợp đồng đã cập nhật
@@ -342,12 +346,13 @@ public class ContractServiceImpl implements ContractService {
 
     private void createOrUpdateLeaveBalance(long userId, Date startDate, Date endDate){
 
-        int calculatedDays = LeaveBalanceUtil.calculateLeaveDaysInYear(startDate, endDate);
+        //int calculatedDays = LeaveBalanceUtil.calculateLeaveDaysInYear(startDate, endDate);
 
         try {
             LeaveBalance leaveBalance = leaveBalanceService.getLeaveBalanceToLeaveBalance(userId);
 
-            int totalLeaveDay = Math.min(12, leaveBalance.getTotalLeaveDay() + calculatedDays);
+//            int totalLeaveDay = Math.min(12, leaveBalance.getTotalLeaveDay() + calculatedDays);
+            int totalLeaveDay = 1;
             leaveBalance.setTotalLeaveDay(totalLeaveDay);
 
             leaveBalanceService.updateLeaveBalance(leaveBalance);
@@ -356,7 +361,7 @@ public class ContractServiceImpl implements ContractService {
             leaveBalanceRequest.setUserId(userId);
             leaveBalanceRequest.setUsedLeaveDay(0);
             leaveBalanceRequest.setCarriedOverDay(0);
-            leaveBalanceRequest.setTotalLeaveDay(calculatedDays);
+            leaveBalanceRequest.setTotalLeaveDay(1);
 
             leaveBalanceService.createLeaveBalance(leaveBalanceRequest);
         }

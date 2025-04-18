@@ -8,7 +8,16 @@ import java.util.List;
 import java.util.Optional;
 
 public interface LeaveBalanceRepository extends JpaRepository<LeaveBalance, Integer> {
+    // Tìm kiếm theo userId, năm và tháng
+    Optional<LeaveBalance> findByUserIdAndYearAndMonth(long userId, int year, int month);
+    
+    // Tìm tất cả bản ghi trong một tháng và năm cụ thể
+    Optional<List<LeaveBalance>> findAllByYearAndMonth(int year, int month);
+    
+    // Tìm tất cả bản ghi của một người dùng trong một năm
+    List<LeaveBalance> findAllByUserIdAndYear(long userId, int year);
+    
+    // Các phương thức cũ được giữ lại để tương thích ngược
     Optional<LeaveBalance> findByUserIdAndYear(long userId, int year);
-
     Optional<List<LeaveBalance>> findAllByYear(int year);
 }

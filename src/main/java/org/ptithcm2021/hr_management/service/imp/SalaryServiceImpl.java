@@ -10,16 +10,15 @@ import org.ptithcm2021.hr_management.exception.ErrorCode;
 import org.ptithcm2021.hr_management.mapper.SalaryMapper;
 import org.ptithcm2021.hr_management.model.Contract;
 import org.ptithcm2021.hr_management.model.LeaveBalance;
+import org.ptithcm2021.hr_management.model.LeaveApplication;
 import org.ptithcm2021.hr_management.model.Salary;
 import org.ptithcm2021.hr_management.model.User;
-import org.ptithcm2021.hr_management.repository.ContractRepository;
-import org.ptithcm2021.hr_management.repository.LeaveBalanceRepository;
-import org.ptithcm2021.hr_management.repository.SalaryRepository;
-import org.ptithcm2021.hr_management.repository.UserRepository;
+import org.ptithcm2021.hr_management.repository.*;
 import org.ptithcm2021.hr_management.schedule.SalarySchedule;
 import org.ptithcm2021.hr_management.service.SalaryService;
 import org.ptithcm2021.hr_management.service.SeniorityAllowanceRuleService;
 import org.ptithcm2021.hr_management.service.UserService;
+import org.ptithcm2021.hr_management.util.LeaveBalanceUtil;
 import org.ptithcm2021.hr_management.util.SalaryUtil;
 import org.springframework.stereotype.Service;
 
@@ -39,7 +38,7 @@ public class SalaryServiceImpl implements SalaryService {
     private final SalaryMapper salaryMapper;
     private final UserService userService;
     private final LeaveBalanceRepository leaveBalanceRepository;
-    private final SeniorityAllowanceRuleService seniorityAllowanceRuleService;
+    private final LeaveDayRepository leaveDayRepository;
 
     @Override
     public SalaryResponse createSalary(SalaryRequest salaryRequest) {
@@ -135,7 +134,7 @@ public class SalaryServiceImpl implements SalaryService {
         LocalDate lastDayOfMonth = yearMonth.atEndOfMonth();
         
         // Tính tổng số ngày làm việc trong tháng (không bao gồm thứ 7 và chủ nhật)
-        int workingDaysInMonth = SalaryUtil.calculateWorkingDaysInMonth(yearMonth);
+        int workingDaysInMonth = LeaveBalanceUtil.calculateWorkingDaysInMonth(yearMonth, leaveDayRepository);
         
         for (User user : activeUsers) {
             // Kiểm tra trạng thái người dùng - chỉ xử lý người dùng PENDING (đang hoạt động)
@@ -179,7 +178,7 @@ public class SalaryServiceImpl implements SalaryService {
                     contractEndDate : lastDayOfMonth;
             
             // Tính số ngày làm việc thực tế trong khoảng thời gian hợp đồng có hiệu lực (loại trừ thứ 7 và chủ nhật)
-            int actualWorkingDays = calculateActualWorkingDays(actualStartDate, actualEndDate);
+            int actualWorkingDays = LeaveBalanceUtil.calculateActualWorkingDays(actualStartDate, actualEndDate, leaveDayRepository);
             
             // Create salary
             Salary salary = new Salary();
@@ -214,26 +213,7 @@ public class SalaryServiceImpl implements SalaryService {
         }
     }
     
-    /**
-     * Tính số ngày làm việc thực tế trong khoảng thời gian (không bao gồm thứ 7 và chủ nhật)
-     * @param startDate Ngày bắt đầu
-     * @param endDate Ngày kết thúc
-     * @return Số ngày làm việc thực tế
-     */
-    private int calculateActualWorkingDays(LocalDate startDate, LocalDate endDate) {
-        int workingDays = 0;
-        
-        LocalDate currentDate = startDate;
-        while (!currentDate.isAfter(endDate)) {
-            if (currentDate.getDayOfWeek() != java.time.DayOfWeek.SATURDAY && 
-                currentDate.getDayOfWeek() != java.time.DayOfWeek.SUNDAY) {
-                workingDays++;
-            }
-            currentDate = currentDate.plusDays(1);
-        }
-        
-        return workingDays;
-    }
+
 
     @Override
     public List<SalaryResponse> getAllSalaries() {
@@ -251,32 +231,45 @@ public class SalaryServiceImpl implements SalaryService {
     }
     
     private double calculateUnpaidLeaveDeduction(User user, YearMonth yearMonth, Contract contract) {
-        // Get the year for this salary month
+        // Lấy năm và tháng cần tính toán
         int year = yearMonth.getYear();
+        int month = yearMonth.getMonthValue();
         
         try {
-            // Get leave balance for the user and year
-            Optional<LeaveBalance> leaveBalanceOpt = leaveBalanceRepository.findByUserIdAndYear(user.getId(), year);
+            // Tạo ngày đầu tiên và ngày cuối cùng của tháng để truy vấn
+            LocalDate firstDayOfMonth = yearMonth.atDay(1);
+            LocalDate lastDayOfMonth = yearMonth.atEndOfMonth();
+            
+            Date startOfMonth = java.sql.Date.valueOf(firstDayOfMonth);
+            Date endOfMonth = java.sql.Date.valueOf(lastDayOfMonth);
+            
+            // Tính số ngày làm việc trong tháng
+            int workingDaysInMonth = LeaveBalanceUtil.calculateWorkingDaysInMonth(yearMonth, leaveDayRepository);
+            double dailySalary = contract.getBasicSalary() / workingDaysInMonth;
+            
+            // Tổng số tiền khấu trừ
+            double totalDeduction = 0.0;
+            
+            // 1. Xử lý khấu trừ cho ngày nghỉ phép không lương (quá số ngày nghỉ phép cho phép)
+            Optional<LeaveBalance> leaveBalanceOpt = leaveBalanceRepository
+                    .findByUserIdAndYearAndMonth(user.getId(), year, month);
             
             if (leaveBalanceOpt.isPresent()) {
                 LeaveBalance leaveBalance = leaveBalanceOpt.get();
                 int totalLeaveDay = leaveBalance.getTotalLeaveDay() + leaveBalance.getCarriedOverDay();
                 int usedLeaveDay = leaveBalance.getUsedLeaveDay();
                 
-                // If used leave days exceed total allowed, calculate deduction
+                // Nếu số ngày nghỉ đã sử dụng vượt quá tổng số ngày cho phép, tính khấu trừ
                 if (usedLeaveDay > totalLeaveDay) {
                     int unpaidLeaveDays = usedLeaveDay - totalLeaveDay;
-
-                    // Sử dụng số ngày làm việc trong tháng
-                    int workingDaysInMonth = SalaryUtil.calculateWorkingDaysInMonth(yearMonth);
-                    double dailySalary = contract.getBasicSalary() / workingDaysInMonth;
-                    return dailySalary * unpaidLeaveDays;
+                    totalDeduction += dailySalary * unpaidLeaveDays;
                 }
+
             }
-            
-            return 0.0; // No deduction if no unpaid leave or leave balance not found
+
+            return totalDeduction;
         } catch (Exception e) {
-            return 0.0; // Default to no deduction if error occurs
+            return 0.0; // Mặc định không có khấu trừ nếu xảy ra lỗi
         }
     }
 

@@ -55,7 +55,11 @@ public enum ErrorCode {
     CONTRACT_UPDATE_FAILED(1046, "Failed to update contract with new salary and job grade", HttpStatus.INTERNAL_SERVER_ERROR),
     DECISION_CREATION_FAILED(1047, "Failed to create salary change decision", HttpStatus.INTERNAL_SERVER_ERROR),
     LEAVE_TYPE_ALREADY_EXISTS(1048, "Leave type already exists", HttpStatus.BAD_REQUEST),
-    FORM_STATUS_INVALID(1049,"Form status invalid" ,HttpStatus.BAD_REQUEST );
+    FORM_STATUS_INVALID(1049,"Form status invalid" ,HttpStatus.BAD_REQUEST ),
+    INVALID_LEAVE_APPLICATION(1050, "Invalid leave application data", HttpStatus.BAD_REQUEST),
+    INVALID_MONTH(1051, "Invalid month value", HttpStatus.BAD_REQUEST),
+    MONTH_YEAR_LEAVE_BALANCE_EXISTS(1052, "Leave balance for this month and year already exists", HttpStatus.CONFLICT),
+    LEAVE_BALANCE_EXCEEDED(1053, "Leave balance exceeded allowed days", HttpStatus.BAD_REQUEST);;
 
     ErrorCode(int code, String message, HttpStatus status){
         this.code = code;
