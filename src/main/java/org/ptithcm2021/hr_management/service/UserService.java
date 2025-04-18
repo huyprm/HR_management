@@ -7,6 +7,7 @@ import org.ptithcm2021.hr_management.dto.request.UserRequest;
 import org.ptithcm2021.hr_management.dto.request.UserUpdateRequest;
 import org.ptithcm2021.hr_management.dto.response.UserResponse;
 import org.ptithcm2021.hr_management.dto.response.WorkLogResponse;
+import org.ptithcm2021.hr_management.enums.UserStatusEnum;
 import org.ptithcm2021.hr_management.model.User;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -32,7 +33,7 @@ public interface UserService {
     void changePassword(ChangePasswordRequest changePasswordRequest);
 
     @PreAuthorize("hasAnyAuthority('SCOPE_STAFF', 'SCOPE_ADMIN')")
-    List<UserResponse> getAllUser();
+    List<UserResponse> getAllUserByStatus(UserStatusEnum status);
 
     User getUserToUser(long id);
 

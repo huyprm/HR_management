@@ -12,10 +12,10 @@ public interface LeaveDayService {
     @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN', 'SCOPE_STAFF')")
     LeaveDayResponse createLeaveDay(LeaveDayRequest leaveDayRequest);
 
-    @PreAuthorize("hasAnyAuthority('SCOPE_AMIN', 'SCOPE_STAFF')")
+    @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN', 'SCOPE_STAFF')")
     LeaveDayResponse updateLeaveDay(LeaveDayRequest leaveDayRequest , int leaveDayId);
 
-    @PreAuthorize("hasAnyAuthority('SCOPE_AMIN', 'SCOPE_STAFF')")
+    @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN', 'SCOPE_STAFF')")
     void deleteLeaveDay(int leaveDayId);
 
     LeaveDayResponse getLeaveDay(int leaveDayId);

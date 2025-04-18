@@ -171,8 +171,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserResponse> getAllUser() {
-        return userRepository.findAll().stream().map(userMapper::toUserResponse).collect(Collectors.toList());
+    public List<UserResponse> getAllUserByStatus(UserStatusEnum status) {
+        if (status == null)
+            return userRepository.findAll().stream().map(userMapper::toUserResponse).collect(Collectors.toList());
+
+        return userRepository.findAllByStatus(status).stream().map(userMapper::toUserResponse).collect(Collectors.toList());
     }
 
     @Override

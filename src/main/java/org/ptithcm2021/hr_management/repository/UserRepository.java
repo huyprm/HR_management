@@ -20,4 +20,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("SELECT u FROM User u WHERE u.status = org.ptithcm2021.hr_management.enums.UserStatusEnum.PENDING")
     List<User> findAllActiveUsers();
+
+    List<User> findAllByStatus(UserStatusEnum status);
 }

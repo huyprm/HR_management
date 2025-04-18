@@ -8,11 +8,17 @@ import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
 
-@PreAuthorize("hasAnyAuthority('SCOPE_STAFF', 'SCOPE_ADMIN')")
 public interface DecisionService {
+    @PreAuthorize("hasAnyAuthority('SCOPE_STAFF', 'SCOPE_ADMIN')")
     DecisionResponse createDecision(DecisionRequest decisionRequest);
+
+    @PreAuthorize("hasAnyAuthority('SCOPE_STAFF', 'SCOPE_ADMIN')")
     DecisionResponse updateDecision(String id, DecisionUpdateRequest updateRequest);
+
     DecisionResponse getDecision(String id);
+
+    @PreAuthorize("hasAnyAuthority('SCOPE_STAFF', 'SCOPE_ADMIN')")
     void deleteDecision(String id);
+
     List<DecisionResponse> getAllDecisionByType(DecisionEnum decisionType);
 }
