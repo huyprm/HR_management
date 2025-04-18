@@ -129,4 +129,14 @@ public class DecisionServiceImpl implements DecisionService {
         return decisionRepository.findAllByType(decisionType)
                 .stream().map(decisionMapper::toDecisionResponse).collect(Collectors.toList());
     }
+
+    @Override
+    public List<DecisionResponse> getAllDecisionByUser(long userId, DecisionEnum decisionType) {
+        if(decisionType == null) {
+            return decisionRepository.findAllByUserId(userId)
+                    .stream().map(decisionMapper::toDecisionResponse).collect(Collectors.toList());
+        }
+        return decisionRepository.findAllByUserIdAndType(userId, decisionType)
+                .stream().map(decisionMapper::toDecisionResponse).collect(Collectors.toList());
+    }
 }

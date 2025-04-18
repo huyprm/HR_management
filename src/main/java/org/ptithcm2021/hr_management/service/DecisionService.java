@@ -21,4 +21,6 @@ public interface DecisionService {
     void deleteDecision(String id);
 
     List<DecisionResponse> getAllDecisionByType(DecisionEnum decisionType);
+
+    List<DecisionResponse> getAllDecisionByUser(long userId, DecisionEnum decisionType);
 }

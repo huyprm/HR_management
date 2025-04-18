@@ -49,4 +49,11 @@ public class DecisionController {
         return ApiResponse.<List<DecisionResponse>>builder()
                 .data(decisionService.getAllDecisionByType(type)).build();
     }
+
+    @GetMapping("/user/{userId}")
+    public ApiResponse<List<DecisionResponse>> getAllDecisionsByUser(@RequestParam(required = false) DecisionEnum type,
+                                                                     @PathVariable long userId) {
+        return ApiResponse.<List<DecisionResponse>>builder()
+                .data(decisionService.getAllDecisionByUser(userId, type)).build();
+    }
 }
