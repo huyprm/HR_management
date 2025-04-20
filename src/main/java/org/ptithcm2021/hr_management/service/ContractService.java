@@ -10,31 +10,25 @@ import java.util.List;
 
 public interface ContractService {
     @PreAuthorize("hasAnyAuthority('SCOPE_STAFF', 'SCOPE_ADMIN')")
-    ContractResponse createDraftContract(ContractRequest contractRequest, boolean isExtend);
+    ContractResponse createDraftContract(ContractRequest contractRequest) throws Exception;
 
     @PreAuthorize("hasAnyAuthority('SCOPE_STAFF', 'SCOPE_ADMIN')")
-    ContractResponse signContract(int contractId);
-
-    @PreAuthorize("hasAnyAuthority('SCOPE_STAFF', 'SCOPE_ADMIN')")
-    ContractResponse createContract(ContractRequest contractRequest, boolean isExtend);
-
-    @PreAuthorize("hasAnyAuthority('SCOPE_STAFF', 'SCOPE_ADMIN')")
-    ContractResponse getContract(int contractId);
-
-    @PreAuthorize("hasAnyAuthority('SCOPE_STAFF', 'SCOPE_ADMIN')")
-    List<ContractResponse> getAllContractByUser(long userId);
-
-    @PreAuthorize("hasAnyAuthority('SCOPE_STAFF', 'SCOPE_ADMIN')")
-    List<ContractResponse> getAllContract(ContractStatusEnum contractStatusEnum);
+    ContractResponse signContract(int contractId, String clause, boolean isExtend);
 
     @PreAuthorize("hasAnyAuthority('SCOPE_STAFF', 'SCOPE_ADMIN')")
     void deleteContract(int contractId);
 
     @PreAuthorize("hasAnyAuthority('SCOPE_STAFF', 'SCOPE_ADMIN')")
-    ContractResponse extendContract(int contractId, ContractRequest contractRequest);
+    ContractResponse extendContract(int contractId, ContractRequest contractRequest) throws Exception;
 
-    @PreAuthorize("T(String).valueOf(#userId) == authentication.name")
-    ContractResponse getContractIsPendingByUserId(long userId);
+    @PreAuthorize("hasAnyAuthority('SCOPE_STAFF', 'SCOPE_ADMIN')")
+    ContractResponse getContract(int contractId);
+
+    @PreAuthorize("hasAnyAuthority('SCOPE_STAFF', 'SCOPE_ADMIN') or T(String).valueOf(#userId) == authentication.name")
+    List<ContractResponse> getAllContractByUser(long userId, ContractStatusEnum contractStatusEnum);
+
+    @PreAuthorize("hasAnyAuthority('SCOPE_STAFF', 'SCOPE_ADMIN')")
+    List<ContractResponse> getAllContract(ContractStatusEnum contractStatusEnum);
 
     Contract getContractCurrentOfUser(long userId);
 

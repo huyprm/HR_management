@@ -12,9 +12,12 @@ import org.ptithcm2021.hr_management.dto.request.UserUpdateRequest;
 import org.ptithcm2021.hr_management.dto.response.ApiResponse;
 import org.ptithcm2021.hr_management.dto.response.UserResponse;
 import org.ptithcm2021.hr_management.dto.response.WorkLogResponse;
+import org.ptithcm2021.hr_management.enums.ContractStatusEnum;
+import org.ptithcm2021.hr_management.enums.RoleEnum;
 import org.ptithcm2021.hr_management.enums.UserStatusEnum;
 import org.ptithcm2021.hr_management.model.User;
 import org.ptithcm2021.hr_management.service.UserService;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -62,12 +65,40 @@ public class UserController {
     }
 
     @GetMapping()
-    public ApiResponse<List<UserResponse>> getAllUser(@RequestParam(required = false)UserStatusEnum status){
-        return ApiResponse.<List<UserResponse>>builder().data(userService.getAllUserByStatus(status)).build();
+    public ApiResponse<List<UserResponse>> getAllUser(@RequestParam(required = false)UserStatusEnum status,
+                                                      @RequestParam(defaultValue = "0") int page,
+                                                      @RequestParam(defaultValue = "10") int size){
+        Pageable pageable = Pageable.ofSize(size).withPage(page);
+
+        return ApiResponse.<List<UserResponse>>builder().data(userService.getAllUserByStatus(status, pageable)).build();
     }
 
     @GetMapping("/work-log")
     public ApiResponse<List<WorkLogResponse>> getWorkLogByUserId(@RequestParam long userId){
         return ApiResponse.<List<WorkLogResponse>>builder().data(userService.getWorkLogByUserId(userId)).build();
     }
+
+    @GetMapping("/role/{roleName}")
+    public ApiResponse<List<UserResponse>> getAllUserByRole(@PathVariable RoleEnum roleName,
+                                                            @RequestParam(defaultValue = "0") int page,
+                                                            @RequestParam(defaultValue = "10") int size){
+        Pageable pageable = Pageable.ofSize(size).withPage(page);
+
+        return ApiResponse.<List<UserResponse>>builder().data(userService.getAllUserByRole(roleName, pageable)).build();
+    }
+
+    @GetMapping("/search")
+    public ApiResponse<List<UserResponse>> searchUser(@RequestParam String keyword){
+        return null;
+    }
+
+    @GetMapping("/user")
+    public ApiResponse<List<UserResponse>> getAllUserByContract(@RequestParam(required = false) ContractStatusEnum contractStatusEnum,
+                                                                @RequestParam(defaultValue = "0") int page,
+                                                                @RequestParam(defaultValue = "10") int size){
+        Pageable pageable = Pageable.ofSize(size).withPage(page);
+        return ApiResponse.<List<UserResponse>>builder().data(userService.getAllUserByContract(contractStatusEnum, pageable)).build();
+    }
+
+
 }

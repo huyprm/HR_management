@@ -154,9 +154,8 @@ public class SalaryServiceImpl implements SalaryService {
             Contract contract = activeContractOpt.get();
             
             // Chuyển đổi Date thành LocalDate
-            LocalDate contractStartDate = new java.sql.Date(contract.getStartDate().getTime()).toLocalDate();
-            LocalDate contractEndDate = contract.getEndDate() != null ? 
-                    new java.sql.Date(contract.getEndDate().getTime()).toLocalDate() : null;
+            LocalDate contractStartDate = contract.getStartDate();
+            LocalDate contractEndDate = contract.getEndDate() != null ? contract.getEndDate() : null;
             
             // Kiểm tra xem hợp đồng có hiệu lực trong tháng này không
             if (contractEndDate != null && contractEndDate.isBefore(firstDayOfMonth)) {

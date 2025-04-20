@@ -7,8 +7,11 @@ import org.ptithcm2021.hr_management.dto.request.UserRequest;
 import org.ptithcm2021.hr_management.dto.request.UserUpdateRequest;
 import org.ptithcm2021.hr_management.dto.response.UserResponse;
 import org.ptithcm2021.hr_management.dto.response.WorkLogResponse;
+import org.ptithcm2021.hr_management.enums.ContractStatusEnum;
+import org.ptithcm2021.hr_management.enums.RoleEnum;
 import org.ptithcm2021.hr_management.enums.UserStatusEnum;
 import org.ptithcm2021.hr_management.model.User;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
@@ -33,10 +36,16 @@ public interface UserService {
     void changePassword(ChangePasswordRequest changePasswordRequest);
 
     @PreAuthorize("hasAnyAuthority('SCOPE_STAFF', 'SCOPE_ADMIN')")
-    List<UserResponse> getAllUserByStatus(UserStatusEnum status);
+    List<UserResponse> getAllUserByStatus(UserStatusEnum status, Pageable pageable);
 
     User getUserToUser(long id);
 
     @PreAuthorize("T(String).valueOf(#userId) == authentication.name")
     List<WorkLogResponse> getWorkLogByUserId(long userId);
+
+    @PreAuthorize("hasAnyAuthority('SCOPE_STAFF', 'SCOPE_ADMIN')")
+    List<UserResponse> getAllUserByRole(RoleEnum roleName, Pageable pageable);
+
+    @PreAuthorize("hasAnyAuthority('SCOPE_STAFF', 'SCOPE_ADMIN')")
+    List<UserResponse> getAllUserByContract(ContractStatusEnum contractStatusEnum, Pageable pageable);
 }

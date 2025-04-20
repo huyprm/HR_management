@@ -7,12 +7,16 @@ import org.ptithcm2021.hr_management.enums.ContractStatusEnum;
 import org.ptithcm2021.hr_management.model.Contract;
 import org.ptithcm2021.hr_management.repository.ContractRepository;
 import org.ptithcm2021.hr_management.service.NotificationService;
+import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -23,6 +27,7 @@ import java.util.List;
 public class ContractSchedule {
     private final ContractRepository contractRepository;
     private final NotificationService notificationService;
+    private final TaskScheduler taskScheduler;
 
     @Scheduled(cron = "0 0 0 * * *")
     public void  notiContractStatus(){
@@ -31,7 +36,7 @@ public class ContractSchedule {
         contracts.forEach(contract ->{
             if (contract.getEndDate() != null) {
 
-                long numDayLeft = (contract.getEndDate().getTime() - System.currentTimeMillis()) / (1000 * 60 * 60 * 24);
+                long numDayLeft = ChronoUnit.DAYS.between(LocalDate.now(), contract.getEndDate());
                 if (numDayLeft == 30) {
 
 //                    contract.setContractStatusEnum(ContractStatusEnum.EXPIRING_SOON);
@@ -79,7 +84,22 @@ public class ContractSchedule {
         }
     }
 
-    private NotificationRequest notificationContractExpirySoon(long userId, Date endDate){
+    public void scheduleContractStatusUpdate(int contractId, LocalDateTime runAt, ContractStatusEnum contractStatusEnum ) {
+        Runnable task = () -> {
+            contractRepository.findById(contractId).ifPresent(contract -> {
+                contract.setContractStatusEnum(contractStatusEnum);
+                contractRepository.save(contract);
+
+                log.info("Contract " + contractId + " đã được cập nhật!");
+            });
+        };
+
+        Date runDate = Date.from(runAt.atZone(ZoneId.systemDefault()).toInstant());
+        taskScheduler.schedule(task, runDate);
+    }
+
+
+    private NotificationRequest notificationContractExpirySoon(long userId, LocalDate endDate){
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");  // Định dạng ngày tháng (có thể thay đổi theo yêu cầu)
         String formattedEndDate = sdf.format(endDate);  // Chuyển đổi endDate thành chuỗi với định dạng mong muốn
 

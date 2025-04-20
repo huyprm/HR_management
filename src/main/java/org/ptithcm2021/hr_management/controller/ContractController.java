@@ -8,6 +8,7 @@ import org.ptithcm2021.hr_management.dto.response.ContractResponse;
 import org.ptithcm2021.hr_management.enums.ContractStatusEnum;
 import org.ptithcm2021.hr_management.service.ContractService;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -19,25 +20,22 @@ public class ContractController {
     private final ContractService contractService;
 
     @PostMapping("/draft")
-    public ApiResponse<ContractResponse> createDraftContract(@RequestBody @Valid ContractRequest contractRequest) {
+    public ApiResponse<ContractResponse> createDraftContract(@RequestBody @Valid ContractRequest contractRequest) throws Exception {
         return ApiResponse.<ContractResponse>builder()
-                .data(contractService.createDraftContract(contractRequest, false))
+                .data(contractService.createDraftContract(contractRequest))
                 .build();
     }
 
-    @PostMapping("/{contractId}/sign")
-    public ApiResponse<ContractResponse> signContract(@PathVariable int contractId) {
+    @PutMapping("/{contractId}/sign")
+    public ApiResponse<ContractResponse> signContract(@PathVariable int contractId,
+                                                      @RequestParam String clause,
+                                                      @RequestParam boolean isExtend){
+
         return ApiResponse.<ContractResponse>builder()
-                .data(contractService.signContract(contractId))
+                .data(contractService.signContract(contractId, clause, isExtend))
                 .build();
     }
 
-    @PostMapping("/create")
-    public ApiResponse<ContractResponse> createContract(@RequestBody @Valid ContractRequest contractRequest) {
-        return ApiResponse.<ContractResponse>builder()
-                .data(contractService.createContract(contractRequest, false))
-                .build();
-    }
 
     @GetMapping("/{contractId}")
     public ApiResponse<ContractResponse> getContract(@PathVariable int contractId) {
@@ -47,9 +45,10 @@ public class ContractController {
     }
 
     @GetMapping("/user/{userId}")
-    public ApiResponse<List<ContractResponse>> getAllContractByUser(@PathVariable long userId) {
+    public ApiResponse<List<ContractResponse>> getAllContractByUser(@PathVariable long userId,
+                                                                    @RequestParam(required = false) ContractStatusEnum contractStatusEnum) {
         return ApiResponse.<List<ContractResponse>>builder()
-                .data(contractService.getAllContractByUser(userId))
+                .data(contractService.getAllContractByUser(userId, contractStatusEnum))
                 .build();
     }
 
@@ -66,18 +65,12 @@ public class ContractController {
         return ApiResponse.<Void>builder().message("Deleted successfully").build();
     }
 
+
     @PostMapping("/extend/{contractId}")
     public ApiResponse<ContractResponse> extendContract(@PathVariable int contractId,
-                                                        @RequestBody @Valid ContractRequest contractRequest) {
+                                                        @RequestBody @Valid ContractRequest contractRequest) throws Exception {
         return ApiResponse.<ContractResponse>builder()
                 .data(contractService.extendContract(contractId, contractRequest))
-                .build();
-    }
-
-    @GetMapping("/user/{userId}/pending")
-    public ApiResponse<ContractResponse> getContractIsPendingByUserId(@PathVariable long userId) {
-        return ApiResponse.<ContractResponse>builder()
-                .data(contractService.getContractIsPendingByUserId(userId))
                 .build();
     }
 }

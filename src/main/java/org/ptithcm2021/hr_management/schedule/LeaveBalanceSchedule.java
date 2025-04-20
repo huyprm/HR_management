@@ -28,44 +28,44 @@ public class LeaveBalanceSchedule {
     private final LeaveBalanceRepository leaveBalanceRepository;
     private final ContractService contractService;
 
-    @Scheduled(cron = "0 43 22 * * *", zone = "Asia/Ho_Chi_Minh")
-    public void rolloverLeaveBalances() {
-        YearMonth now = YearMonth.now().minusMonths(1);
-        int year = now.getYear();
-        int month = now.getMonthValue();
-        int lastYear = Year.now().getValue() - 1;
-
-        List<Contract> contracts = contractService.getAllContractIsActive();
-
-        Map<Long, Contract> contractMap = contracts.stream()
-                .collect(Collectors.toMap(contract -> contract.getUser().getId(), contract -> contract));
-
-        List<LeaveBalance> leaveBalances = leaveBalanceRepository.findAllByYearAndMonth(year, month)
-                .orElse(null);
-
-        if (leaveBalances == null) {
-
-        }
-        leaveBalances.forEach(oldBalance -> {
-
-            Contract contract = contractMap.get(oldBalance.getUser().getId());
-
-            if (contract == null) return;
-
-            int carried = oldBalance.getRemainingLeaveDay() > 36 ? 0 : oldBalance.getRemainingLeaveDay();
-
-            int leaveDay = LeaveBalanceUtil.calculateLeaveDaysInYear(new Date(), contract.getEndDate());
-
-            LeaveBalance newBalance = new LeaveBalance();
-            newBalance.setUsedLeaveDay(0);
-            newBalance.setYear(Year.now().getValue());
-            newBalance.setTotalLeaveDay(leaveDay);
-            newBalance.setCarriedOverDay(carried);
-            newBalance.setUser(oldBalance.getUser());
-
-            leaveBalanceRepository.save(newBalance);
-        });
-    }
+//    @Scheduled(cron = "0 43 22 * * *", zone = "Asia/Ho_Chi_Minh")
+//    public void rolloverLeaveBalances() {
+//        YearMonth now = YearMonth.now().minusMonths(1);
+//        int year = now.getYear();
+//        int month = now.getMonthValue();
+//        int lastYear = Year.now().getValue() - 1;
+//
+//        List<Contract> contracts = contractService.getAllContractIsActive();
+//
+//        Map<Long, Contract> contractMap = contracts.stream()
+//                .collect(Collectors.toMap(contract -> contract.getUser().getId(), contract -> contract));
+//
+//        List<LeaveBalance> leaveBalances = leaveBalanceRepository.findAllByYearAndMonth(year, month)
+//                .orElse(null);
+//
+//        if (leaveBalances == null) {
+//
+//        }
+//        leaveBalances.forEach(oldBalance -> {
+//
+//            Contract contract = contractMap.get(oldBalance.getUser().getId());
+//
+//            if (contract == null) return;
+//
+//            int carried = oldBalance.getRemainingLeaveDay() > 36 ? 0 : oldBalance.getRemainingLeaveDay();
+//
+//            int leaveDay = LeaveBalanceUtil.calculateLeaveDaysInYear(new Date(), contract.getEndDate());
+//
+//            LeaveBalance newBalance = new LeaveBalance();
+//            newBalance.setUsedLeaveDay(0);
+//            newBalance.setYear(Year.now().getValue());
+//            newBalance.setTotalLeaveDay(leaveDay);
+//            newBalance.setCarriedOverDay(carried);
+//            newBalance.setUser(oldBalance.getUser());
+//
+//            leaveBalanceRepository.save(newBalance);
+//        });
+//    }
 
 //    void processMonthlyLeaveBalance(User user, YearMonth ym) {
 //        // 1. Tính tổng ngày nghỉ trong tháng đó (truy vấn đơn nghỉ đã approved, giao với ngày từ 1->endOfMonth)

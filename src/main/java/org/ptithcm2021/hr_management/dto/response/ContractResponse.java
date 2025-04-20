@@ -10,6 +10,7 @@ import org.ptithcm2021.hr_management.model.JobGrade;
 import org.ptithcm2021.hr_management.model.Position;
 import org.ptithcm2021.hr_management.model.User;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Data
@@ -17,8 +18,8 @@ import java.util.Date;
 @NoArgsConstructor
 public class ContractResponse {
     private int id;
-    private Date startDate;
-    private Date endDate;
+    private LocalDate startDate;
+    private LocalDate endDate;
     private double basicSalary;
     private String clause;
     private ContractStatusEnum contractStatusEnum;

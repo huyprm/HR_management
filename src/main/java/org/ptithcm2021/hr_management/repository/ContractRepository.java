@@ -18,8 +18,5 @@ public interface ContractRepository extends JpaRepository<Contract, Integer> {
 
     Optional<Contract> findContractByUserIdAndContractStatusEnum(long userId, ContractStatusEnum contractStatusEnum);
 
-    @Query("SELECT c FROM Contract c WHERE c.user.id = :userId AND c.contractStatusEnum = org.ptithcm2021.hr_management.enums.ContractStatusEnum.ACTIVE ORDER BY c.endDate DESC")
-    Optional<Contract> findCurrentContractByUserId(@Param("userId") long userId);
-
     List<Contract> findAllByContractStatusEnum(ContractStatusEnum statusEnum);
 }

@@ -59,7 +59,8 @@ public enum ErrorCode {
     INVALID_LEAVE_APPLICATION(1050, "Invalid leave application data", HttpStatus.BAD_REQUEST),
     INVALID_MONTH(1051, "Invalid month value", HttpStatus.BAD_REQUEST),
     MONTH_YEAR_LEAVE_BALANCE_EXISTS(1052, "Leave balance for this month and year already exists", HttpStatus.CONFLICT),
-    LEAVE_BALANCE_EXCEEDED(1053, "Leave balance exceeded allowed days", HttpStatus.BAD_REQUEST);;
+    LEAVE_BALANCE_EXCEEDED(1053, "Leave balance exceeded allowed days", HttpStatus.BAD_REQUEST),
+    RIGHT_SIGNER(1054,"The signatory is not authorized to sign." ,HttpStatus.BAD_REQUEST );
 
     ErrorCode(int code, String message, HttpStatus status){
         this.code = code;

@@ -17,6 +17,7 @@ import org.ptithcm2021.hr_management.model.JobGrade;
 import org.ptithcm2021.hr_management.model.Position;
 import org.ptithcm2021.hr_management.model.User;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Data
@@ -24,9 +25,10 @@ import java.util.Date;
 @AllArgsConstructor
 public class ContractRequest {
     @NotNull(message = "Contract start time is indispensable")
-    private Date startDate;
+    private LocalDate startDate;
 
-    private Date endDate;
+    @NotNull(message = "Contract end time is indispensable")
+    private LocalDate endDate;
 
     @NotNull(message = "Starting salary is indispensable")
     @Min(value = 0, message = "Minimum value must be greater than 0")

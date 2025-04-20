@@ -29,7 +29,8 @@ public class FileController {
     }
 
     @PostMapping("/pdf")
-    public ApiResponse<String> uploadPdf(@RequestParam MultipartFile file) throws IOException {
-        return ApiResponse.<String>builder().data(fileService.uploadPdf(file)).build();
+    public ApiResponse<String> uploadAuto(@RequestParam MultipartFile file) throws Exception {
+        return ApiResponse.<String>builder().data(fileService.uploadFile(file)).build();
     }
+
 }

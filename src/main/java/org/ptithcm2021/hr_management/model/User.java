@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.ptithcm2021.hr_management.enums.UserStatusEnum;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -51,7 +52,7 @@ public class User extends Base{
     private Position position;
 
     @Temporal(TemporalType.DATE)
-    private Date hireDate;
+    private LocalDate hireDate;
 
     private int serviceDuration;
 

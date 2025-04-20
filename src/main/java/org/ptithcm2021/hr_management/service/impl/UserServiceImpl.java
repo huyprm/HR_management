@@ -8,6 +8,8 @@ import org.ptithcm2021.hr_management.dto.request.UserUpdateRequest;
 import org.ptithcm2021.hr_management.dto.response.NotificationRecipientResponse;
 import org.ptithcm2021.hr_management.dto.response.UserResponse;
 import org.ptithcm2021.hr_management.dto.response.WorkLogResponse;
+import org.ptithcm2021.hr_management.enums.ContractStatusEnum;
+import org.ptithcm2021.hr_management.enums.RoleEnum;
 import org.ptithcm2021.hr_management.enums.UserStatusEnum;
 import org.ptithcm2021.hr_management.exception.AppException;
 import org.ptithcm2021.hr_management.exception.ErrorCode;
@@ -171,11 +173,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserResponse> getAllUserByStatus(UserStatusEnum status) {
+    public List<UserResponse> getAllUserByStatus(UserStatusEnum status, Pageable pageable) {
         if (status == null)
             return userRepository.findAll().stream().map(userMapper::toUserResponse).collect(Collectors.toList());
 
-        return userRepository.findAllByStatus(status).stream().map(userMapper::toUserResponse).collect(Collectors.toList());
+        return userRepository.findAllByStatus(status, pageable).stream().map(userMapper::toUserResponse).collect(Collectors.toList());
     }
 
     @Override
@@ -193,6 +195,23 @@ public class UserServiceImpl implements UserService {
                 .findAllByUserId(userId)
                 .stream()
                 .map(workLogMapper::toWorkLogResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<UserResponse> getAllUserByRole(RoleEnum roleName, Pageable pageable) {
+        return userRepository.findAllUserByRole(roleName, pageable).stream()
+                .map(userMapper::toUserResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<UserResponse> getAllUserByContract(ContractStatusEnum contractStatusEnum, Pageable pageable) {
+        if(contractStatusEnum == null)
+            return userRepository.findAllUserNoContract(pageable).stream().map(userMapper::toUserResponse).collect(Collectors.toList());
+
+        return userRepository.findAllUserByContract(contractStatusEnum, pageable).stream()
+                .map(userMapper::toUserResponse)
                 .collect(Collectors.toList());
     }
 

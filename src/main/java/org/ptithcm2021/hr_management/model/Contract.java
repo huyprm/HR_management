@@ -8,6 +8,7 @@ import lombok.Setter;
 import org.ptithcm2021.hr_management.enums.ContractStatusEnum;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -22,10 +23,10 @@ public class Contract{
     private int id;
 
     @Temporal(TemporalType.DATE)
-    private Date startDate;
+    private LocalDate startDate;
 
     @Temporal(TemporalType.DATE)
-    private Date endDate;
+    private LocalDate endDate;
 
     private double basicSalary;
     private String clause;
