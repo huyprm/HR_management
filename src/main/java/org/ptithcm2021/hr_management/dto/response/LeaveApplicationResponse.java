@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.ptithcm2021.hr_management.enums.FormStatusEnum;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Data
@@ -13,8 +14,8 @@ import java.util.Date;
 @AllArgsConstructor
 public class LeaveApplicationResponse {
     private long id;
-    private Date startDate;
-    private Date endDate;
+    private LocalDate startDate;
+    private LocalDate endDate;
 
     private String reason;
 

@@ -64,9 +64,9 @@ public class ContractServiceImpl implements ContractService {
         User user = userService.getUserToUser(request.getUserId());
         User signer = userService.getUserToUser(request.getSignerId());
 
-        if (!signer.getPosition().getRole().getId().equals(RoleEnum.ADMIN)) {
-            throw new AppException(ErrorCode.RIGHT_SIGNER);
-        }
+//        if (!signer.getPosition().getRole().getId().equals(RoleEnum.ADMIN)) {
+//            throw new AppException(ErrorCode.RIGHT_SIGNER);
+//        }
 
         Position position = positionRepository.findById(request.getPositionId())
                 .orElseThrow(() -> new AppException(ErrorCode.POSITION_NOT_FOUND));
@@ -99,6 +99,8 @@ public class ContractServiceImpl implements ContractService {
 
             clause = fileService.uploadFileFromByteArrayOutputStream(byteArrayOutputStream, "HD00" + contract.getId() );
             savedContract.setClause(clause);
+
+            contractRepository.save(savedContract);
         }catch (Exception e){
             throw e;
         }
@@ -109,7 +111,7 @@ public class ContractServiceImpl implements ContractService {
      * Ký hợp đồng - chuyển từ PENDING sang SIGNED_PENDING_EFFECTIVE
      */
     @Override
-    public ContractResponse signContract(int contractId, String clause, boolean isExtend) {
+    public ContractResponse signContract(int contractId, String clause, boolean isExtend) throws Exception {
         Contract contract = contractRepository.findById(contractId)
                 .orElseThrow(() -> new AppException(ErrorCode.CONTRACT_NOT_FOUND));
 
@@ -118,6 +120,7 @@ public class ContractServiceImpl implements ContractService {
             throw new AppException(ErrorCode.CONTRACT_INVALID_STATUS);
         }
 
+        fileService.deleteFile(contract.getClause());
         // Cập nhật trạng thái hợp đồng thành đã ký, chờ hiệu lực
         if(isExtend) {
             contract.setClause(clause);
@@ -194,10 +197,15 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public void deleteContract(int contractId) {
+    public void deleteContract(int contractId) throws Exception {
         Contract contract = contractRepository.findById(contractId)
                 .orElseThrow(() -> new AppException(ErrorCode.CONTRACT_NOT_FOUND));
 
+        if(contract.getContractStatusEnum() == ContractStatusEnum.PENDING) {
+            fileService.deleteFile(contract.getClause());
+            contractRepository.delete(contract);
+            return;
+        }
         contract.setContractStatusEnum(ContractStatusEnum.TERMINATED);
 
         contract.getUser().setStatus(UserStatusEnum.TERMINATED);

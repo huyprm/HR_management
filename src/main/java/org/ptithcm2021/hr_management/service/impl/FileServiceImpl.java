@@ -123,6 +123,12 @@ public class FileServiceImpl implements FileService {
 
     }
 
+    @Override
+    public void deleteFile(String fileId) throws Exception {
+        String id = extractFileIdFromUrl(fileId);
+        driveService.files().delete(id).execute();
+    }
+
     private java.io.File convert(MultipartFile multipart) throws IOException {
         // Create a temporary file with a prefix and suffix
         Path tempPath = Files.createTempFile("upload_", "_" + multipart.getOriginalFilename());
@@ -147,9 +153,9 @@ public class FileServiceImpl implements FileService {
 
     private String extractFileIdFromUrl(String fileUrl) {
         // Extract fileId from URL: https://drive.google.com/file/d/FILE_ID/view
-        String[] urlParts = fileUrl.split("/d/");
+        String[] urlParts = fileUrl.split("id=");
         if (urlParts.length > 1) {
-            return urlParts[1].split("/")[0];
+            return urlParts[1];
         }
         throw new IllegalArgumentException("Invalid Google Drive file URL.");
     }

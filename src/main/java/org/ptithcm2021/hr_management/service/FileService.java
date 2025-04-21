@@ -10,4 +10,5 @@ public interface FileService {
     String editImage(MultipartFile file, String currentImg) throws Exception;
     String uploadFile(MultipartFile file) throws Exception;
     String uploadFileFromByteArrayOutputStream(ByteArrayOutputStream output, String fileName) throws Exception;
+    void deleteFile(String fileId) throws Exception;
 }

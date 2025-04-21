@@ -13,6 +13,7 @@ import java.time.YearMonth;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "leaveBalances", uniqueConstraints = {@UniqueConstraint(columnNames = {"userId", "year", "month"})})
+@Builder
 public class LeaveBalance {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

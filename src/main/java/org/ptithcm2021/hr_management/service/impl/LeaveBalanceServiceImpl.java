@@ -30,64 +30,6 @@ public class LeaveBalanceServiceImpl implements LeaveBalanceService {
     private final LeaveDayRepository leaveDayRepository;
 
     @Override
-    public void createLeaveBalance(LeaveBalanceRequest leaveBalanceRequest) {
-        User user = userService.getUserToUser(leaveBalanceRequest.getUserId());
-
-        LeaveBalance leaveBalance = leaveBalanceMapper.toLeaveBalance(leaveBalanceRequest);
-        leaveBalance.setUser(user);
-        
-        // Nếu không chỉ định tháng, sử dụng tháng hiện tại
-        if (leaveBalance.getMonth() == 0) {
-            leaveBalance.setMonth(LocalDate.now().getMonthValue());
-        }
-
-        leaveBalanceRepository.save(leaveBalance);
-    }
-
-    // Phương thức mới theo tháng
-    @Override
-    public void dayOff(int year, int month, LeaveApplication leaveApplication) {
-        LeaveBalance leaveBalance = leaveBalanceRepository
-                .findByUserIdAndYearAndMonth(leaveApplication.getUser().getId(), year, month)
-                .orElseThrow(() -> new AppException(ErrorCode.LEAVE_BALANCE_NOT_FOUND));
-
-        // Tính số ngày nghỉ
-        LocalDate endDate = leaveApplication.getEndDate();
-
-        LocalDate startDate = leaveApplication.getStartDate();
-
-        // Tạo đối tượng YearMonth
-        YearMonth yearMonth = YearMonth.of(year, month);
-
-        // Lấy ngày cuối cùng của tháng
-        LocalDate lastDayOfMonth = yearMonth.atEndOfMonth();
-
-        if (startDate == null || endDate == null) {
-            throw new AppException(ErrorCode.INVALID_LEAVE_APPLICATION);
-        }
-
-        LocalDate toDate = lastDayOfMonth.isAfter(endDate) ? endDate : lastDayOfMonth;
-
-        int workActualDays = LeaveBalanceUtil.calculateActualWorkingDays(startDate, toDate, leaveDayRepository);
-
-        if (workActualDays < 0) {
-            throw new AppException(ErrorCode.INVALID_LEAVE_APPLICATION);
-        }
-        
-        // Kiểm tra xem loại nghỉ phép có ảnh hưởng đến số ngày nghỉ phép không
-        // Nếu là nghỉ BHXH thì affectLeaveBalance = false
-        if (leaveApplication.getLeaveType() != null && leaveApplication.getLeaveType().isAffectLeaveBalance()) {
-            leaveBalance.setUsedLeaveDay(leaveBalance.getUsedLeaveDay() + workActualDays);
-            leaveBalanceRepository.save(leaveBalance);
-        }
-    }
-
-    @Override
-    public void updateLeaveBalance(LeaveBalance leaveBalance) {
-        leaveBalanceRepository.save(leaveBalance);
-    }
-
-    @Override
     public LeaveBalance getLeaveBalanceToLeaveBalance(long userId) {
         // Trả về thông tin cho tháng và năm hiện tại
         int currentYear = Year.now().getValue();
@@ -96,7 +38,7 @@ public class LeaveBalanceServiceImpl implements LeaveBalanceService {
         return leaveBalanceRepository.findByUserIdAndYearAndMonth(userId, currentYear, currentMonth)
                 .orElseThrow(() -> new AppException(ErrorCode.LEAVE_BALANCE_NOT_FOUND));
     }
-    
+
     @Override
     public List<LeaveBalance> getAllLeaveBalancesByYear(long userId, int year) {
         return leaveBalanceRepository.findAllByUserIdAndYear(userId, year);

@@ -59,11 +59,5 @@ public class LeaveBalanceController {
         return ApiResponse.<List<LeaveBalanceResponse>>builder()
                 .data(responses).build();
     }
-    
-    // Endpoint để tạo hoặc cập nhật LeaveBalance cho một tháng cụ thể
-    @PostMapping
-    public ResponseEntity<ApiResponse<Void>> createLeaveBalance(@RequestBody LeaveBalanceRequest request) {
-        leaveBalanceService.createLeaveBalance(request);
-        return new ResponseEntity<>(ApiResponse.<Void>builder().build(), HttpStatus.CREATED);
-    }
+
 }

@@ -27,29 +27,9 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class SalarySchedule {
-    private final SalaryService salaryService;
     private final ContractService contractService;
     private final DecisionRepository decisionRepository;
 
-    
-    /**
-     * Tự động tạo lương vào ngày cuối cùng của mỗi tháng lúc 23:00
-     * Pattern: giây phút giờ ngày tháng thứ
-     */
-    @Scheduled(cron = "0 0 23 L * ?", zone = "Asia/Ho_Chi_Minh")
-    public void generateMonthlySalaries() {
-        // Lấy tháng hiện tại để tính lương
-        YearMonth currentMonth = YearMonth.now();
-        log.info("Starting automatic salary generation for month: {}", currentMonth);
-        
-        try {
-            salaryService.generateMonthlySalaries(currentMonth);
-            log.info("Successfully generated salaries for month: {}", currentMonth);
-        } catch (Exception e) {
-            log.error("Error generating salaries for month {}: {}", currentMonth, e.getMessage(), e);
-        }
-    }
-    
     /**
      * Tự động xử lý các quyết định tăng lương vào 00:01 ngày đầu tiên của mỗi tháng
      * Pattern: giây phút giờ ngày tháng thứ

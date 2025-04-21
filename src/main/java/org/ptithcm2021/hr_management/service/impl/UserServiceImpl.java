@@ -17,8 +17,10 @@ import org.ptithcm2021.hr_management.mapper.UserMapper;
 import org.ptithcm2021.hr_management.mapper.WorkLogMapper;
 import org.ptithcm2021.hr_management.model.*;
 import org.ptithcm2021.hr_management.repository.*;
+import org.ptithcm2021.hr_management.service.LeaveApplicationService;
 import org.ptithcm2021.hr_management.service.MailService;
 import org.ptithcm2021.hr_management.service.UserService;
+import org.ptithcm2021.hr_management.util.LeaveApplicationUtil;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -39,10 +41,10 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final MailService mailService;
     private final NotificationRecipientRepository notificationRecipientRepository;
-    private final LeaveApplicationRepository leaveApplicationRepository;
     private final LeaveBalanceRepository leaveBalanceRepository;
     private final WorkLogRepository workLogRepository;
     private final WorkLogMapper workLogMapper;
+    private final LeaveApplicationUtil leaveApplicationUtil;
 
 
     @Override
@@ -140,16 +142,15 @@ public class UserServiceImpl implements UserService {
         YearMonth currentMonth = YearMonth.now();
         YearMonth preMonth = YearMonth.now();
 
-        LocalDate startDate = currentMonth.atEndOfMonth();
-        LocalDate endDate = currentMonth.atDay(1);
+        LocalDate endDate = currentMonth.atEndOfMonth();
+        LocalDate startDate = currentMonth.atDay(1);
 
         LeaveBalance leave = leaveBalanceRepository.findByUserIdAndYearAndMonth
                 (userId, preMonth.getYear(), preMonth.getMonthValue()).orElse(null);
 
         userResponse.setCarriedOverDay(leave != null ? leave.getCarriedOverDay() : 0);
 
-        int numLeave = leaveApplicationRepository
-                .findApprovedLeavesByUserAndMonth(userId, Year.now().getValue(), YearMonth.now().getMonthValue(), startDate, endDate).size();
+        int numLeave = leaveApplicationUtil.calculateLeveDays(userId, startDate, endDate);
 
         userResponse.setUsedLeaveDay(numLeave);
 
@@ -208,7 +209,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserResponse> getAllUserByContract(ContractStatusEnum contractStatusEnum, Pageable pageable) {
         if(contractStatusEnum == null)
-            return userRepository.findAllUserNoContract(pageable).stream().map(userMapper::toUserResponse).collect(Collectors.toList());
+            return userRepository.findUsersWithoutContract(pageable).stream().map(userMapper::toUserResponse).collect(Collectors.toList());
 
         return userRepository.findAllUserByContract(contractStatusEnum, pageable).stream()
                 .map(userMapper::toUserResponse)

@@ -6,6 +6,7 @@ import org.ptithcm2021.hr_management.enums.FormStatusEnum;
 import org.ptithcm2021.hr_management.model.LeaveApplication;
 import org.springframework.security.access.prepost.PreAuthorize;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface LeaveApplicationService {
@@ -22,4 +23,6 @@ public interface LeaveApplicationService {
 
     @PreAuthorize("T(String).valueOf(#userId) == authentication.name")
     List<LeaveApplicationResponse> getApplicationByUserId(long userId);
+
+    int getTotalLeaveDaysByUserId(long userId, LocalDate startDate, LocalDate endDate);
 }

@@ -33,6 +33,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT u FROM User u JOIN Contract c ON u.id = c.user.id WHERE c.contractStatusEnum = :status")
     Page<User> findAllUserByContract(@Param("status") ContractStatusEnum status, Pageable pageable);
 
-    @Query("SELECT u FROM User u LEFT JOIN Contract c ON u.id = c.user.id WHERE c.contractStatusEnum IS NULL ")
-    Page<User> findAllUserNoContract(Pageable pageable);
+    @Query("SELECT u FROM User u LEFT JOIN Contract c ON u.id = c.user.id WHERE c.id IS NULL ")
+    Page<User> findUsersWithoutContract(Pageable pageable);
 }

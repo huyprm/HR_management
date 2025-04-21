@@ -9,6 +9,7 @@ import org.ptithcm2021.hr_management.enums.FormStatusEnum;
 import org.ptithcm2021.hr_management.model.LeaveType;
 import org.ptithcm2021.hr_management.model.User;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Data
@@ -16,9 +17,10 @@ import java.util.Date;
 @AllArgsConstructor
 public class LeaveApplicationRequest {
     @NotNull(message = "Time off cannot be empty")
-    private Date startDate;
+    private LocalDate startDate;
 
-    private Date endDate;
+    @NotNull(message = "Time off cannot be empty")
+    private LocalDate endDate;
     private String reason;
 
     @NotNull(message = "User cannot be empty")

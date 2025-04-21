@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.Date;
 
@@ -20,12 +21,18 @@ public class Salary {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    private YearMonth salaryMonth;
-    private double totalAllowance;
-    private double unpaidLeaveDeduction;
-    private double baseSalary;
+    @Temporal(TemporalType.DATE)
+    private LocalDate startDate;
 
-    private  Date paymentDate;
+    @Temporal(TemporalType.DATE)
+    private LocalDate endDate;
+
+    private double baseSalary;
+    private double allowance;
+    private int numberOfWorkingDays;
+    private int numberOfLeaveDays;
+
+    private LocalDate paymentDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId")

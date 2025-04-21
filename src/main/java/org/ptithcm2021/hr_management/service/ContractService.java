@@ -13,10 +13,10 @@ public interface ContractService {
     ContractResponse createDraftContract(ContractRequest contractRequest) throws Exception;
 
     @PreAuthorize("hasAnyAuthority('SCOPE_STAFF', 'SCOPE_ADMIN')")
-    ContractResponse signContract(int contractId, String clause, boolean isExtend);
+    ContractResponse signContract(int contractId, String clause, boolean isExtend) throws Exception;
 
     @PreAuthorize("hasAnyAuthority('SCOPE_STAFF', 'SCOPE_ADMIN')")
-    void deleteContract(int contractId);
+    void deleteContract(int contractId) throws Exception;
 
     @PreAuthorize("hasAnyAuthority('SCOPE_STAFF', 'SCOPE_ADMIN')")
     ContractResponse extendContract(int contractId, ContractRequest contractRequest) throws Exception;
@@ -36,4 +36,5 @@ public interface ContractService {
 
     @PreAuthorize("hasAnyAuthority('SCOPE_STAFF', 'SCOPE_ADMIN')")
     ContractResponse updateContractWithPromotion(int contractId, String newJobGradeId);
+
 }

@@ -28,9 +28,8 @@ public final class LeaveBalanceUtil {
             }
             currentDate = currentDate.plusDays(1);
         }
-        int numLeaveDay = leaveDayRepository.findAllByMonth(startDate, endDate).size();
 
-        return workingDays - numLeaveDay;
+        return workingDays;
     }
 
     /**
@@ -53,8 +52,8 @@ public final class LeaveBalanceUtil {
         }
 
         log.info("Working days in {}: {}", yearMonth, workingDays);
-        int numLeaveDay = leaveDayRepository.findAllByMonth(startDate, endDate).size();
+//        int numLeaveDay = leaveDayRepository.findAllByMonth(startDate, endDate).size();
 
-        return workingDays - numLeaveDay;
+        return workingDays;
     }
 }

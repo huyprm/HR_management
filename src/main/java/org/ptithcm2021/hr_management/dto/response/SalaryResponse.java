@@ -1,9 +1,12 @@
 package org.ptithcm2021.hr_management.dto.response;
 
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.Date;
 
@@ -12,12 +15,12 @@ import java.util.Date;
 @AllArgsConstructor
 public class SalaryResponse {
     private int id;
-    private String salaryMonth;
-    private double totalAllowance;
-    private double unpaidLeaveDeduction;
     private double baseSalary;
-    private double totalSalary; // Lương sau khi tính phụ cấp và khấu trừ
-    private String paymentDate;
+    private double allowance;
+    private int numberOfWorkingDays;
+    private int numberOfLeaveDays;
+    private LocalDate startDate;
+    private LocalDate endDate;
+    private LocalDate paymentDate;
     private UserSummaryResponse user;
-    private ContractSummaryResponse contract;
 }

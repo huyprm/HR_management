@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.YearMonth;
 
 @Data
@@ -18,6 +19,9 @@ public class SalaryRequest {
     private Integer contractId;
     
     @NotNull(message = "salaryMonth must not be null")
-    private YearMonth salaryMonth;
+    private LocalDate startDate ;
+
+    @NotNull(message = "salaryMonth must not be null")
+    private LocalDate endDate;
 
 }

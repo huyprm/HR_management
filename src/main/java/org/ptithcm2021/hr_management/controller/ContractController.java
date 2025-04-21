@@ -29,7 +29,7 @@ public class ContractController {
     @PutMapping("/{contractId}/sign")
     public ApiResponse<ContractResponse> signContract(@PathVariable int contractId,
                                                       @RequestParam String clause,
-                                                      @RequestParam boolean isExtend){
+                                                      @RequestParam boolean isExtend) throws Exception {
 
         return ApiResponse.<ContractResponse>builder()
                 .data(contractService.signContract(contractId, clause, isExtend))
@@ -60,7 +60,7 @@ public class ContractController {
     }
 
     @DeleteMapping("/{contractId}")
-    public ApiResponse<Void> deleteContract(@PathVariable int contractId) {
+    public ApiResponse<Void> deleteContract(@PathVariable int contractId) throws Exception {
         contractService.deleteContract(contractId);
         return ApiResponse.<Void>builder().message("Deleted successfully").build();
     }
@@ -73,4 +73,5 @@ public class ContractController {
                 .data(contractService.extendContract(contractId, contractRequest))
                 .build();
     }
+
 }

@@ -17,10 +17,12 @@ import java.util.Date;
 public class UserUpdateRequest {
     private String fullName;
 
-    @StringNumberConstraint(type = StringNumberConstraint.NumberType.CCCD)
+    @StringNumberConstraint(type = StringNumberConstraint.NumberType.CCCD,
+            message = "CCCD must be 12 characters")
     private String numberCCCD;
 
-    @StringNumberConstraint(type = StringNumberConstraint.NumberType.PHONE)
+    @StringNumberConstraint(type = StringNumberConstraint.NumberType.PHONE,
+            message = "Phone number must be 10 characters")
     private String phoneNumber;
 
     private Date dob;

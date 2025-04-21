@@ -1,10 +1,7 @@
 package org.ptithcm2021.hr_management.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.ptithcm2021.hr_management.enums.ContractStatusEnum;
 
 import java.time.Instant;
@@ -17,6 +14,7 @@ import java.util.Date;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Contract{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,13 +30,14 @@ public class Contract{
     private String clause;
 
     @Enumerated(EnumType.STRING)
+    @Builder.Default
     private ContractStatusEnum contractStatusEnum = ContractStatusEnum.PENDING;
 
     @ManyToOne()
     @JoinColumn(name = "contractTypeId")
     private ContractType contractType ;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "userId")
     private User user;
 
@@ -50,7 +49,7 @@ public class Contract{
     @JoinColumn(name = "positionId")
     private Position position;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne()
     @JoinColumn(name = "jobGradeId")
     private JobGrade jobGrade;
 }

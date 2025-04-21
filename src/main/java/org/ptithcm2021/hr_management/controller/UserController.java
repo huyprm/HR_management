@@ -43,7 +43,15 @@ public class UserController {
     }
 
     @PatchMapping("/{id}")
-    public ApiResponse<UserResponse> updateUser(@PathVariable long id, @RequestBody @Valid UserUpdateRequest userRequest){
+    public ApiResponse<UserResponse> updateUser(@PathVariable long id, @RequestBody UserUpdateRequest userRequest){
+        if(userRequest.getNumberCCCD() != null && !userRequest.getNumberCCCD().matches("\\d{12}")){
+            throw new IllegalArgumentException("CCCD must be 12 characters");
+        }
+
+        if(userRequest.getPhoneNumber() != null && !userRequest.getPhoneNumber().matches("0\\d{9}")){
+            throw new IllegalArgumentException("Phone number must be 10 characters");
+        }
+
         return ApiResponse.<UserResponse>builder().data(userService.updateUser(id, userRequest)).build();
     }
 

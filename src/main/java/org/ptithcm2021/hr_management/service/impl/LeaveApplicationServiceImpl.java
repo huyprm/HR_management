@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.ptithcm2021.hr_management.dto.request.LeaveApplicationRequest;
 import org.ptithcm2021.hr_management.dto.response.LeaveApplicationResponse;
 import org.ptithcm2021.hr_management.enums.FormStatusEnum;
+import org.ptithcm2021.hr_management.enums.LeaveTypeEnum;
 import org.ptithcm2021.hr_management.exception.AppException;
 import org.ptithcm2021.hr_management.exception.ErrorCode;
 import org.ptithcm2021.hr_management.mapper.LeaveApplicationMapper;
@@ -17,10 +18,13 @@ import org.ptithcm2021.hr_management.repository.UserRepository;
 import org.ptithcm2021.hr_management.service.LeaveApplicationService;
 import org.ptithcm2021.hr_management.service.LeaveBalanceService;
 import org.ptithcm2021.hr_management.service.UserService;
+import org.ptithcm2021.hr_management.util.LeaveApplicationUtil;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Service
@@ -33,6 +37,7 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
     private final LeaveBalanceService leaveBalanceService;
     private final LeaveTypeRepository leaveTypeRepository;
     private final LeaveBalanceRepository leaveBalanceRepository;
+    private final LeaveApplicationUtil leaveApplicationUtil;
 
     @Override
     public LeaveApplicationResponse createApplication(LeaveApplicationRequest leaveApplicationRequest) {
@@ -99,5 +104,10 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
     public List<LeaveApplicationResponse> getApplicationByUserId(long userId) {
         return leaveApplicationRepository.findAllByUserId(userId)
                 .stream().map(leaveApplicationMapper::toLeaveTypeApplicationResponse).toList();
+    }
+
+    @Override
+    public int getTotalLeaveDaysByUserId(long userId, LocalDate startDate, LocalDate endDate) {
+        return leaveApplicationUtil.calculateLeveDays(userId, startDate, endDate);
     }
 }

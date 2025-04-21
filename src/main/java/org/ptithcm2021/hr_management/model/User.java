@@ -1,5 +1,6 @@
 package org.ptithcm2021.hr_management.model;
 
+import antlr.ANTLRParser;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
@@ -15,6 +16,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Setter
 @Getter
+@Builder
 public class User extends Base{
 
     @Column(unique = true)
@@ -39,6 +41,7 @@ public class User extends Base{
 
     @Column()
     @Enumerated(EnumType.STRING)
+    @Builder.Default
     private UserStatusEnum status = UserStatusEnum.PENDING;
 
     private String avatar;
@@ -61,4 +64,5 @@ public class User extends Base{
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seniorityAllowanceRuleId")
     private SeniorityAllowanceRule seniorityAllowanceRule;
+
 }

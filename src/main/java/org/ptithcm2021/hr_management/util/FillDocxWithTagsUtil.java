@@ -65,9 +65,6 @@ public final class FillDocxWithTagsUtil {
            }
        }
 
-        String docxOutputPath = "C:/Users/ASUS/Downloads/Hop-dong-da-dien.docx";
-        filledPackage.save(new File(docxOutputPath));
-
         ByteArrayOutputStream outStream = new ByteArrayOutputStream();
         Docx4J.toPDF(filledPackage, outStream);
 

@@ -12,12 +12,6 @@ import java.util.Date;
 import java.util.List;
 
 public interface LeaveBalanceService {
-    void createLeaveBalance(LeaveBalanceRequest leaveBalanceRequest);
-
-    // Phương thức mới để cập nhật ngày nghỉ theo tháng
-    void dayOff(int year, int month, LeaveApplication leaveApplication);
-
-    void updateLeaveBalance(LeaveBalance leaveBalance);
 
     // Lấy LeaveBalance theo tháng hiện tại
     LeaveBalance getLeaveBalanceToLeaveBalance(long userId);
