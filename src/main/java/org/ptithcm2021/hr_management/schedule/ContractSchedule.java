@@ -31,7 +31,7 @@ public class ContractSchedule {
 
     @Scheduled(cron = "0 0 0 * * *")
     public void  notiContractStatus(){
-        List<Contract> contracts = contractRepository.findContractByContractStatusEnum(ContractStatusEnum.PENDING);
+        List<Contract> contracts = contractRepository.findAllByContractStatusEnum(ContractStatusEnum.ACTIVE);
 
         contracts.forEach(contract ->{
             if (contract.getEndDate() != null) {

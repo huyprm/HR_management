@@ -7,6 +7,8 @@ import org.ptithcm2021.hr_management.dto.response.ApiResponse;
 import org.ptithcm2021.hr_management.dto.response.NotificationRecipientResponse;
 import org.ptithcm2021.hr_management.dto.response.NotificationResponse;
 import org.ptithcm2021.hr_management.service.NotificationService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,8 +34,11 @@ public class NotificationController {
     }
 
     @GetMapping("/user/{id}")
-    public ApiResponse<List<NotificationRecipientResponse>> getAllNotification(@PathVariable long id){
-        return ApiResponse.<List<NotificationRecipientResponse>>builder().data(notificationService.getAllNotificationRecipient(id)).build();
+    public ApiResponse<Page<NotificationRecipientResponse>> getAllNotification(@PathVariable long id,
+                                                                               @RequestParam (defaultValue = "10") int pageSize,
+                                                                               @RequestParam (defaultValue = "0") int pageNumber){
+        Pageable pageable = Pageable.ofSize(pageSize).withPage(pageNumber);
+        return ApiResponse.<Page<NotificationRecipientResponse>>builder().data(notificationService.getListNotificationRecipient(id, pageable)).build();
     }
 
     @SendTo("/user/notification")

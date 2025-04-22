@@ -4,6 +4,8 @@ import org.ptithcm2021.hr_management.dto.request.ContractRequest;
 import org.ptithcm2021.hr_management.dto.response.ContractResponse;
 import org.ptithcm2021.hr_management.enums.ContractStatusEnum;
 import org.ptithcm2021.hr_management.model.Contract;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
@@ -25,14 +27,12 @@ public interface ContractService {
     ContractResponse getContract(int contractId);
 
     @PreAuthorize("hasAnyAuthority('SCOPE_STAFF', 'SCOPE_ADMIN') or T(String).valueOf(#userId) == authentication.name")
-    List<ContractResponse> getAllContractByUser(long userId, ContractStatusEnum contractStatusEnum);
+    Page<ContractResponse> getAllContractByUser(long userId, ContractStatusEnum contractStatusEnum, Pageable pageable);
 
     @PreAuthorize("hasAnyAuthority('SCOPE_STAFF', 'SCOPE_ADMIN')")
-    List<ContractResponse> getAllContract(ContractStatusEnum contractStatusEnum);
+    Page<ContractResponse> getAllContract(ContractStatusEnum contractStatusEnum, Pageable pageable);
 
     Contract getContractCurrentOfUser(long userId);
-
-    List<Contract> getAllContractIsActive();
 
     @PreAuthorize("hasAnyAuthority('SCOPE_STAFF', 'SCOPE_ADMIN')")
     ContractResponse updateContractWithPromotion(int contractId, String newJobGradeId);

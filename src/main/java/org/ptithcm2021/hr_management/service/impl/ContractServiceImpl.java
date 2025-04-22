@@ -30,6 +30,8 @@ import org.ptithcm2021.hr_management.service.FileService;
 import org.ptithcm2021.hr_management.service.LeaveBalanceService;
 import org.ptithcm2021.hr_management.service.UserService;
 import org.ptithcm2021.hr_management.util.FillDocxWithTagsUtil;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -176,24 +178,21 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public List<ContractResponse> getAllContractByUser(long userId, ContractStatusEnum contractStatusEnum) {
-        if (contractStatusEnum == null){
-            return contractRepository.findContractByUserId(userId)
-                    .stream().map(contractMapper::toContractResponse).toList();
-        }
-
-        return contractRepository.findContractByUserIdAndContractStatusEnum(userId, contractStatusEnum)
-                .stream().map(contractMapper::toContractResponse).toList();
+    public Page<ContractResponse> getAllContractByUser(long userId, ContractStatusEnum contractStatusEnum, Pageable pageable) {
+        return contractRepository.findContractByUserIdAndContractStatusEnum(userId, contractStatusEnum, pageable).map(contractMapper::toContractResponse);
     }
 
     @Override
-    public List<ContractResponse> getAllContract(ContractStatusEnum contractStatusEnum) {
-        if (contractStatusEnum == null){
-            return contractRepository.findAll()
-                    .stream().map(contractMapper::toContractResponse).toList();
+    public Page<ContractResponse> getAllContract(ContractStatusEnum contractStatusEnum, Pageable pageable) {
+        Page<Contract> contractPage;
+
+        if (contractStatusEnum == null) {
+            contractPage = contractRepository.findAll(pageable);
+        } else {
+            contractPage = contractRepository.findAllContractByContractStatusEnum(contractStatusEnum, pageable);
         }
-        return contractRepository.findContractByContractStatusEnum(contractStatusEnum)
-                .stream().map(contractMapper::toContractResponse).toList();
+
+        return contractPage.map(contractMapper::toContractResponse);
     }
 
     @Override
@@ -253,15 +252,16 @@ public class ContractServiceImpl implements ContractService {
         }
 
         // Tìm hợp đồng PENDING
-        return contractRepository.findContractByUserIdAndContractStatusEnum(
-                userId, ContractStatusEnum.PENDING)
-                .orElseThrow(() -> new AppException(ErrorCode.CONTRACT_NOT_FOUND));
-    }
+        Optional<Contract> pendingContract = contractRepository.findContractByUserIdAndContractStatusEnum(
+                userId, ContractStatusEnum.PENDING);
 
-    @Override
-    public List<Contract> getAllContractIsActive() {
-        // Lấy cả hợp đồng đang hiệu lực
-        return contractRepository.findContractByContractStatusEnum(ContractStatusEnum.ACTIVE);
+        if (pendingContract.isPresent()) {
+            return pendingContract.get();
+        }
+
+        return contractRepository.findContractByUserIdAndContractStatusEnum(
+                userId, ContractStatusEnum.EXPIRED)
+                .orElseThrow(() -> new AppException(ErrorCode.CONTRACT_NOT_FOUND));
     }
 
     @Override

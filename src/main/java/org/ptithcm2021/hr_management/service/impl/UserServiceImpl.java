@@ -21,6 +21,7 @@ import org.ptithcm2021.hr_management.service.LeaveApplicationService;
 import org.ptithcm2021.hr_management.service.MailService;
 import org.ptithcm2021.hr_management.service.UserService;
 import org.ptithcm2021.hr_management.util.LeaveApplicationUtil;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -174,11 +175,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserResponse> getAllUserByStatus(UserStatusEnum status, Pageable pageable) {
-        if (status == null)
-            return userRepository.findAll().stream().map(userMapper::toUserResponse).collect(Collectors.toList());
-
-        return userRepository.findAllByStatus(status, pageable).stream().map(userMapper::toUserResponse).collect(Collectors.toList());
+    public Page<UserResponse> getAllUserByStatus(UserStatusEnum status, Pageable pageable) {
+        Page<UserResponse> userResponses;
+        if (status == null) {
+            userResponses = userRepository.findAll(pageable).map(userMapper::toUserResponse);
+            return userResponses;
+        }
+        return userRepository.findAllByStatus(status, pageable).map(userMapper::toUserResponse);
     }
 
     @Override
@@ -200,33 +203,31 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserResponse> getAllUserByRole(RoleEnum roleName, Pageable pageable) {
-        return userRepository.findAllUserByRole(roleName, pageable).stream()
-                .map(userMapper::toUserResponse)
-                .collect(Collectors.toList());
+    public Page<UserResponse> getAllUserByRole(RoleEnum roleName, Pageable pageable) {
+        return userRepository.findAllUserByRole(roleName, pageable)
+                .map(userMapper::toUserResponse);
     }
 
     @Override
-    public List<UserResponse> getAllUserByContract(ContractStatusEnum contractStatusEnum, Pageable pageable) {
+    public Page<UserResponse> getAllUserByContract(ContractStatusEnum contractStatusEnum, Pageable pageable) {
         if(contractStatusEnum == null)
-            return userRepository.findUsersWithoutContract(pageable).stream().map(userMapper::toUserResponse).collect(Collectors.toList());
+            return userRepository.findUsersWithoutContract(pageable).map(userMapper::toUserResponse);
 
-        return userRepository.findAllUserByContract(contractStatusEnum, pageable).stream()
-                .map(userMapper::toUserResponse)
-                .collect(Collectors.toList());
+        return userRepository.findAllUserByContract(contractStatusEnum, pageable)
+                .map(userMapper::toUserResponse);
     }
 
-    private List<NotificationRecipientResponse> getTop5NotificationRecipient(long userId) {
+    private Page<NotificationRecipientResponse> getTop5NotificationRecipient(long userId) {
         Pageable pageable = PageRequest.of(0,5);
-        List<NotificationRecipient> notificationRecipients = notificationRecipientRepository.findTop5ByUserId(userId, pageable);
+        Page<NotificationRecipient> notificationRecipients = notificationRecipientRepository.findAllByUserId(userId, pageable);
 
-        return notificationRecipients.stream().map(notificationRecipient -> {
+        return notificationRecipients.map(notificationRecipient -> {
             return NotificationRecipientResponse.builder()
                     .id(notificationRecipient.getId())
                     .title(notificationRecipient.getNotification().getTitle())
                     .readStatus(notificationRecipient.isReadStatus())
                     .sendDate(notificationRecipient.getNotification().getSendDate()).build();
-        }).toList();
+        });
     }
     private String createSendPWMessage(String username, String password, String name){
         return String.format(

@@ -3,6 +3,8 @@ package org.ptithcm2021.hr_management.service;
 import org.ptithcm2021.hr_management.dto.request.NotificationRequest;
 import org.ptithcm2021.hr_management.dto.response.NotificationRecipientResponse;
 import org.ptithcm2021.hr_management.dto.response.NotificationResponse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
@@ -14,8 +16,6 @@ public interface NotificationService {
     NotificationResponse getNotification(long id);
 
     @PreAuthorize("T(String).valueOf(#userId) == authentication.name")
-    List<NotificationRecipientResponse> getAllNotificationRecipient (long userId);
+    Page<NotificationRecipientResponse> getListNotificationRecipient (long userId, Pageable pageable );
 
-    @PreAuthorize("T(String).valueOf(#userId) == authentication.name")
-    List<NotificationRecipientResponse> getTop5NotificationRecipient (long userId);
 }

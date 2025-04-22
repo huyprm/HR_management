@@ -27,7 +27,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Page<User> findAllByStatus(UserStatusEnum status, Pageable pageable);
 
-    @Query("SELECT u FROM User u WHERE u.position.role = :role")
+    @Query("SELECT u FROM User u WHERE u.position.role.id = :role")
     Page<User> findAllUserByRole(@Param("role")RoleEnum role, Pageable pageable);
 
     @Query("SELECT u FROM User u JOIN Contract c ON u.id = c.user.id WHERE c.contractStatusEnum = :status")

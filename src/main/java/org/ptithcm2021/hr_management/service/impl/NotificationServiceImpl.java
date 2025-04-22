@@ -14,6 +14,7 @@ import org.ptithcm2021.hr_management.model.User;
 import org.ptithcm2021.hr_management.repository.*;
 import org.ptithcm2021.hr_management.service.NotificationService;
 import org.ptithcm2021.hr_management.service.UserService;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -108,31 +109,16 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public List<NotificationRecipientResponse> getAllNotificationRecipient(long userId) {
-        List<NotificationRecipient> notificationRecipients = recipientRepository.finAllByUserId(userId);
+    public Page<NotificationRecipientResponse> getListNotificationRecipient(long userId, Pageable pageable) {
+        Page<NotificationRecipient> notificationRecipients = recipientRepository.findAllByUserId(userId, pageable);
 
         return notificationRecipients
-                .stream().map(notificationRecipient -> {
+                .map(notificationRecipient -> {
             return NotificationRecipientResponse.builder()
                     .id(notificationRecipient.getId())
                     .title(notificationRecipient.getNotification().getTitle())
                     .readStatus(notificationRecipient.isReadStatus())
                     .sendDate(notificationRecipient.getNotification().getSendDate()).build();
-        }).toList();
-    }
-
-    @Override
-    public List<NotificationRecipientResponse> getTop5NotificationRecipient(long userId) {
-        Pageable pageable = PageRequest.of(0,5);
-        List<NotificationRecipient> notificationRecipients = recipientRepository.findTop5ByUserId(userId, pageable);
-
-        return notificationRecipients
-                .stream().map(notificationRecipient -> {
-            return NotificationRecipientResponse.builder()
-                    .id(notificationRecipient.getId())
-                    .title(notificationRecipient.getNotification().getTitle())
-                    .readStatus(notificationRecipient.isReadStatus())
-                    .sendDate(notificationRecipient.getNotification().getSendDate()).build();
-        }).toList();
+        });
     }
 }

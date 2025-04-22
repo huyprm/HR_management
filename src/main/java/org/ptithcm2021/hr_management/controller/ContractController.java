@@ -7,6 +7,8 @@ import org.ptithcm2021.hr_management.dto.response.ApiResponse;
 import org.ptithcm2021.hr_management.dto.response.ContractResponse;
 import org.ptithcm2021.hr_management.enums.ContractStatusEnum;
 import org.ptithcm2021.hr_management.service.ContractService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -45,17 +47,24 @@ public class ContractController {
     }
 
     @GetMapping("/user/{userId}")
-    public ApiResponse<List<ContractResponse>> getAllContractByUser(@PathVariable long userId,
-                                                                    @RequestParam(required = false) ContractStatusEnum contractStatusEnum) {
-        return ApiResponse.<List<ContractResponse>>builder()
-                .data(contractService.getAllContractByUser(userId, contractStatusEnum))
+    public ApiResponse<Page<ContractResponse>> getAllContractByUser(@PathVariable long userId,
+                                                                    @RequestParam(required = false) ContractStatusEnum contractStatusEnum,
+                                                                    @RequestParam (defaultValue = "10") int pageSize,
+                                                                    @RequestParam (defaultValue = "0") int pageNumber) {
+        Pageable pageable = Pageable.ofSize(pageSize).withPage(pageNumber);
+        return ApiResponse.<Page<ContractResponse>>builder()
+                .data(contractService.getAllContractByUser(userId, contractStatusEnum, pageable))
                 .build();
     }
 
     @GetMapping
-    public ApiResponse<List<ContractResponse>> getAllContract(@RequestParam(required = false) ContractStatusEnum contractStatusEnum) {
-        return ApiResponse.<List<ContractResponse>>builder()
-                .data(contractService.getAllContract(contractStatusEnum))
+    public ApiResponse<Page<ContractResponse>> getAllContract(@RequestParam(required = false) ContractStatusEnum contractStatusEnum,
+                                                              @RequestParam (defaultValue = "10") int pageSize,
+                                                              @RequestParam (defaultValue = "0") int pageNumber) {
+        Pageable pageable = Pageable.ofSize(pageSize).withPage(pageNumber);
+
+        return ApiResponse.<Page<ContractResponse>>builder()
+                .data(contractService.getAllContract(contractStatusEnum, pageable))
                 .build();
     }
 
