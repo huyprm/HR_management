@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.ptithcm2021.hr_management.dto.request.NotificationRequest;
 import org.ptithcm2021.hr_management.enums.ContractStatusEnum;
+import org.ptithcm2021.hr_management.enums.UserStatusEnum;
 import org.ptithcm2021.hr_management.model.Contract;
 import org.ptithcm2021.hr_management.repository.ContractRepository;
 import org.ptithcm2021.hr_management.service.NotificationService;
@@ -84,10 +85,23 @@ public class ContractSchedule {
         }
     }
 
+    @Scheduled(cron = "0 0 0 * * *")
+    public void updateContractExpiry() {
+        List<Contract> contracts = contractRepository.findAllContractExpiry(LocalDate.now());
+        contracts.forEach(contract -> {
+            contract.setContractStatusEnum(ContractStatusEnum.EXPIRED);
+        });
+        contractRepository.saveAll(contracts);
+    }
     public void scheduleContractStatusUpdate(int contractId, LocalDateTime runAt, ContractStatusEnum contractStatusEnum ) {
         Runnable task = () -> {
             contractRepository.findById(contractId).ifPresent(contract -> {
                 contract.setContractStatusEnum(contractStatusEnum);
+
+                if (contractStatusEnum == ContractStatusEnum.ACTIVE) {
+                    contract.getUser().setStatus(UserStatusEnum.ACTIVE);
+                }
+
                 contractRepository.save(contract);
 
                 log.info("Contract " + contractId + " đã được cập nhật!");

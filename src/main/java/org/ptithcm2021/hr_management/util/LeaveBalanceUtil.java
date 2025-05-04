@@ -3,12 +3,14 @@ package org.ptithcm2021.hr_management.util;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.ptithcm2021.hr_management.repository.LeaveDayRepository;
+import org.springframework.stereotype.Component;
 
 import java.time.*;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
 @Slf4j
+@Component
 public final class LeaveBalanceUtil {
 
     /**
@@ -17,7 +19,7 @@ public final class LeaveBalanceUtil {
      * @param endDate Ngày kết thúc
      * @return Số ngày làm việc thực tế
      */
-    public static int calculateActualWorkingDays(LocalDate startDate, LocalDate endDate, LeaveDayRepository leaveDayRepository) {
+    public static int calculateWorkingDays(LocalDate startDate, LocalDate endDate, LeaveDayRepository leaveDayRepository) {
         int workingDays = 0;
 
         LocalDate currentDate = startDate;
@@ -28,8 +30,8 @@ public final class LeaveBalanceUtil {
             }
             currentDate = currentDate.plusDays(1);
         }
-
-        return workingDays;
+        int numLeaveDay = leaveDayRepository.findAllByMonth(startDate, endDate).size();
+        return workingDays-numLeaveDay;
     }
 
     /**
@@ -52,8 +54,8 @@ public final class LeaveBalanceUtil {
         }
 
         log.info("Working days in {}: {}", yearMonth, workingDays);
-//        int numLeaveDay = leaveDayRepository.findAllByMonth(startDate, endDate).size();
+        int numLeaveDay = leaveDayRepository.findAllByMonth(startDate, endDate).size();
 
-        return workingDays;
+        return workingDays-numLeaveDay;
     }
 }

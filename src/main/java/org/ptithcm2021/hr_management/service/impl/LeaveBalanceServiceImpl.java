@@ -19,29 +19,30 @@ import org.springframework.stereotype.Service;
 
 import java.time.*;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class LeaveBalanceServiceImpl implements LeaveBalanceService {
     private final LeaveBalanceMapper leaveBalanceMapper;
     private final LeaveBalanceRepository leaveBalanceRepository;
-    private final LeaveApplicationRepository leaveApplicationRepository;
-    private final UserService userService;
-    private final LeaveDayRepository leaveDayRepository;
 
     @Override
-    public LeaveBalance getLeaveBalanceToLeaveBalance(long userId) {
+    public LeaveBalanceResponse getLeaveBalanceToLeaveBalance(long userId) {
         // Trả về thông tin cho tháng và năm hiện tại
         int currentYear = Year.now().getValue();
         int currentMonth = LocalDate.now().getMonthValue();
         
-        return leaveBalanceRepository.findByUserIdAndYearAndMonth(userId, currentYear, currentMonth)
+        LeaveBalance leaveBalance = leaveBalanceRepository.findByUserIdAndYearAndMonth(userId, currentYear, currentMonth)
                 .orElseThrow(() -> new AppException(ErrorCode.LEAVE_BALANCE_NOT_FOUND));
+
+        return leaveBalanceMapper.toLeaveBalanceResponse(leaveBalance);
     }
 
     @Override
-    public List<LeaveBalance> getAllLeaveBalancesByYear(long userId, int year) {
-        return leaveBalanceRepository.findAllByUserIdAndYear(userId, year);
+    public List<LeaveBalanceResponse> getAllLeaveBalancesByYear(long userId, int year) {
+        return leaveBalanceRepository.findAllByUserIdAndYear(userId, year)
+                .stream().map(leaveBalanceMapper::toLeaveBalanceResponse).collect(Collectors.toList());
     }
 
     @Override

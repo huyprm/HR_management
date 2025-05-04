@@ -1,11 +1,9 @@
 package org.ptithcm2021.hr_management.repository;
 
 import jakarta.validation.constraints.Email;
-import org.ptithcm2021.hr_management.controller.UserController;
 import org.ptithcm2021.hr_management.enums.ContractStatusEnum;
 import org.ptithcm2021.hr_management.enums.RoleEnum;
 import org.ptithcm2021.hr_management.enums.UserStatusEnum;
-import org.ptithcm2021.hr_management.model.Account;
 import org.ptithcm2021.hr_management.model.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,8 +12,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
@@ -27,7 +25,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Page<User> findAllByStatus(UserStatusEnum status, Pageable pageable);
 
-    @Query("SELECT u FROM User u WHERE u.position.role.id = :role")
+    @Query("SELECT u FROM User u WHERE u.position.role.id = :role AND u.status = 'ACTIVE' ")
     Page<User> findAllUserByRole(@Param("role")RoleEnum role, Pageable pageable);
 
     @Query("SELECT u FROM User u JOIN Contract c ON u.id = c.user.id WHERE c.contractStatusEnum = :status")
@@ -35,4 +33,13 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("SELECT u FROM User u LEFT JOIN Contract c ON u.id = c.user.id WHERE c.id IS NULL ")
     Page<User> findUsersWithoutContract(Pageable pageable);
+
+    @Query("select distinct c.user from Contract c where (c.contractStatusEnum = :status " +
+            "or ((c.endDate BETWEEN :startOfMonth AND :endOfMonth) and c.contractStatusEnum in ('EXPIRED','RENEWED')))")
+    List<User> findActiveOrRecentlyEndedContractUsers(@Param("startOfMonth") LocalDate startOfMonth,
+                                                      @Param("endOfMonth") LocalDate endOfMonth,
+                                                      @Param("status") ContractStatusEnum status);
+
+    @Query(value  = "select u.id, u.full_name from users u where match(u.full_name) against(?1 in boolean mode)", nativeQuery = true)
+    List<Object> searchFullText(String keyword);
 }

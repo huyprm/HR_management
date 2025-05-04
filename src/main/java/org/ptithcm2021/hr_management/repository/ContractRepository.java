@@ -29,7 +29,9 @@ public interface ContractRepository extends JpaRepository<Contract, Integer> {
 
     List<Contract> findAllByContractStatusEnum(ContractStatusEnum statusEnum);
 
-    @Query("select c from Contract c where c.contractStatusEnum = 'ACTIVE' or (c.endDate >= :startOfMonth and c.endDate <= :endOfMonth)")
-    List<Contract> findActiveOrRecentlyEndedContractUsers(@Param("startOfMonth") LocalDate startOfMonth,
-                                                          @Param("endOfMonth") LocalDate endOfMonth);
+    @Query("select c from Contract c where c.endDate < :date and c.contractStatusEnum = 'ACTIVE'")
+    List<Contract> findAllContractExpiry(@Param("date") LocalDate date);
+
+    @Query("select c from Contract  c where c.contractStatusEnum != 'ACTIVE' and c.user.id = :userId")
+    List<Contract> findAllContractByUserIdIsNotActive (@Param("userId")long userId);
 }

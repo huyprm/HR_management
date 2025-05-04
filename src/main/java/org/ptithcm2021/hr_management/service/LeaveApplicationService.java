@@ -24,5 +24,5 @@ public interface LeaveApplicationService {
     @PreAuthorize("T(String).valueOf(#userId) == authentication.name")
     List<LeaveApplicationResponse> getApplicationByUserId(long userId);
 
-    int getTotalLeaveDaysByUserId(long userId, LocalDate startDate, LocalDate endDate);
+    double getTotalLeaveDaysByUserId(long userId, LocalDate startDate, LocalDate endDate);
 }

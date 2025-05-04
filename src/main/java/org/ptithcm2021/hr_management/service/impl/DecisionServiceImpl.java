@@ -50,6 +50,7 @@ public class DecisionServiceImpl implements DecisionService {
 
             decision.setPosition(position);
             decision.setProcessed(false);
+
         } else if (decision.getSeniorityAllowanceRule() != null) {
             SeniorityAllowanceRule seniorityAllowanceRule = seniorityAllowanceRuleRepository.findById(decisionRequest.getSeniorityAllowanceRuleId())
                     .orElseThrow(() -> new AppException(ErrorCode.SENIORITY_ALLOWANCE_RULE_NOT_FOUND));

@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/api/leave-balances")
+@RequestMapping("/api/leave-balances")
 public class LeaveBalanceController {
     private final LeaveBalanceService leaveBalanceService;
 
@@ -40,24 +40,9 @@ public class LeaveBalanceController {
     public ApiResponse<List<LeaveBalanceResponse>> getAllLeaveBalancesForYear(
             @PathVariable long userId,
             @PathVariable int year) {
-        List<LeaveBalance> leaveBalances = leaveBalanceService.getAllLeaveBalancesByYear(userId, year);
-        
-        // Chuyển đổi danh sách LeaveBalance thành danh sách LeaveBalanceResponse
-        List<LeaveBalanceResponse> responses = leaveBalances.stream()
-                .map(lb -> LeaveBalanceResponse.builder()
-                        .id(lb.getId())
-                        .userId(lb.getUser().getId())
-                        .year(lb.getYear())
-                        .month(lb.getMonth())
-                        .totalLeaveDay(lb.getTotalLeaveDay())
-                        .carriedOverDay(lb.getCarriedOverDay())
-                        .usedLeaveDay(lb.getUsedLeaveDay())
-                        .remainingLeaveDay(lb.getRemainingLeaveDay())
-                        .build())
-                .collect(Collectors.toList());
                 
         return ApiResponse.<List<LeaveBalanceResponse>>builder()
-                .data(responses).build();
+                .data(leaveBalanceService.getAllLeaveBalancesByYear(userId, year)).build();
     }
 
 }

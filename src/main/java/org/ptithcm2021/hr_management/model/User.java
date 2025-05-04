@@ -29,7 +29,7 @@ public class User extends Base{
     private String phoneNumber;
 
     @Temporal(TemporalType.DATE)
-    private Date dob;
+    private LocalDate dob;
 
     private String nationality;
     private String gender;

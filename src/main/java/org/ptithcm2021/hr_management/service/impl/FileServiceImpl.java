@@ -80,7 +80,7 @@ public class FileServiceImpl implements FileService {
 
             // Return the direct access URL
 //            return "https://drive.google.com/file/d/" + uploadedFile.getId() + "/view";
-            return "https://drive.google.com/uc?id=" + uploadedFile.getId();
+            return uploadedFile.getId();
 
 
         } finally {
@@ -111,7 +111,7 @@ public class FileServiceImpl implements FileService {
 
             // Return the direct access URL
 //            return "https://drive.google.com/file/d/" + uploadedFile.getId() + "/view";
-            return "https://drive.google.com/uc?id=" + uploadedFile.getId();
+            return uploadedFile.getId();
 
 
         } finally {
@@ -125,8 +125,11 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public void deleteFile(String fileId) throws Exception {
-        String id = extractFileIdFromUrl(fileId);
-        driveService.files().delete(id).execute();
+        if (fileId == null || fileId.isEmpty()) {
+            return;
+        }
+        //String id = extractFileIdFromUrl(fileId);
+        driveService.files().delete(fileId).execute();
     }
 
     private java.io.File convert(MultipartFile multipart) throws IOException {

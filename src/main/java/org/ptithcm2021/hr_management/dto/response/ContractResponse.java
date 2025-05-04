@@ -27,5 +27,6 @@ public class ContractResponse {
     private UserSummaryResponse user;
     private UserSummaryResponse signer;
     private String positionName;
-    private String jobGradeName;
+    private String departmentName;
+    private double jobGradeCoefficient;
 }

@@ -65,9 +65,12 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
         User signer = userRepository.findById(userId)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
 
-
         LeaveApplication leaveApplication = leaveApplicationRepository.findById(applicationId)
                 .orElseThrow(() -> new AppException(ErrorCode.LEAVE_APPLICATION_NOT_FOUND));
+
+        if(signer.getId()==leaveApplication.getUser().getId()){
+            throw new AppException(ErrorCode.SIGNER_IS_USER);
+        }
 
         if(leaveApplication.getFormStatusEnum() != FormStatusEnum.PENDING)
             throw new AppException(ErrorCode.FORM_STATUS_INVALID);
@@ -107,7 +110,7 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
     }
 
     @Override
-    public int getTotalLeaveDaysByUserId(long userId, LocalDate startDate, LocalDate endDate) {
-        return leaveApplicationUtil.calculateLeveDays(userId, startDate, endDate);
+    public double getTotalLeaveDaysByUserId(long userId, LocalDate startDate, LocalDate endDate) {
+        return leaveApplicationUtil.calculateTotalLeveDays(userId, startDate, endDate);
     }
 }

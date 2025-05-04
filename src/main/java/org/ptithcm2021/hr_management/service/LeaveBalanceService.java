@@ -14,10 +14,10 @@ import java.util.List;
 public interface LeaveBalanceService {
 
     // Lấy LeaveBalance theo tháng hiện tại
-    LeaveBalance getLeaveBalanceToLeaveBalance(long userId);
+    LeaveBalanceResponse getLeaveBalanceToLeaveBalance(long userId);
 
     // Lấy tất cả LeaveBalance của một người dùng trong một năm
-    List<LeaveBalance> getAllLeaveBalancesByYear(long userId, int year);
+    List<LeaveBalanceResponse> getAllLeaveBalancesByYear(long userId, int year);
 
     @PreAuthorize("T(String).valueOf(#userId) == authentication.name")
     LeaveBalanceResponse getLeaveBalance(long userId);

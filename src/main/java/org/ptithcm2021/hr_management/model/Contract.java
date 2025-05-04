@@ -20,10 +20,8 @@ public class Contract{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Temporal(TemporalType.DATE)
     private LocalDate startDate;
 
-    @Temporal(TemporalType.DATE)
     private LocalDate endDate;
 
     private double basicSalary;

@@ -8,7 +8,6 @@ import org.ptithcm2021.hr_management.enums.UserStatusEnum;
 import org.springframework.data.domain.Page;
 
 import java.util.Date;
-import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -38,7 +37,7 @@ public class UserResponse {
     private int serviceDuration;
     private double seniorityPercentage;
     private int seniorityLeaveDay;
-    private int carriedOverDay;
-    private int usedLeaveDay;
+    private double carriedOverDay;
+    private double usedLeaveDay;
     private Page<NotificationRecipientResponse> recipientResponse;
 }

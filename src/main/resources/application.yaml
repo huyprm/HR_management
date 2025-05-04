@@ -53,7 +53,7 @@ cloudinary:
 
 jwt:
   signer_key: lBeNvDC6kEyP0hTE9xUIT1j+c+AiZnzYMEVRxL30cysWjxKgnnls18u+N7/Ri3MV
-  expirationTime: 3600
+  expirationTime: 14400
 
 form-fields-url:
   name: https://drive.google.com/uc?id=1kIVhDGE8Gs3pjSfzUZDIYOdZl-kTURwM

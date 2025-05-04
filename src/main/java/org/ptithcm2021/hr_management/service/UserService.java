@@ -13,6 +13,7 @@ import org.ptithcm2021.hr_management.enums.UserStatusEnum;
 import org.ptithcm2021.hr_management.model.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedModel;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
@@ -37,7 +38,7 @@ public interface UserService {
     void changePassword(ChangePasswordRequest changePasswordRequest);
 
     @PreAuthorize("hasAnyAuthority('SCOPE_STAFF', 'SCOPE_ADMIN')")
-    Page<UserResponse> getAllUserByStatus(UserStatusEnum status, Pageable pageable);
+    PagedModel<UserResponse> getAllUserByStatus(UserStatusEnum status, Pageable pageable);
 
     User getUserToUser(long id);
 
@@ -45,8 +46,8 @@ public interface UserService {
     List<WorkLogResponse> getWorkLogByUserId(long userId);
 
     @PreAuthorize("hasAnyAuthority('SCOPE_STAFF', 'SCOPE_ADMIN')")
-    Page<UserResponse> getAllUserByRole(RoleEnum roleName, Pageable pageable);
+    PagedModel<UserResponse> getAllUserByRole(RoleEnum roleName, Pageable pageable);
 
     @PreAuthorize("hasAnyAuthority('SCOPE_STAFF', 'SCOPE_ADMIN')")
-    Page<UserResponse> getAllUserByContract(ContractStatusEnum contractStatusEnum, Pageable pageable);
+    PagedModel<UserResponse> getAllUserByContract(ContractStatusEnum contractStatusEnum, Pageable pageable);
 }

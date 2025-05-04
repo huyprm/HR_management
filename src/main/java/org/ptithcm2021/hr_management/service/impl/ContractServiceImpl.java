@@ -12,7 +12,6 @@ package org.ptithcm2021.hr_management.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.tomcat.util.http.fileupload.ByteArrayOutputStream;
-import org.docx4j.wml.PPr;
 import org.ptithcm2021.hr_management.dto.request.ContractRequest;
 import org.ptithcm2021.hr_management.dto.response.ContractResponse;
 import org.ptithcm2021.hr_management.enums.ContractStatusEnum;
@@ -32,14 +31,14 @@ import org.ptithcm2021.hr_management.service.UserService;
 import org.ptithcm2021.hr_management.util.FillDocxWithTagsUtil;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedModel;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.stream.Collectors;
 
-import static org.ptithcm2021.hr_management.util.FillDocxWithTagsUtil.fillDocxWithTags;
 
 @Service
 @RequiredArgsConstructor
@@ -51,7 +50,6 @@ public class ContractServiceImpl implements ContractService {
     private final ContractTypeRepository contractTypeRepository;
     private final JobGradeRepository jobGradeRepository;
     private final UserRepository userRepository;
-    private final LeaveBalanceService leaveBalanceService;
     private final WorkLogRepository workLogRepository;
     private final FileService fileService;
     private final ContractSchedule contractSchedule;
@@ -65,6 +63,10 @@ public class ContractServiceImpl implements ContractService {
 
         User user = userService.getUserToUser(request.getUserId());
         User signer = userService.getUserToUser(request.getSignerId());
+
+        if(signer.getId()==user.getId()){
+            throw new AppException(ErrorCode.SIGNER_IS_USER);
+        }
 
 //        if (!signer.getPosition().getRole().getId().equals(RoleEnum.ADMIN)) {
 //            throw new AppException(ErrorCode.RIGHT_SIGNER);
@@ -113,7 +115,7 @@ public class ContractServiceImpl implements ContractService {
      * Ký hợp đồng - chuyển từ PENDING sang SIGNED_PENDING_EFFECTIVE
      */
     @Override
-    public ContractResponse signContract(int contractId, String clause, boolean isExtend) throws Exception {
+    public ContractResponse signContract(int contractId, String clause) throws Exception {
         Contract contract = contractRepository.findById(contractId)
                 .orElseThrow(() -> new AppException(ErrorCode.CONTRACT_NOT_FOUND));
 
@@ -123,14 +125,22 @@ public class ContractServiceImpl implements ContractService {
         }
 
         fileService.deleteFile(contract.getClause());
-        // Cập nhật trạng thái hợp đồng thành đã ký, chờ hiệu lực
-        if(isExtend) {
-            contract.setClause(clause);
-            contract.setContractStatusEnum(ContractStatusEnum.SIGNED_PENDING_EFFECTIVE);
-        } else {
-            contract.setClause(clause);
+
+        // Cập nhật trạng thái hợp đồng thành đã ký, chờ hiệu lực và lập lịch
+        contract.setClause(clause);
+
+        if( contract.getStartDate().isBefore(LocalDate.now())){
             contract.setContractStatusEnum(ContractStatusEnum.ACTIVE);
+            contract.getUser().setStatus(UserStatusEnum.ACTIVE);
+        } else {
+            contract.setContractStatusEnum(ContractStatusEnum.SIGNED_PENDING_EFFECTIVE);
+
+            contractSchedule.scheduleContractStatusUpdate(
+                    contractId,
+                    contract.getStartDate().atStartOfDay(),
+                    ContractStatusEnum.ACTIVE);
         }
+
         // Cập nhật thông tin người dùng
         User user = contract.getUser();
         Position position = contract.getPosition();
@@ -142,7 +152,7 @@ public class ContractServiceImpl implements ContractService {
         user.setSalaryBasic(basicSalary);
 
         // Set hire date for new employees
-        if (!isExtend) {
+        if (user.getHireDate() == null) {
             user.setHireDate(contract.getStartDate());
 
             workLogRepository.save(
@@ -178,12 +188,16 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public Page<ContractResponse> getAllContractByUser(long userId, ContractStatusEnum contractStatusEnum, Pageable pageable) {
-        return contractRepository.findContractByUserIdAndContractStatusEnum(userId, contractStatusEnum, pageable).map(contractMapper::toContractResponse);
+    public PagedModel<ContractResponse> getAllContractByUser(long userId, ContractStatusEnum contractStatusEnum, Pageable pageable) {
+        return new PagedModel<>(contractRepository.findContractByUserIdAndContractStatusEnum(
+                userId,
+                contractStatusEnum,
+                pageable)
+                .map(contractMapper::toContractResponse));
     }
 
     @Override
-    public Page<ContractResponse> getAllContract(ContractStatusEnum contractStatusEnum, Pageable pageable) {
+    public PagedModel<ContractResponse> getAllContract(ContractStatusEnum contractStatusEnum, Pageable pageable) {
         Page<Contract> contractPage;
 
         if (contractStatusEnum == null) {
@@ -191,8 +205,18 @@ public class ContractServiceImpl implements ContractService {
         } else {
             contractPage = contractRepository.findAllContractByContractStatusEnum(contractStatusEnum, pageable);
         }
+        return new PagedModel<>(contractPage.map(contractMapper::toContractResponse));
+    }
 
-        return contractPage.map(contractMapper::toContractResponse);
+    @Override
+    public ContractResponse getContractIsActiveByUser(long userId) {
+        Optional<Contract> activeContract = contractRepository.findContractByUserIdAndContractStatusEnum(
+                userId, ContractStatusEnum.ACTIVE);
+
+        if (activeContract.isPresent()) {
+            return contractMapper.toContractResponse(activeContract.get());
+        }
+        return null;
     }
 
     @Override
@@ -226,7 +250,7 @@ public class ContractServiceImpl implements ContractService {
 
         contractSchedule.scheduleContractStatusUpdate(
                 contractId,
-                existingContract.getEndDate().plusDays(1).atStartOfDay(),
+                existingContract.getEndDate().plusDays(1).atStartOfDay().plusHours(1),
                 ContractStatusEnum.RENEWED);
 
         // Create a new contract as an extension
@@ -247,21 +271,7 @@ public class ContractServiceImpl implements ContractService {
         Optional<Contract> signedPendingContract = contractRepository.findContractByUserIdAndContractStatusEnum(
                 userId, ContractStatusEnum.SIGNED_PENDING_EFFECTIVE);
 
-        if (signedPendingContract.isPresent()) {
-            return signedPendingContract.get();
-        }
-
-        // Tìm hợp đồng PENDING
-        Optional<Contract> pendingContract = contractRepository.findContractByUserIdAndContractStatusEnum(
-                userId, ContractStatusEnum.PENDING);
-
-        if (pendingContract.isPresent()) {
-            return pendingContract.get();
-        }
-
-        return contractRepository.findContractByUserIdAndContractStatusEnum(
-                userId, ContractStatusEnum.EXPIRED)
-                .orElseThrow(() -> new AppException(ErrorCode.CONTRACT_NOT_FOUND));
+        return signedPendingContract.orElse(null);
     }
 
     @Override
@@ -278,6 +288,70 @@ public class ContractServiceImpl implements ContractService {
         Contract updatedContract = contractRepository.save(contract);
 
         return contractMapper.toContractResponse(updatedContract);
+    }
+
+    @Override
+    public ContractResponse updateContract(int contractId, ContractRequest contractRequest) throws Exception {
+        Contract  contract = contractRepository.findById(contractId)
+                .orElseThrow(() -> new AppException(ErrorCode.CONTRACT_NOT_FOUND));
+
+        if(!Objects.equals(contract.getPosition().getId(), contractRequest.getPositionId())){
+            Position position = positionRepository.findById(contractRequest.getPositionId())
+                    .orElseThrow(() -> new AppException(ErrorCode.POSITION_NOT_FOUND));
+
+            contract.setPosition(position);
+        }
+
+        if (contract.getSigner().getId() != contractRequest.getSignerId()){
+            User signer = userService.getUserToUser(contractRequest.getSignerId());
+
+            if (signer.getId() == contract.getUser().getId()){
+                throw new AppException(ErrorCode.SIGNER_IS_USER);
+            }
+
+            if (!signer.getPosition().getRole().getId().equals(RoleEnum.ADMIN)) {
+                throw new AppException(ErrorCode.RIGHT_SIGNER);
+            }
+
+            contract.setSigner(signer);
+        }
+
+        if (!Objects.equals(contract.getContractType().getId(), contractRequest.getContractTypeId())){
+            ContractType contractType = contractTypeRepository.findById(contractRequest.getContractTypeId())
+                    .orElseThrow(() -> new AppException(ErrorCode.CONTRACT_TYPE_NOT_FOUND));
+
+            contract.setContractType(contractType);
+        }
+
+        if (!contract.getJobGrade().getId().equals(contractRequest.getJobGradeId())){
+            JobGrade jobGrade = jobGradeRepository.findById(contractRequest.getJobGradeId())
+                    .orElseThrow(() -> new AppException(ErrorCode.JOB_GRADE_NOT_FOUND));
+
+            contract.setJobGrade(jobGrade);
+        }
+
+        contract.setStartDate(contractRequest.getStartDate());
+        contract.setEndDate(contractRequest.getEndDate());
+        contract.setBasicSalary(contractRequest.getBasicSalary());
+
+        // Xóa rồi tạo file mới
+        fileService.deleteFile(contract.getClause());
+
+        String clause;
+        Map<String, String> data = getContractTemplateData(contract);
+        ByteArrayOutputStream byteArrayOutputStream = FillDocxWithTagsUtil
+                .fillDocxWithTags(data);
+
+        clause = fileService.uploadFileFromByteArrayOutputStream(byteArrayOutputStream, "HD00" + contract.getId() );
+        contract.setClause(clause);
+
+        return contractMapper.toContractResponse(contractRepository.save(contract));
+    }
+
+    @Override
+    public List<ContractResponse> getContractsByUserIdAndStatusNotActive(long userId) {
+        return contractRepository.findAllContractByUserIdIsNotActive(userId)
+                .stream().map(contractMapper::toContractResponse).collect(Collectors.toList());
     }
 
     private void validateNoActiveContract(long userId, LocalDate startDate, LocalDate endDate) {

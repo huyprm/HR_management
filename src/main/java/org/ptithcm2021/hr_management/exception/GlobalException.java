@@ -2,6 +2,7 @@ package org.ptithcm2021.hr_management.exception;
 
 import org.ptithcm2021.hr_management.dto.response.ApiResponse;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -42,4 +43,13 @@ public class GlobalException {
         return ResponseEntity.badRequest().body(apiResponse);
     }
 
+    @ExceptionHandler(value = AccessDeniedException.class)
+    ResponseEntity<ApiResponse> handlingAccessDeniedException(AccessDeniedException e){
+        ApiResponse apiResponse = new ApiResponse();
+
+        apiResponse.setMessage(e.getMessage());
+        apiResponse.setCode(403);
+
+        return ResponseEntity.status(403).body(apiResponse);
+    }
 }

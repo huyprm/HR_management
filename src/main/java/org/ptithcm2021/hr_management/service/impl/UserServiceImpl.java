@@ -24,6 +24,7 @@ import org.ptithcm2021.hr_management.util.LeaveApplicationUtil;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedModel;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -118,26 +119,11 @@ public class UserServiceImpl implements UserService {
             userResponse.setSeniorityLeaveDay(rule.getSeniorityLeaveDay());
         }
 
-//        // Position Info
-//        if (user.getPosition() == null) {
-//            userResponse.setPositionName("Chưa có chức vụ");
-//            userResponse.setDepartmentName("Chưa có phòng ban");
-//        } else {
-//            userResponse.setPositionName(user.getPosition().getName());
-//
-//            //Department Info
-//            userResponse.setDepartmentName(user.getPosition().getDepartment().getName());
-//        }
-
         List<Object[]> decisionCounts = workLogRepository.countRewardAndDisciplineByUserId(userId);
 
         Map<String, Integer> decisionCountMap = decisionCounts.stream().collect(Collectors.toMap(o -> String.valueOf(o[0]),  o -> ((Number) o[1]).intValue()));
         userResponse.setNumReward(decisionCountMap.getOrDefault("AWARD", 0));
         userResponse.setNumDiscipline(decisionCountMap.getOrDefault("DISCIPLINE", 0));
-
-        // Rewards & Discipline
-//        userResponse.setNumReward(Math.toIntExact(rewardAssignmentRepository.countByUserId(userId)));
-//        userResponse.setNumDiscipline(Math.toIntExact(disciplineAssignmentRepository.countByUserId(userId)));
 
         // Leave Balance
         YearMonth currentMonth = YearMonth.now();
@@ -149,9 +135,9 @@ public class UserServiceImpl implements UserService {
         LeaveBalance leave = leaveBalanceRepository.findByUserIdAndYearAndMonth
                 (userId, preMonth.getYear(), preMonth.getMonthValue()).orElse(null);
 
-        userResponse.setCarriedOverDay(leave != null ? leave.getCarriedOverDay() : 0);
+        userResponse.setCarriedOverDay(leave != null ? leave.getRemainingLeaveDay() : 0);
 
-        int numLeave = leaveApplicationUtil.calculateLeveDays(userId, startDate, endDate);
+        double numLeave = leaveApplicationUtil.calculateTotalLeveDays(userId, startDate, endDate);
 
         userResponse.setUsedLeaveDay(numLeave);
 
@@ -175,13 +161,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Page<UserResponse> getAllUserByStatus(UserStatusEnum status, Pageable pageable) {
+    public PagedModel<UserResponse> getAllUserByStatus(UserStatusEnum status, Pageable pageable) {
         Page<UserResponse> userResponses;
         if (status == null) {
             userResponses = userRepository.findAll(pageable).map(userMapper::toUserResponse);
-            return userResponses;
+            return new PagedModel<>(userResponses);
         }
-        return userRepository.findAllByStatus(status, pageable).map(userMapper::toUserResponse);
+        return new PagedModel<>(userRepository.findAllByStatus(status, pageable).map(userMapper::toUserResponse));
     }
 
     @Override
@@ -203,18 +189,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Page<UserResponse> getAllUserByRole(RoleEnum roleName, Pageable pageable) {
-        return userRepository.findAllUserByRole(roleName, pageable)
-                .map(userMapper::toUserResponse);
+    public PagedModel<UserResponse> getAllUserByRole(RoleEnum roleName, Pageable pageable) {
+        return new PagedModel<>(userRepository.findAllUserByRole(roleName, pageable)
+                .map(userMapper::toUserResponse));
     }
 
     @Override
-    public Page<UserResponse> getAllUserByContract(ContractStatusEnum contractStatusEnum, Pageable pageable) {
+    public PagedModel<UserResponse> getAllUserByContract(ContractStatusEnum contractStatusEnum, Pageable pageable) {
         if(contractStatusEnum == null)
-            return userRepository.findUsersWithoutContract(pageable).map(userMapper::toUserResponse);
+            return new PagedModel<>(userRepository.findUsersWithoutContract(pageable).map(userMapper::toUserResponse));
 
-        return userRepository.findAllUserByContract(contractStatusEnum, pageable)
-                .map(userMapper::toUserResponse);
+        return new PagedModel<>(userRepository.findAllUserByContract(contractStatusEnum, pageable)
+                .map(userMapper::toUserResponse));
     }
 
     private Page<NotificationRecipientResponse> getTop5NotificationRecipient(long userId) {

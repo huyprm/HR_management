@@ -12,8 +12,8 @@ import java.time.temporal.ChronoUnit;
 public final class LeaveApplicationUtil {
     private final LeaveApplicationRepository leaveApplicationRepository;
 
-    public int calculateLeveDays(long userId, LocalDate startDate, LocalDate endDate) {
-        int used = leaveApplicationRepository.findApprovedLeavesByUserAndMonth(userId, startDate, endDate)
+    public double calculateLeveDays(long userId, LocalDate startDate, LocalDate endDate) {
+        double used = leaveApplicationRepository.findApprovedLeavesByUserAndMonth(userId, startDate, endDate)
                 .stream()
                 .filter(leaveApplication -> leaveApplication.getLeaveType().isAffectLeaveBalance())
                 .mapToInt(leaveApplication -> {
@@ -30,5 +30,23 @@ public final class LeaveApplicationUtil {
                 })
                 .sum();
         return used;
+    }
+
+    public double calculateTotalLeveDays(long userId, LocalDate startDate, LocalDate endDate) {
+        return leaveApplicationRepository.findApprovedLeavesByUserAndMonth(userId, startDate, endDate)
+                .stream()
+                .mapToInt(leaveApplication -> {
+
+                    LocalDate startDateOfLeave = leaveApplication.getStartDate();
+                    LocalDate endDateOfLeave = leaveApplication.getEndDate();
+
+                    LocalDate effectiveStart  = startDateOfLeave.isBefore(startDate) ? startDate : startDateOfLeave;
+                    LocalDate effectiveEnd = endDateOfLeave.isAfter(endDate) ? endDate : endDateOfLeave;
+
+                    long days = ChronoUnit.DAYS.between(effectiveStart, effectiveEnd);
+
+                    return (int) days + 1;
+                })
+                .sum();
     }
 }

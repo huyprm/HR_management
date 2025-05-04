@@ -35,9 +35,14 @@
     </properties>
     <dependencies>
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-quartz</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>org.docx4j</groupId>
             <artifactId>docx4j-export-fo</artifactId>
-            <version>11.5.2</version> <!-- hoặc version phù hợp với core của bạn -->
+            <version>11.5.2</version>
         </dependency>
 
         <dependency>

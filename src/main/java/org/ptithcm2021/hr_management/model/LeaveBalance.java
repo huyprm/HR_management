@@ -25,10 +25,10 @@ public class LeaveBalance {
     @Column
     private int month;
 
-    private int totalLeaveDay;
-    private int carriedOverDay;
-    private int usedLeaveDay;
-    private int remainingLeaveDay;
+    private double totalLeaveDay;
+    private double carriedOverDay;
+    private double usedLeaveDay;
+    private double remainingLeaveDay;
 
     @ManyToOne
     @JoinColumn(name ="userId")
