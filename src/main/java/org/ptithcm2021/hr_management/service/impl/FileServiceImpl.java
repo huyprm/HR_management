@@ -79,7 +79,7 @@ public class FileServiceImpl implements FileService {
             makeFilePublic(driveService, uploadedFile.getId());
 
             // Return the direct access URL
-//            return "https://drive.google.com/file/d/" + uploadedFile.getId() + "/view";
+         //   return "https://drive.google.com/file/d/" + uploadedFile.getId() + "/view";
             return uploadedFile.getId();
 
 

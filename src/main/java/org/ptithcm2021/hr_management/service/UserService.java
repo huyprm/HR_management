@@ -1,7 +1,6 @@
 package org.ptithcm2021.hr_management.service;
 
 import jakarta.mail.MessagingException;
-import org.aspectj.weaver.patterns.IToken;
 import org.ptithcm2021.hr_management.dto.request.ChangePasswordRequest;
 import org.ptithcm2021.hr_management.dto.request.UserRequest;
 import org.ptithcm2021.hr_management.dto.request.UserUpdateRequest;
@@ -11,11 +10,10 @@ import org.ptithcm2021.hr_management.enums.ContractStatusEnum;
 import org.ptithcm2021.hr_management.enums.RoleEnum;
 import org.ptithcm2021.hr_management.enums.UserStatusEnum;
 import org.ptithcm2021.hr_management.model.User;
-import org.springframework.data.domain.Page;
+import org.ptithcm2021.hr_management.projection.UserSummary;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedModel;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -50,4 +48,7 @@ public interface UserService {
 
     @PreAuthorize("hasAnyAuthority('SCOPE_STAFF', 'SCOPE_ADMIN')")
     PagedModel<UserResponse> getAllUserByContract(ContractStatusEnum contractStatusEnum, Pageable pageable);
+
+    @PreAuthorize("hasAnyAuthority('SCOPE_STAFF', 'SCOPE_ADMIN')")
+    List<UserSummary> searchUser(String keyword);
 }

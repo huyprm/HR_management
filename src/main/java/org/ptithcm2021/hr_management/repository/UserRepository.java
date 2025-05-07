@@ -1,15 +1,18 @@
 package org.ptithcm2021.hr_management.repository;
 
 import jakarta.validation.constraints.Email;
+import org.ptithcm2021.hr_management.dto.response.UserSummaryResponse;
 import org.ptithcm2021.hr_management.enums.ContractStatusEnum;
 import org.ptithcm2021.hr_management.enums.RoleEnum;
 import org.ptithcm2021.hr_management.enums.UserStatusEnum;
 import org.ptithcm2021.hr_management.model.User;
+import org.ptithcm2021.hr_management.projection.UserSummary;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -40,6 +43,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
                                                       @Param("endOfMonth") LocalDate endOfMonth,
                                                       @Param("status") ContractStatusEnum status);
 
-    @Query(value  = "select u.id, u.full_name from users u where match(u.full_name) against(?1 in boolean mode)", nativeQuery = true)
-    List<Object> searchFullText(String keyword);
+    @Query(value = "SELECT u.id AS id, u.full_name AS fullName FROM users u WHERE MATCH(u.full_name) AGAINST (?1 IN BOOLEAN MODE) AND u.status = 'ACTIVE'", nativeQuery = true)
+    List<UserSummary> searchFullText(String keyword);
+
+    @Query("select u from User u where u.position.department.id = :departmentId and u.status= :status")
+    List<User> findAllByDepartmentId(@Param("departmentId") String departmentId,
+                                     @Param("status") UserStatusEnum status);
 }

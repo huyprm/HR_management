@@ -2,6 +2,7 @@ package org.ptithcm2021.hr_management.service.impl;
 
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.ptithcm2021.hr_management.dto.request.ChangePasswordRequest;
 import org.ptithcm2021.hr_management.dto.request.UserRequest;
 import org.ptithcm2021.hr_management.dto.request.UserUpdateRequest;
@@ -16,8 +17,8 @@ import org.ptithcm2021.hr_management.exception.ErrorCode;
 import org.ptithcm2021.hr_management.mapper.UserMapper;
 import org.ptithcm2021.hr_management.mapper.WorkLogMapper;
 import org.ptithcm2021.hr_management.model.*;
+import org.ptithcm2021.hr_management.projection.UserSummary;
 import org.ptithcm2021.hr_management.repository.*;
-import org.ptithcm2021.hr_management.service.LeaveApplicationService;
 import org.ptithcm2021.hr_management.service.MailService;
 import org.ptithcm2021.hr_management.service.UserService;
 import org.ptithcm2021.hr_management.util.LeaveApplicationUtil;
@@ -30,11 +31,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.Year;
 import java.time.YearMonth;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -201,6 +202,19 @@ public class UserServiceImpl implements UserService {
 
         return new PagedModel<>(userRepository.findAllUserByContract(contractStatusEnum, pageable)
                 .map(userMapper::toUserResponse));
+    }
+
+    @Override
+    public List<UserSummary> searchUser(String keyword) {
+
+        String[] handleKeyword = keyword.split(" ");
+        StringBuilder finalKey= new StringBuilder();
+        for (String handle : handleKeyword){
+            finalKey.append('+').append(handle.toLowerCase()).append(" ");
+        }
+        finalKey.append('*');
+        log.info(finalKey.toString());
+        return userRepository.searchFullText(finalKey.toString());
     }
 
     private Page<NotificationRecipientResponse> getTop5NotificationRecipient(long userId) {

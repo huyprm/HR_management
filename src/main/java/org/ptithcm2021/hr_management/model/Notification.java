@@ -2,9 +2,10 @@ package org.ptithcm2021.hr_management.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.ptithcm2021.hr_management.enums.NotificationEnum;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -20,12 +21,18 @@ public class Notification {
 
     private String title;
     private String content;
-    private String attached;
+
+    @CollectionTable(name = "notification_attached", joinColumns = @JoinColumn(name = "notification_id"))
+    @Column(name = "attached")
+    private List<String> attached = new ArrayList<>();
 
     @Column
     private LocalDateTime sendDate = LocalDateTime.now();
 
-    private String infoReceiver;
+    private String recipientText;
+
+    @Enumerated(EnumType.STRING)
+    private NotificationEnum notificationEnum;
 
     @ManyToOne
     @JoinColumn(name = "userId")

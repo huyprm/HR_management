@@ -14,8 +14,8 @@ public class NotificationResponse {
     private long id;
     private String title;
     private String content;
-    private String attached;
+    private List<String> attached;
     private LocalDateTime sendDate;
-
+    private String recipientText;
     private FeedbackResponse.UserSummaryResponse sender;
 }

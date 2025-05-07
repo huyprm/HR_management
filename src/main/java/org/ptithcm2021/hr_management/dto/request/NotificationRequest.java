@@ -19,11 +19,13 @@ public class NotificationRequest {
     @NotBlank(message = "Content cannot be blank")
     private String content;
 
-   // @NotNull(message = "Sender cannot be empty")
+   //@NotNull(message = "Sender cannot be empty")
     private Long userId;
 
-    private String attached;
+    private String recipientText;
+
+    private List<String> attached;
     private List<Long> receiverIds;
-    private List<String> positionIs;
-    private List<String> departmentIs;
+    private List<String> positionIds;
+    private List<String> departmentIds;
 }

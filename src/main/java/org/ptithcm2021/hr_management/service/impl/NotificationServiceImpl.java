@@ -1,13 +1,16 @@
 package org.ptithcm2021.hr_management.service.impl;
 
+import com.nimbusds.jose.JWEObjectJSON;
 import lombok.RequiredArgsConstructor;
 import org.ptithcm2021.hr_management.dto.request.NotificationRequest;
 import org.ptithcm2021.hr_management.dto.response.NotificationRecipientResponse;
 import org.ptithcm2021.hr_management.dto.response.NotificationResponse;
+import org.ptithcm2021.hr_management.enums.NotificationEnum;
 import org.ptithcm2021.hr_management.enums.UserStatusEnum;
 import org.ptithcm2021.hr_management.exception.AppException;
 import org.ptithcm2021.hr_management.exception.ErrorCode;
 import org.ptithcm2021.hr_management.mapper.NotificationMapper;
+import org.ptithcm2021.hr_management.model.Department;
 import org.ptithcm2021.hr_management.model.Notification;
 import org.ptithcm2021.hr_management.model.NotificationRecipient;
 import org.ptithcm2021.hr_management.model.User;
@@ -17,6 +20,7 @@ import org.ptithcm2021.hr_management.service.UserService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedModel;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -50,32 +54,30 @@ public class NotificationServiceImpl implements NotificationService {
                 User user = userService.getUserToUser(aLong);
                 receivers.add(user);
             });
-            notification.setInfoReceiver("Personal");
+            notification.setNotificationEnum(NotificationEnum.SINGLE);
         }
-//        if (notificationRequest.getDepartmentIs() != null){
-//            notificationRequest.getDepartmentIs().forEach(s -> {
-//                Department department = departmentRepository.findById(s)
-//                        .orElseThrow(() -> new AppException(ErrorCode.DEPARTMENT_NOT_FOUND));
-//
-//                receivers.addAll(department.getUsers().stream()
-//                        .filter(user -> user.getStatus().equals(UserStatusEnum.PENDING)).toList());
-//            });
-//            notification.setInfoReceiver("Department");
-//        }
+        if (notificationRequest.getDepartmentIds() != null){
+            notificationRequest.getDepartmentIds().forEach(s -> {
+                List<User> users = userRepository.findAllByDepartmentId(s, UserStatusEnum.ACTIVE);
+                receivers.addAll(users);
+            });
 
-        if (notificationRequest.getPositionIs() !=null){
+            notification.setNotificationEnum(NotificationEnum.DEPARTMENT);
+        }
+
+        if (notificationRequest.getPositionIds() !=null){
 
         }
 
         if (notificationRequest.getReceiverIds() == null &&
-            notificationRequest.getPositionIs() == null &&
-            notificationRequest.getDepartmentIs() == null ){
+            notificationRequest.getPositionIds() == null &&
+            notificationRequest.getDepartmentIds() == null ){
 
             List<User> list = userRepository.findAll().stream()
                     .filter(user -> user.getStatus().equals(UserStatusEnum.PENDING)).toList();
 
             receivers.addAll(list);
-            notification.setInfoReceiver("All");
+            notification.setNotificationEnum(NotificationEnum.ALL);
         }
 
         List<User> receiversFinal  = receivers.stream().distinct().toList();
@@ -97,28 +99,54 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public NotificationResponse getNotification(long id) {
-        NotificationRecipient recipient = recipientRepository.findById(id)
+        Notification notification = notificationRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.NOTIFICATION_NOT_FOUND));
-
-        if(!recipient.isReadStatus()) {
-            recipient.setReadStatus(true);
-            recipientRepository.save(recipient);
-        }
-
-        return notificationMapper.toNotificationResponse(recipient.getNotification());
+        return notificationMapper.toNotificationResponse(notification);
     }
 
     @Override
-    public Page<NotificationRecipientResponse> getListNotificationRecipient(long userId, Pageable pageable) {
+    public PagedModel<NotificationRecipientResponse> getListNotificationRecipient(long userId, Pageable pageable) {
         Page<NotificationRecipient> notificationRecipients = recipientRepository.findAllByUserId(userId, pageable);
 
-        return notificationRecipients
+        return new PagedModel<>(notificationRecipients
                 .map(notificationRecipient -> {
             return NotificationRecipientResponse.builder()
                     .id(notificationRecipient.getId())
                     .title(notificationRecipient.getNotification().getTitle())
                     .readStatus(notificationRecipient.isReadStatus())
                     .sendDate(notificationRecipient.getNotification().getSendDate()).build();
+        }));
+    }
+
+
+    @Override
+    public PagedModel<NotificationResponse> getListNotification(long senderId, Pageable pageable, NotificationEnum type) {
+        if (type == NotificationEnum.ALL){
+            return new PagedModel<>(notificationRepository.findAllNotificationIdBySenderId(senderId, pageable)
+                    .map(notificationMapper::toNotificationResponse));
+        }
+        return new PagedModel<>(notificationRepository.findAllNotificationIdBySenderIdAndType(senderId, type, pageable)
+                .map(notificationMapper::toNotificationResponse));
+    }
+
+    @Override
+    public NotificationResponse getNotificationByRecipient(long id) {
+        NotificationRecipient recipient = recipientRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.NOTIFICATION_NOT_FOUND));
+        Notification notification = recipient.getNotification();
+
+        return notificationMapper.toNotificationResponse(notification);
+    }
+
+    @Override
+    public void maskAsSeen(List<Long> ids) {
+        ids.forEach(id -> {
+            NotificationRecipient recipient = recipientRepository.findById(id)
+                    .orElseThrow(() -> new AppException(ErrorCode.NOTIFICATION_NOT_FOUND));
+
+            recipient.setReadStatus(true);
+            recipientRepository.save(recipient);
         });
     }
+
+
 }

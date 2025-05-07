@@ -11,11 +11,13 @@ import org.ptithcm2021.hr_management.dto.request.UserRequest;
 import org.ptithcm2021.hr_management.dto.request.UserUpdateRequest;
 import org.ptithcm2021.hr_management.dto.response.ApiResponse;
 import org.ptithcm2021.hr_management.dto.response.UserResponse;
+import org.ptithcm2021.hr_management.dto.response.UserSummaryResponse;
 import org.ptithcm2021.hr_management.dto.response.WorkLogResponse;
 import org.ptithcm2021.hr_management.enums.ContractStatusEnum;
 import org.ptithcm2021.hr_management.enums.RoleEnum;
 import org.ptithcm2021.hr_management.enums.UserStatusEnum;
 import org.ptithcm2021.hr_management.model.User;
+import org.ptithcm2021.hr_management.projection.UserSummary;
 import org.ptithcm2021.hr_management.service.UserService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -98,8 +100,8 @@ public class UserController {
     }
 
     @GetMapping("/search")
-    public ApiResponse<List<UserResponse>> searchUser(@RequestParam String keyword){
-        return null;
+    public ApiResponse<List<UserSummary>> searchUser(@RequestParam String keyword){
+        return ApiResponse.<List<UserSummary>>builder().data(userService.searchUser(keyword)).build();
     }
 
     @GetMapping("/contract")
