@@ -216,7 +216,19 @@ public class ContractServiceImpl implements ContractService {
         if (activeContract.isPresent()) {
             return contractMapper.toContractResponse(activeContract.get());
         }
-        return null;
+
+        Optional<Contract> signedContract = contractRepository.findContractByUserIdAndContractStatusEnum(
+                userId, ContractStatusEnum.SIGNED_PENDING_EFFECTIVE);
+
+        if (signedContract.isPresent()) {
+            return contractMapper.toContractResponse(signedContract.get());
+        }
+
+        Optional<Contract> expiredContract = contractRepository.findContractByUserIdAndContractStatusEnum(
+                userId, ContractStatusEnum.EXPIRED);
+
+        return expiredContract.map(contractMapper::toContractResponse)
+                .orElseThrow(() -> new AppException(ErrorCode.CONTRACT_NOT_FOUND));
     }
 
     @Override

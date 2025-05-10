@@ -24,6 +24,6 @@ public class LeaveType {
     private String description;
 
     // Ví dụ: true cho nghỉ phép thường, false cho nghỉ BHXH, nghỉ ốm có giấy bác sĩ, v.v.
-    private boolean affectLeaveBalance = true;
+    private boolean affectLeaveBalance = false;
 
 }

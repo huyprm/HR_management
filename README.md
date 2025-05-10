@@ -414,48 +414,125 @@ public class NotificationServiceImpl implements NotificationService {
 }
 ```
 
-## Sơ Đồ Lớp (Class Diagram)
+## Các Biểu Đồ UML Chi Tiết
+
+### 1. Biểu Đồ Lớp Chi Tiết (Class Diagram)
 
 ```
 +------------------+     +---------------+     +-----------------+
 |      User        |<--->| Department    |<--->|    Position     |
 +------------------+     +---------------+     +-----------------+
-| - id             |     | - id          |     | - id            |
-| - username       |     | - name        |     | - name          |
-| - password       |     | - description |     | - description   |
-| - email          |     | - manager     |     | - jobGradeId    |
-| - fullName       |     +---------------+     +-----------------+
-| - phone          |            ^
-| - address        |            |
-| - positionId     |     +------+------+     +----------------+
-| - departmentId   |     |   Account    |<--->|     Role      |
-| - status         |<--->| - id         |     | - id          |
-+------------------+     | - userId     |     | - name        |
-         ^               | - role       |     | - description |
-         |               +-------------+      +----------------+
-+-----------------+            |
-| WorkingHistory  |<-----------+
-+-----------------+
-| - id            |     +-------------+     +----------------+
-| - userId        |<--->|  Contract   |<--->| ContractType  |
-| - positionId    |     | - id        |     | - id          |
-| - departmentId  |     | - userId    |     | - name        |
-| - startDate     |     | - typeId    |     | - description |
-| - endDate       |     | - startDate |     | - duration    |
-+-----------------+     | - endDate   |     +----------------+
-                        | - salary    |
-                        +-------------+
-                               |
-                        +------+------+     +---------------+
-                        |   Salary    |<--->| JobGrade      |
-                        | - id        |     | - id          |
-                        | - userId    |     | - name        |
-                        | - amount    |     | - minSalary   |
-                        | - effectDate|     | - maxSalary   |
-                        +-------------+     +---------------+
+| - id: long       |     | - id: String  |     | - id: String    |
+| - email: String  |     | - name: String|     | - name: String  |
+| - fullName: String     | - description |     | - description   |
+| - numberCCCD     |     +---------------+     | - department    |
+| - phoneNumber    |           ^               | - role          |
+| - dob: LocalDate |           |               +-----------------+
+| - nationality    |     +-----+------+              ^
+| - gender         |     |   Account   |              |
+| - address        |     +------------+               |
+| - status: enum   |<--->| - username  |<------------>+
+| - avatar         |     | - password  |         +----------------+
+| - account        |     | - status    |-------->|     Role       |
+| - position       |     | - role      |         +----------------+
+| - hireDate       |     +------------+          | - id: RoleEnum |
+| - serviceDuration|           |                 | - description  |
+| - salaryBasic    |           |                 +----------------+
++------------------+      +----+-------+
+       |  ^                |  Contract  |
+       |  |                +------------+                +-----------------+
+       |  +--------------->| - id: int  |<-------------->| ContractType    |
+       |                   | - startDate|                +-----------------+
+       |                   | - endDate  |                | - id: String    |
+       |                   | - basicSalary               | - name: String  |
+       |                   | - clause   |                | - duration      |
+       |                   | - status   |                | - isPolicy      |
+       |                   | - user     |                +-----------------+
+       |                   | - signer   |
+       v                   | - position |                +-----------------+
++-----------------+        | - jobGrade |<-------------->| JobGrade        |
+| LeaveApplication|        +------------+                +-----------------+
++-----------------+              |                       | - id: String    |
+| - id: long      |<-------------+                       | - name: String  |
+| - startDate     |              |                       | - coefficient   |
+| - endDate       |       +------+------+                +-----------------+
+| - reason        |       | Decision    |
+| - status: enum  |       +-------------+                +-----------------+
+| - signer: User  |<----->| - id: String|<-------------->| LeaveBalance    |
+| - user: User    |       | - attachment|                +-----------------+
+| - leaveType     |       | - content   |                | - id: int       |
++-----------------+       | - value     |                | - year: int     |
+      ^                   | - date      |                | - month: int    |
+      |                   | - status    |                | - totalLeaveDay |
++-----+---------+         | - type: enum|                | - carriedOverDay|
+| LeaveType      |        | - user      |                | - usedLeaveDay  |
++---------------+         | - position  |                | - remainingLeave|
+| - id: int      |        +-------------+                | - user          |
+| - name: String |              |                        +-----------------+
+| - description  |              v
+| - affectBalance|       +-----+--------+                +-----------------+
++---------------+        |WorkingHistory |<-------------->| Salary          |
+                         +--------------+                 +-----------------+
+                         | - id: long   |                 | - id: int       |
+                         | - type: enum |                 | - startDate     |
+                         | - user       |                 | - endDate       |
+                         | - decision   |                 | - baseSalary    |
+                         | - contract   |                 | - allowance     |
+                         +--------------+                 | - workingDays   |
+                                                         | - leaveDays     |
+                                                         | - paymentDate   |
+                                                         | - user          |
+                                                         | - contract      |
+                                                         +-----------------+
 ```
 
-## Sơ Đồ Tuần Tự (Sequence Diagram) - Quy Trình Xét Duyệt Nghỉ Phép
+### 2. Biểu Đồ Use Case (Use Case Diagram)
+
+```
+                                   +-------------------+
+                                   |   HR Management   |
+                                   +-------------------+
+                                           ^
+                                          / \
+                           +-------------+   +-------------+
+                           |                               |
+                    +------+------+                 +------+------+
+                    |     HR      |                 |    Staff    |
+                    +-------------+                 +-------------+
+                    | - Login     |                 | - Login     |
+                    | - Logout    |                 | - Logout    |
+                    +------+------+                 +------+------+
+                           |                               |
+         +-----------------+-----------------+    +--------+--------+
+         |                 |                 |    |                 |
++--------+-----+  +--------+-----+  +--------+----+  +--------+----+  +--------+----+
+| Quản lý NV   |  | Quản lý HĐ   |  | Quản lý QĐ   |  | Xin nghỉ   |  | Xem thông tin|
++-------------+  +-------------+  +-------------+  +-------------+  +-------------+
+| - Thêm NV    |  | - Tạo HĐ    |  | - Tạo QĐ    |  | - Tạo đơn  |  | - Xem hồ sơ |
+| - Sửa NV     |  | - Ký HĐ     |  | - Phê duyệt |  | - Hủy đơn  |  | - Xem lương |
+| - Xóa NV     |  | - Gia hạn HĐ|  | - Khen thưởng|  | - Xem lịch |  | - Xem QĐ    |
+| - Tìm NV     |  | - Chấm dứt  |  | - Kỷ luật   |  | - Xem phép |  | - Xem TB    |
++-------------+  +-------------+  +-------------+  +-------------+  +-------------+
+```
+
+### 3. Biểu Đồ Trạng Thái (State Diagram) - Quy Trình Hợp Đồng
+
+```
+    +-------------+        +------------------+        +--------------------+
+    |   PENDING   +------->| SIGNED_PENDING   +------->|      ACTIVE        |
+    | (Chờ ký kết)|        | (Đã ký, chờ hiệu |        | (Hợp đồng có hiệu  |
+    +-------------+        |    lực)          |        |       lực)         |
+          ^                +------------------+        +--------------------+
+          |                                                      |
+          |                                                      |
+          |                                                      v
+    +-----+------+        +------------------+        +--------------------+
+    | TERMINATED |<-------| RENEWED          |<-------| EXPIRED            |
+    | (Chấm dứt) |        | (Đã gia hạn)     |        | (Hết hạn)          |
+    +------------+        +------------------+        +--------------------+
+```
+
+### 4. Biểu Đồ Tuần Tự (Sequence Diagram) - Quy Trình Xét Duyệt Nghỉ Phép
 
 ```
 +--------+     +-------------------+     +------------------+     +-------------+     +---------------+
@@ -484,7 +561,76 @@ public class NotificationServiceImpl implements NotificationService {
     |                   |                        |                       |                   |
 ```
 
-## Sơ Đồ Giao Tiếp (Communication Diagram) - Quy Trình Tăng Lương
+### 5. Biểu Đồ Hoạt Động (Activity Diagram) - Quy Trình Tuyển Dụng và Quản Lý Nhân Sự
+
+```
+    +------------------+
+    | Bắt đầu tuyển NV |
+    +------------------+
+             |
+             v
+    +------------------+
+    | Tạo vị trí tuyển |
+    +------------------+
+             |
+             v
+    +------------------+
+    |  Phỏng vấn ứng   |
+    |     viên         |
+    +------------------+
+             |
+             v
+    +------------------+      Không     +------------------+
+    |  Ứng viên đạt    +-------------->|  Kết thúc quy     |
+    |   yêu cầu?       |               |     trình         |
+    +------------------+               +------------------+
+             |
+             | Có
+             v
+    +------------------+
+    | Tạo hồ sơ nhân   |
+    |     viên         |
+    +------------------+
+             |
+             v
+    +------------------+
+    |   Tạo tài khoản  |
+    |   hệ thống       |
+    +------------------+
+             |
+             v
+    +------------------+
+    |    Soạn thảo     |
+    |    hợp đồng      |
+    +------------------+
+             |
+             v
+    +------------------+
+    |   Ký kết hợp     |
+    |     đồng         |
+    +------------------+
+             |
+             v
+    +------------------+
+    | Cập nhật trạng   |
+    | thái nhân viên   |
+    +------------------+
+             |
+             v
+    +------------------+
+    |  Phân quyền và   |
+    |  phân công công  |
+    |      việc        |
+    +------------------+
+             |
+             v
+    +------------------+
+    |  Theo dõi hiệu   |
+    |  suất làm việc   |
+    +------------------+
+```
+
+### 6. Biểu Đồ Giao Tiếp (Communication Diagram) - Quy Trình Tăng Lương
 
 ```
                  +--------------------+
@@ -502,6 +648,52 @@ public class NotificationServiceImpl implements NotificationService {
 +----------------+   +------------------+   +------------------+
 | UserRepository |   | SalaryRepository |   | EmailService     |
 +----------------+   +------------------+   +------------------+
+```
+
+### 7. Biểu Đồ Thành Phần (Component Diagram) - Kiến Trúc Hệ Thống
+
+```
++--------------------+        +-------------------+        +-------------------+
+|   Web Client       |<------>|  REST Controllers  |<------>| Service Layer     |
+|(React/Angular/Vue) |        |     Layer          |        | (Business Logic)  |
++--------------------+        +-------------------+        +-------------------+
+                                       ^                           ^
+                                       |                           |
+                                       v                           v
++--------------------+        +-------------------+        +-------------------+
+|    Security        |<------>|   Repository      |<------>|   Database        |
+|(JWT Authentication)|        |     Layer         |        |   (MySQL)         |
++--------------------+        +-------------------+        +-------------------+
+         ^                             ^                           ^
+         |                             |                           |
+         v                             v                           v
++--------------------+        +-------------------+        +-------------------+
+|    Redis Cache     |<------>|   Scheduler       |<------>|  External APIs    |
+|(Performance Boost) |        |(Quartz Jobs)      |        |(Email, Storage)   |
++--------------------+        +-------------------+        +-------------------+
+```
+
+### 8. Biểu Đồ Triển Khai (Deployment Diagram)
+
+```
++------------------+        +-------------------+        +------------------+
+|  Client Browser  |        |  Application      |        |    Database      |
+|                  |        |    Server         |        |     Server       |
++------------------+        +-------------------+        +------------------+
+| - Web Interface  |<------>| - Spring Boot App |<------>| - MySQL Database |
+| - SPA            |        | - Tomcat          |        | - Redis Server   |
++------------------+        | - JVM             |        +------------------+
+                            +-------------------+
+                                    ^
+                                    |
+                                    v
+                            +-------------------+
+                            | External Services |
+                            +-------------------+
+                            | - Email Server    |
+                            | - Cloud Storage   |
+                            | - Authentication  |
+                            +-------------------+
 ```
 
 ## Tác Giả

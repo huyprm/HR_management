@@ -17,6 +17,7 @@ import org.ptithcm2021.hr_management.model.User;
 import org.ptithcm2021.hr_management.repository.*;
 import org.ptithcm2021.hr_management.service.NotificationService;
 import org.ptithcm2021.hr_management.service.UserService;
+import org.ptithcm2021.hr_management.websocket.NotificationWebSocketSender;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -36,6 +37,7 @@ public class NotificationServiceImpl implements NotificationService {
     private final DepartmentRepository departmentRepository;
     private final PositionRepository positionRepository;
     private final UserRepository userRepository;
+    private final NotificationWebSocketSender notificationWebSocketSender;
 
     @Override
     public NotificationResponse createNotification(NotificationRequest notificationRequest) {
@@ -82,19 +84,23 @@ public class NotificationServiceImpl implements NotificationService {
 
         List<User> receiversFinal  = receivers.stream().distinct().toList();
 
+        notification.setSender(sender);
+        Notification noti = notificationRepository.save(notification);
+
+        NotificationResponse response = notificationMapper.toNotificationResponse(noti);
         for (User receiver: receiversFinal){
             NotificationRecipient recipient = NotificationRecipient.builder()
                     .notification(notification)
                     .user(receiver)
                     .build();
             notificationRecipients.add(recipient);
+
+            notificationWebSocketSender.sendNotificationToUser(receiver.getId(), response);
         }
 
-        notification.setSender(sender);
-        Notification noti = notificationRepository.save(notification);
         recipientRepository.saveAll(notificationRecipients);
 
-        return notificationMapper.toNotificationResponse(noti);
+        return response;
     }
 
     @Override

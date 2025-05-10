@@ -62,9 +62,4 @@ public class NotificationController {
         notificationService.maskAsSeen(ids);
         return ApiResponse.<Void>builder().build();
     }
-
-    @SendTo("/user/notification")
-    public String sendNotification(String message) {
-        return message; // Gửi lại thông báo
-    }
 }

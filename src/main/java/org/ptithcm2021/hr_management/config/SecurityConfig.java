@@ -1,5 +1,6 @@
 package org.ptithcm2021.hr_management.config;
 
+import jakarta.servlet.Filter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -23,8 +24,11 @@ import java.util.List;
 @EnableMethodSecurity
 public class SecurityConfig {
     private final JwtDecoderConfig jwtDecoderConfig;
-    public SecurityConfig(JwtDecoderConfig jwtDecoderConfig){
+    private final TerminatedAccountFilter terminatedAccountFilter;
+
+    public SecurityConfig(JwtDecoderConfig jwtDecoderConfig, TerminatedAccountFilter terminatedAccountFilter){
         this.jwtDecoderConfig =jwtDecoderConfig;
+        this.terminatedAccountFilter = terminatedAccountFilter;
     }
 
     private static final String[] PUBLIC_ENDPOINT = {
@@ -43,14 +47,15 @@ public class SecurityConfig {
                 .anyRequest().authenticated()
         );
 
-        http.oauth2ResourceServer(oauth2 ->oauth2
-                .jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtDecoderConfig))
-                .authenticationEntryPoint(new EntryPointAuthentication())
+        http.addFilterAfter(terminatedAccountFilter, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class)
+            .oauth2ResourceServer(oauth2 ->oauth2
+            .jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtDecoderConfig))
+            .authenticationEntryPoint(new EntryPointAuthentication())
         );
 
         http.cors(cors -> cors.configurationSource(request -> {
             CorsConfiguration config = new CorsConfiguration();
-            config.setAllowedOrigins(List.of("http://localhost:5500")); // Chỉ frontend này được truy cập
+            config.setAllowedOrigins(List.of("http://localhost:3000")); // Chỉ frontend này được truy cập
             config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH"));
             config.setAllowedHeaders(List.of("*"));
             config.setAllowCredentials(true);

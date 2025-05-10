@@ -34,7 +34,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT u FROM User u JOIN Contract c ON u.id = c.user.id WHERE c.contractStatusEnum = :status")
     Page<User> findAllUserByContract(@Param("status") ContractStatusEnum status, Pageable pageable);
 
-    @Query("SELECT u FROM User u LEFT JOIN Contract c ON u.id = c.user.id WHERE c.id IS NULL ")
+    @Query("SELECT u FROM User u LEFT JOIN Contract c ON u.id = c.user.id WHERE c.id IS NULL and u.status <> 'TERMINATED'")
     Page<User> findUsersWithoutContract(Pageable pageable);
 
     @Query("select distinct c.user from Contract c where (c.contractStatusEnum = :status " +
@@ -49,4 +49,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("select u from User u where u.position.department.id = :departmentId and u.status= :status")
     List<User> findAllByDepartmentId(@Param("departmentId") String departmentId,
                                      @Param("status") UserStatusEnum status);
+
+    User findUserById(long id);
 }
