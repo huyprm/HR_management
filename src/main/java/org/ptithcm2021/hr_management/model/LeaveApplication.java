@@ -1,10 +1,7 @@
 package org.ptithcm2021.hr_management.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.ptithcm2021.hr_management.enums.FormStatusEnum;
 import org.ptithcm2021.hr_management.enums.LeaveTypeEnum;
 import org.springframework.data.annotation.CreatedBy;
@@ -24,6 +21,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
+@Builder
 public class LeaveApplication{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,6 +37,7 @@ public class LeaveApplication{
     private String reason;
 
     @Enumerated(EnumType.STRING)
+    @Builder.Default
     private FormStatusEnum formStatusEnum = FormStatusEnum.PENDING;
 
     @ManyToOne(fetch = FetchType.LAZY)

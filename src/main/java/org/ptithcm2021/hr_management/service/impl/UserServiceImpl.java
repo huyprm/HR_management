@@ -52,6 +52,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponse createUser(UserRequest userRequest) throws MessagingException {
+        if (userRepository.existsUserByEmail(userRequest.getEmail())) {
+            throw new AppException(ErrorCode.EMAIL_EXISTED);
+        }
+
         User user = userMapper.toUser(userRequest);
 
         Random random = new Random();

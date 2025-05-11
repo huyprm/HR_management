@@ -1,5 +1,6 @@
 package org.ptithcm2021.hr_management.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,13 +21,22 @@ import java.util.Map;
 @Configuration
 @EnableCaching
 public class RedisConfig {
+    @Value("${redis.hostname}")
+    private String hostName;
+    @Value("${redis.port}")
+    private int port;
+    @Value("${redis.password}")
+    private String password;
+    @Value("${redis.username}")
+    private String username;
+
     @Bean
     public LettuceConnectionFactory lettuceConnectionFactory(){
         RedisStandaloneConfiguration configuration =new RedisStandaloneConfiguration(
-                "redis-18620.c1.ap-southeast-1-1.ec2.redns.redis-cloud.com", 18620);
+                hostName, port);
 
-        configuration.setUsername("default");
-        configuration.setPassword("iJA8gzweshOAnISRVc4GmX5CoXClxoRZ");
+        configuration.setUsername(username);
+        configuration.setPassword(password);
 
         return new LettuceConnectionFactory(configuration);
     }

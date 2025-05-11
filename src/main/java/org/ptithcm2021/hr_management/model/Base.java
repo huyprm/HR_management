@@ -2,8 +2,8 @@ package org.ptithcm2021.hr_management.model;
 
 import jakarta.persistence.*;
 import jakarta.persistence.criteria.CriteriaBuilder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -19,7 +19,10 @@ import java.time.LocalDateTime;
 @MappedSuperclass
 @Setter
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
+@SuperBuilder
 public class Base implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;

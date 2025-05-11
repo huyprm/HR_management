@@ -1,23 +1,25 @@
 server:
   port: 8080
+
 spring:
   application:
     name: HR_management
-  datasource:
-    driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://mysql-223cc0e8-student-569c.g.aivencloud.com:27510/hr_management
-    username: avnadmin
-    password: AVNS_8V6DhWOtxRn2Ao2cZ2s
+  config:
+    import: "application-secret.yaml"
+
   jpa:
     show-sql: true
     hibernate:
       ddl-auto: update
+
   docker:
     compose:
       enabled: false
+
   web:
     resources:
       static-locations: E:\\Java\\HR_management\\images
+
   cache:
     type: redis
 
@@ -26,18 +28,6 @@ spring:
       enabled: true
       max-file-size: 5MB
       max-request-size: 5MB
-  mail:
-    host: smtp.gmail.com
-    port: 587
-    username: huydlx@gmail.com
-    password: wero islt wcbc ykvf
-    protocol: smtp
-    properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
 
 springdoc:
   swagger-ui:
@@ -46,14 +36,7 @@ springdoc:
   api-docs:
     path: /v3/api-docs
 
-cloudinary:
-  cloud-name: drj1pwnjs
-  api-key: 887921946337479
-  api-secret: MxbBWI3Y7bdBGbWXa-TTQ2KppHM
-
-jwt:
-  signer_key: lBeNvDC6kEyP0hTE9xUIT1j+c+AiZnzYMEVRxL30cysWjxKgnnls18u+N7/Ri3MV
-  expirationTime: 14400
-
 form-fields-url:
   name: https://drive.google.com/uc?id=1kIVhDGE8Gs3pjSfzUZDIYOdZl-kTURwM
+
+

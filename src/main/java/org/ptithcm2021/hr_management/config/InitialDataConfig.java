@@ -27,11 +27,9 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class InitialDataConfig {
     private final RoleRepository roleRepository;
-    private final UserRepository userRepository;
     private final AccountRepository accountRepository;
     private final PasswordEncoder passwordEncoder;
-    private final LeaveBalanceRepository leaveBalanceRepository;
-    private final LeaveTypeRepository leaveTypeRepository;
+
 
     @Bean
     ApplicationRunner init(){

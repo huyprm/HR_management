@@ -36,12 +36,11 @@ import java.util.concurrent.TimeUnit;
 @Service
 @RequiredArgsConstructor
 public class AuthenticationServiceImpl implements AuthenticationService {
-    private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private final PasswordEncoder passwordEncoder;
     private final RedisTemplate<String, Object> redisTemplate;
     private final AccountRepository accountRepository;
     private final MailService mailService;
     private final UserRepository userRepository;
-
 
     @Value("${jwt.signer_key}")
     protected String SIGNER_KEY;

@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.ptithcm2021.hr_management.enums.UserStatusEnum;
 
 import java.time.LocalDate;
@@ -16,7 +17,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Setter
 @Getter
-@Builder
+@SuperBuilder
 public class User extends Base{
 
     @Column(unique = true)

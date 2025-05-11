@@ -1,10 +1,7 @@
 package org.ptithcm2021.hr_management.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.stereotype.Service;
 
 @Entity
@@ -13,6 +10,7 @@ import org.springframework.stereotype.Service;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class LeaveType {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,6 +22,7 @@ public class LeaveType {
     private String description;
 
     // Ví dụ: true cho nghỉ phép thường, false cho nghỉ BHXH, nghỉ ốm có giấy bác sĩ, v.v.
+    @Builder.Default
     private boolean affectLeaveBalance = false;
 
 }
