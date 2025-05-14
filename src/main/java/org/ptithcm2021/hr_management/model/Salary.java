@@ -35,11 +35,11 @@ public class Salary {
     private LocalDate paymentDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userId")
+    @JoinColumn(name = "user_id")
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "contractId")
+    @JoinColumn(name = "contract_id")
     private Contract contract;
 
 }

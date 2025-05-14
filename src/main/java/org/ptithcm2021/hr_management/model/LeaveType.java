@@ -5,7 +5,7 @@ import lombok.*;
 import org.springframework.stereotype.Service;
 
 @Entity
-@Table(name = "leaveTypes")
+@Table(name = "leave_types")
 @Getter
 @Setter
 @NoArgsConstructor

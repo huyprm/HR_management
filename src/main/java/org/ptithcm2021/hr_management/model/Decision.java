@@ -33,22 +33,22 @@ public class Decision {
     private DecisionEnum type;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "signerId")
+    @JoinColumn(name = "signer_id")
     private User signer;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userId")
+    @JoinColumn(name = "user_id")
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name ="salaryPromotionId")
+    @JoinColumn(name ="salary_promotion_id")
     private SalaryPromotion salaryPromotion;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "positionId")
+    @JoinColumn(name = "position_id")
     private Position position;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "seniorityAllowanceRuleId")
+    @JoinColumn(name = "seniority_allowance_rule_id")
     private SeniorityAllowanceRule seniorityAllowanceRule;
 }

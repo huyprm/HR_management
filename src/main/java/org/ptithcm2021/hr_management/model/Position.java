@@ -20,12 +20,12 @@ public class Position {
     private String name;
     private String description;
 
-    @ManyToOne
-    @JoinColumn(name = "departmentId")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "department_id")
     private Department department;
 
     @ManyToOne
-    @JoinColumn(name = "roleId", nullable = false)
+    @JoinColumn(name = "role_id", nullable = false)
     private Role role;
 
 }

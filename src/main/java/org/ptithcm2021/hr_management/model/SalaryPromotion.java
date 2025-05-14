@@ -7,7 +7,7 @@ import org.ptithcm2021.hr_management.enums.FormStatusEnum;
 import java.util.Date;
 
 @Entity
-@Table(name = "salaryPromotionRequests")
+@Table(name = "salary_promotion_requests")
 @Setter
 @Getter
 @NoArgsConstructor
@@ -30,19 +30,19 @@ public class SalaryPromotion {
     private String note;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userId")
+    @JoinColumn(name = "user_id")
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "signerId")
+    @JoinColumn(name = "signer_id")
     private User signer;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "currentJobGradeId")
+    @JoinColumn(name = "current_job_grade_id")
     private JobGrade currentJobGrade;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "jobGradeId")
+    @JoinColumn(name = "job_grade_id")
     private JobGrade requestJobGrade;
 
 

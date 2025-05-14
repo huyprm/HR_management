@@ -98,9 +98,7 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
         LeaveApplication leaveApplication = leaveApplicationRepository.findById(applicationId)
                 .orElseThrow(() -> new AppException(ErrorCode.LEAVE_APPLICATION_NOT_FOUND));
 
-        return leaveApplicationMapper.toLeaveTypeApplicationResponse(
-                leaveApplicationRepository.save(leaveApplication)
-        );
+        return leaveApplicationMapper.toLeaveTypeApplicationResponse(leaveApplication);
     }
 
     @Override

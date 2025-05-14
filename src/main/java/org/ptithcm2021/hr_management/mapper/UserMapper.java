@@ -20,7 +20,7 @@ public interface UserMapper {
     void updateUser(@MappingTarget User user, UserUpdateRequest userRequest);
 
     default String mapDepartmentName(User user) {
-        if (user.getPosition() != null) {
+        if (user.getPosition() != null && user.getPosition().getDepartment() != null) {
             return user.getPosition().getDepartment().getName();
         }
         return null;

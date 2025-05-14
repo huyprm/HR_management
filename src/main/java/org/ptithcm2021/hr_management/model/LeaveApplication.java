@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
-@Table(name = "leaveApplications")
+@Table(name = "leave_applications")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -41,17 +41,17 @@ public class LeaveApplication{
     private FormStatusEnum formStatusEnum = FormStatusEnum.PENDING;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name ="signerId")
+    @JoinColumn(name ="signer_id")
     private User signer;
 
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name ="userId")
+    @JoinColumn(name ="user_id")
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "leaveType")
+    @JoinColumn(name = "leave_type")
     private LeaveType leaveType;
 }

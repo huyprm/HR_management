@@ -48,11 +48,11 @@ public class User extends Base{
     private String avatar;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "accountId", nullable = false)
+    @JoinColumn(name = "account_id", nullable = false)
     private Account account;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "positionId")
+    @JoinColumn(name = "position_id")
     private Position position;
 
     @Temporal(TemporalType.DATE)
@@ -63,7 +63,7 @@ public class User extends Base{
     private double salaryBasic;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "seniorityAllowanceRuleId")
+    @JoinColumn(name = "seniority_allowance_rule_id")
     private SeniorityAllowanceRule seniorityAllowanceRule;
 
 }

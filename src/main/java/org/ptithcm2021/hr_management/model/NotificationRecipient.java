@@ -8,7 +8,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "notificationRecipients")
+@Table(name = "notification_recipients")
 @Builder
 public class NotificationRecipient {
     @Id
@@ -20,10 +20,10 @@ public class NotificationRecipient {
     private boolean readStatus = false;
 
     @ManyToOne
-    @JoinColumn(name = "notificationId")
+    @JoinColumn(name = "notification_id")
     private Notification notification;
 
     @ManyToOne
-    @JoinColumn(name = "userId")
+    @JoinColumn(name = "user_id")
     private User user;
 }

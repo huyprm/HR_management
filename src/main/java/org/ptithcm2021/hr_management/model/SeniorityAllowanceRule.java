@@ -9,7 +9,7 @@ import lombok.Setter;
 import java.util.Date;
 
 @Entity
-@Table(name = "seniorityAllowanceRules")
+@Table(name = "seniority_allowance_rules")
 @Setter
 @Getter
 @NoArgsConstructor
@@ -39,6 +39,6 @@ public class SeniorityAllowanceRule {
     private String description;
 
     @ManyToOne
-    @JoinColumn(name = "userId")
+    @JoinColumn(name = "user_id")
     private User signer;
 }

@@ -12,7 +12,7 @@ import java.time.YearMonth;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "leaveBalances", uniqueConstraints = {@UniqueConstraint(columnNames = {"userId", "year", "month"})})
+@Table(name = "leave_balances", uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "year", "month"})})
 @Builder
 public class LeaveBalance {
     @Id
@@ -31,7 +31,7 @@ public class LeaveBalance {
     private double remainingLeaveDay;
 
     @ManyToOne
-    @JoinColumn(name ="userId")
+    @JoinColumn(name ="user_id")
     private User user;
 
     public YearMonth getYearMonth() {

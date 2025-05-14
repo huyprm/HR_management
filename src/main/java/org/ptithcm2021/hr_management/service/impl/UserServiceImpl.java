@@ -83,7 +83,7 @@ public class UserServiceImpl implements UserService {
         if(user.getStatus().equals(UserStatusEnum.TERMINATED)) throw new AppException(ErrorCode.USER_TERMINATED);
 
         UserResponse userResponse = userMapper.toUserResponse(user);
-        userResponse.setRecipientResponse(getTop5NotificationRecipient(id));
+        //userResponse.setRecipientResponse(getTop5NotificationRecipient(id));
 
         return userResponse;
     }

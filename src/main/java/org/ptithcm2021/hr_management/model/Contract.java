@@ -32,22 +32,22 @@ public class Contract{
     private ContractStatusEnum contractStatusEnum = ContractStatusEnum.PENDING;
 
     @ManyToOne()
-    @JoinColumn(name = "contractTypeId")
+    @JoinColumn(name = "contract_type_id")
     private ContractType contractType ;
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinColumn(name = "userId")
+    @JoinColumn(name = "user_id")
     private User user;
 
     @ManyToOne()
-    @JoinColumn(name = "signerId")
+    @JoinColumn(name = "signer_id")
     private User signer;
 
     @ManyToOne()
-    @JoinColumn(name = "positionId")
+    @JoinColumn(name = "position_id")
     private Position position;
 
     @ManyToOne()
-    @JoinColumn(name = "jobGradeId")
+    @JoinColumn(name = "job_grade_id")
     private JobGrade jobGrade;
 }

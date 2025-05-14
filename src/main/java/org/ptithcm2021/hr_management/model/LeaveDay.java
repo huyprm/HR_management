@@ -14,7 +14,7 @@ import java.util.Date;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "leaveDays", indexes = {
+@Table(name = "leave_days", indexes = {
         @Index(name = "idx_leave_day_date", columnList = "date")
 })
 public class LeaveDay {

@@ -10,6 +10,7 @@
  */
 package org.ptithcm2021.hr_management.service.impl;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.apache.tomcat.util.http.fileupload.ByteArrayOutputStream;
 import org.ptithcm2021.hr_management.dto.request.ContractRequest;
@@ -57,6 +58,7 @@ public class ContractServiceImpl implements ContractService {
     /**
      * Tạo hợp đồng mới với trạng thái PENDING (chờ phê duyệt/ký kết)
      */
+    @Transactional
     @Override
     public ContractResponse createDraftContract(ContractRequest request) throws Exception {
         validateNoActiveContract(request.getUserId(), request.getStartDate(), request.getEndDate());
@@ -68,9 +70,14 @@ public class ContractServiceImpl implements ContractService {
             throw new AppException(ErrorCode.SIGNER_IS_USER);
         }
 
-//        if (!signer.getPosition().getRole().getId().equals(RoleEnum.ADMIN)) {
-//            throw new AppException(ErrorCode.RIGHT_SIGNER);
-//        }
+        if (!signer.getPosition().getRole().getId().equals(RoleEnum.ADMIN)) {
+            throw new AppException(ErrorCode.RIGHT_SIGNER);
+        }
+
+        if ("system@gmail.com".equals(signer.getEmail())) {
+            signer.setPosition(null);
+            userRepository.save(signer);
+        }
 
         Position position = positionRepository.findById(request.getPositionId())
                 .orElseThrow(() -> new AppException(ErrorCode.POSITION_NOT_FOUND));
@@ -101,7 +108,7 @@ public class ContractServiceImpl implements ContractService {
             ByteArrayOutputStream byteArrayOutputStream = FillDocxWithTagsUtil
                     .fillDocxWithTags(data);
 
-            clause = fileService.uploadFileFromByteArrayOutputStream(byteArrayOutputStream, "HD00" + contract.getId() );
+            clause = fileService.uploadFileFromByteArrayOutputStream(byteArrayOutputStream, "HD00" + contract.getId());
             savedContract.setClause(clause);
 
             contractRepository.save(savedContract);
@@ -419,7 +426,7 @@ public class ContractServiceImpl implements ContractService {
         data.put("endDate", String.valueOf(contract.getEndDate().getDayOfMonth()));
         data.put("endMonth", String.valueOf(contract.getEndDate().getMonth()));
         data.put("endYear", String.valueOf(contract.getEndDate().getYear()));
-        data.put("departmentName", contract.getPosition().getDepartment().getName());
+        data.put("departmentName", contract.getPosition().getDepartment() != null ? contract.getPosition().getDepartment().getName():null);
         data.put("positionB", contract.getPosition().getName());
         data.put("salary", String.valueOf(contract.getBasicSalary() * contract.getJobGrade().getCoefficient()));
 
