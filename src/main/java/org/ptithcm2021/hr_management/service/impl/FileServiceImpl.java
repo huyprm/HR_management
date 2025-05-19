@@ -4,15 +4,18 @@ import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import com.google.api.client.http.FileContent;
 import com.google.api.services.drive.Drive;
+import com.google.api.services.drive.model.File;
 import com.google.api.services.drive.model.Permission;
 import lombok.RequiredArgsConstructor;
 import org.apache.tomcat.util.http.fileupload.ByteArrayOutputStream;
 import org.ptithcm2021.hr_management.service.FileService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
@@ -21,6 +24,9 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 public class FileServiceImpl implements FileService {
+    @Value("${driver.api-key}")
+    protected String API_KEY;
+
     private final Cloudinary cloudinary;
     private final Drive driveService;
 
@@ -63,7 +69,7 @@ public class FileServiceImpl implements FileService {
     public String uploadFile(MultipartFile file) throws Exception {
 
         // Create file metadata
-        com.google.api.services.drive.model.File fileMetadata = new com.google.api.services.drive.model.File();
+        File fileMetadata = new File();
         fileMetadata.setName(file.getOriginalFilename());
         fileMetadata.setParents(Collections.singletonList("1xzXA3s-7uBrjWsucii_9p1ZtT00CeL3R")); // Folder ID
 
@@ -71,7 +77,7 @@ public class FileServiceImpl implements FileService {
         java.io.File tempFile = convert(file);
         try {
             FileContent mediaContent = new FileContent(file.getContentType(), tempFile);
-            com.google.api.services.drive.model.File uploadedFile = driveService.files().create(fileMetadata, mediaContent)
+            File uploadedFile = driveService.files().create(fileMetadata, mediaContent)
                     .setFields("id")
                     .execute();
 
@@ -96,13 +102,13 @@ public class FileServiceImpl implements FileService {
         java.io.File tempFile = createTempFile(output, fileName);
 
         // Create file metadata
-        com.google.api.services.drive.model.File fileMetadata = new com.google.api.services.drive.model.File();
+        File fileMetadata = new File();
         fileMetadata.setName(fileName);
         fileMetadata.setParents(Collections.singletonList("1xzXA3s-7uBrjWsucii_9p1ZtT00CeL3R")); // Folder ID
 
         try {
             FileContent mediaContent = new FileContent("application/pdf", tempFile);
-            com.google.api.services.drive.model.File uploadedFile = driveService.files().create(fileMetadata, mediaContent)
+            File uploadedFile = driveService.files().create(fileMetadata, mediaContent)
                     .setFields("id")
                     .execute();
 
@@ -130,6 +136,14 @@ public class FileServiceImpl implements FileService {
         }
         //String id = extractFileIdFromUrl(fileId);
         driveService.files().delete(fileId).execute();
+    }
+
+    @Override
+    public InputStream downloadFilePdf(String fileId) throws IOException {
+        InputStream inputStream = driveService.files()
+                .get(fileId)
+                .executeMediaAsInputStream();
+        return inputStream;
     }
 
     private java.io.File convert(MultipartFile multipart) throws IOException {

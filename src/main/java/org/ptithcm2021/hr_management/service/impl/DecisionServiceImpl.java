@@ -63,9 +63,6 @@ public class DecisionServiceImpl implements DecisionService {
 
             decision.setSalaryPromotion(salaryPromotion);
             decision.setProcessed(false);
-        } else {
-            throw new AppException(ErrorCode.INVALID_DECISION_TYPE);
-
         }
 
         return decisionMapper.toDecisionResponse(decisionRepository.save(decision));
@@ -110,12 +107,13 @@ public class DecisionServiceImpl implements DecisionService {
 
     @Override
     public void deleteDecision(String id) {
-        if (!decisionRepository.existsById(id)) {
-            throw new AppException(ErrorCode.DECISION_NOT_FOUND);
-        }
-
         try {
-            decisionRepository.deleteById(id);
+            Decision decision = decisionRepository.findById(id)
+                    .orElseThrow(() -> new AppException(ErrorCode.DECISION_NOT_FOUND));
+
+            if (decision.getSigner() != null) throw new AppException(ErrorCode.CANNOT_BE_DELETED);
+
+            decisionRepository.delete(decision);
         }catch (Exception e) {
             throw new AppException(ErrorCode.CANNOT_BE_DELETED);
         }

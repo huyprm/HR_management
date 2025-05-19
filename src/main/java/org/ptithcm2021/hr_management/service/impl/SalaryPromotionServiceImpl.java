@@ -22,6 +22,7 @@ import org.ptithcm2021.hr_management.service.SalaryPromotionService;
 import org.ptithcm2021.hr_management.service.UserService;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -122,10 +123,6 @@ public class SalaryPromotionServiceImpl implements SalaryPromotionService {
             double currentBasicSalary = contract.getBasicSalary();
             double newBasicSalary = (currentBasicSalary / oldCoefficient) * newCoefficient;
 
-            java.time.LocalDate today = java.time.LocalDate.now();
-            java.time.LocalDate firstDayOfNextMonth = today.withDayOfMonth(1).plusMonths(1);
-            java.util.Date effectiveDate = java.sql.Date.valueOf(firstDayOfNextMonth);
-
             String decisionContent = "Quyết định tăng lương cho " + promotion.getUser().getFullName() 
                     + " từ cấp " + promotion.getCurrentJobGrade().getName() 
                     + " (hệ số " + oldCoefficient + ") lên cấp " 
@@ -136,8 +133,8 @@ public class SalaryPromotionServiceImpl implements SalaryPromotionService {
             Decision decision = new Decision();
             decision.setId("SP" + System.currentTimeMillis()); // ID dựa trên thời gian
             decision.setType(DecisionEnum.INCREASE_SALARY);
-            decision.setDate(new java.util.Date()); // Ngày tạo quyết định
-            decision.setEffectiveDate(effectiveDate); // Ngày hiệu lực (đầu tháng sau)
+            decision.setDate(LocalDate.now()); // Ngày tạo quyết định
+            decision.setEffectiveDate(LocalDate.from(LocalDate.now().plusMonths(1).atStartOfDay())); // Ngày hiệu lực (đầu tháng sau)
             decision.setContent(decisionContent);
             decision.setValue(((newCoefficient / oldCoefficient) - 1) * 100); // % tăng
             decision.setProcessed(false);

@@ -3,13 +3,14 @@ package org.ptithcm2021.hr_management.controller;
 import lombok.RequiredArgsConstructor;
 import org.ptithcm2021.hr_management.dto.response.ApiResponse;
 import org.ptithcm2021.hr_management.service.FileService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 @RestController
 @RequiredArgsConstructor
@@ -33,4 +34,12 @@ public class FileController {
         return ApiResponse.<String>builder().data(fileService.uploadFile(file)).build();
     }
 
+    @GetMapping("/pdf")
+    public ResponseEntity<InputStreamResource> streamFile(@RequestParam String fileId) throws IOException {
+        InputStream inputStream = fileService.downloadFilePdf(fileId);
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(new InputStreamResource(inputStream));
+    }
 }

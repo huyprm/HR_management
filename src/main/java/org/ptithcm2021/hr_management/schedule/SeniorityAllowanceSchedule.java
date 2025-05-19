@@ -8,6 +8,7 @@ import org.ptithcm2021.hr_management.repository.DecisionRepository;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -20,7 +21,7 @@ public class SeniorityAllowanceSchedule {
     @Scheduled(cron = "0 0 0 1 * *")
     public void processPendingSeniorityAllowanceChanges() {
         try{
-            Date currentDate = new Date();
+            LocalDate currentDate = LocalDate.now();
 
             // Tìm các quyết định tăng lương chưa được xử lý và đến hạn áp dụng
             List<Decision> pendingDecisions = decisionRepository.findByTypeAndProcessedFalseAndEffectiveDateLessThanEqual(

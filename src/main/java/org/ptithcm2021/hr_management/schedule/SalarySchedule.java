@@ -41,7 +41,7 @@ public class SalarySchedule {
         
         try {
             // Lấy ngày hiện tại
-            Date currentDate = new Date();
+            LocalDate currentDate = LocalDate.now();
             
             // Tìm các quyết định tăng lương chưa được xử lý và đến hạn áp dụng
             List<Decision> pendingDecisions = decisionRepository.findByTypeAndProcessedFalseAndEffectiveDateLessThanEqual(

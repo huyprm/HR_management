@@ -6,16 +6,17 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
 public interface DecisionRepository extends JpaRepository<Decision, String> {
     List<Decision> findAllByType(DecisionEnum decisionType);
     
-    List<Decision> findByProcessedFalseAndEffectiveDateLessThanEqual(Date currentDate);
+    List<Decision> findByProcessedFalseAndEffectiveDateLessThanEqual(LocalDate currentDate);
     
     List<Decision> findByTypeAndProcessedFalseAndEffectiveDateLessThanEqual(
-            DecisionEnum type, Date currentDate);
+            DecisionEnum type, LocalDate currentDate);
 
     List<Decision> findAllByUserId(long userId);
 

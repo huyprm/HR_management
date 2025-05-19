@@ -12,6 +12,7 @@ import org.ptithcm2021.hr_management.enums.DecisionEnum;
 import org.ptithcm2021.hr_management.model.Position;
 import org.ptithcm2021.hr_management.model.SalaryPromotion;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Data
@@ -29,7 +30,10 @@ public class DecisionRequest {
     private DecisionEnum type;
 
     @NotNull(message = "Decision date cannot be empty")
-    private Date date;
+    private LocalDate date;
+
+    @NotNull(message = "Decision effective date cannot be empty")
+    private LocalDate effectiveDate;
 
     @NotNull(message ="User id cannot be empty")
     private long userId;

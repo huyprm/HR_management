@@ -5,6 +5,7 @@ import lombok.*;
 import org.ptithcm2021.hr_management.enums.DecisionEnum;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -22,10 +23,10 @@ public class Decision {
     private double value;
 
     @Temporal(TemporalType.DATE)
-    private Date date;
+    private LocalDate date;
     
     @Temporal(TemporalType.DATE)
-    private Date effectiveDate;
+    private LocalDate effectiveDate;
     
     private boolean processed = true;
 

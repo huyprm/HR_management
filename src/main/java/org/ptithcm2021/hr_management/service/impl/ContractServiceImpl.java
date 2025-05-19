@@ -74,11 +74,6 @@ public class ContractServiceImpl implements ContractService {
             throw new AppException(ErrorCode.RIGHT_SIGNER);
         }
 
-        if ("system@gmail.com".equals(signer.getEmail())) {
-            signer.setPosition(null);
-            userRepository.save(signer);
-        }
-
         Position position = positionRepository.findById(request.getPositionId())
                 .orElseThrow(() -> new AppException(ErrorCode.POSITION_NOT_FOUND));
 
@@ -115,6 +110,12 @@ public class ContractServiceImpl implements ContractService {
         }catch (Exception e){
             throw e;
         }
+
+        if ("system@gmail.com".equals(signer.getEmail())) {
+            signer.setPosition(null);
+            userRepository.save(signer);
+        }
+
         return contractMapper.toContractResponse(savedContract);
     }
 
