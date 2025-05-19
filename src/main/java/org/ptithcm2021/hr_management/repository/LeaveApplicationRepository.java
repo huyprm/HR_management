@@ -1,11 +1,14 @@
 package org.ptithcm2021.hr_management.repository;
 
 import org.ptithcm2021.hr_management.enums.FormStatusEnum;
+import org.ptithcm2021.hr_management.model.Department;
 import org.ptithcm2021.hr_management.model.LeaveApplication;
 import org.ptithcm2021.hr_management.model.User;
+import org.quartz.SimpleTrigger;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -16,9 +19,15 @@ import java.util.Optional;
 
 @Repository
 public interface LeaveApplicationRepository extends JpaRepository<LeaveApplication, Long> {
-    List<LeaveApplication> getAllByFormStatusEnum(FormStatusEnum formStatusEnum);
+    List<LeaveApplication> findAllByFormStatusEnum(FormStatusEnum formStatusEnum);
     List<LeaveApplication> findAllByUserId(long userId);
 
+    @Query("select la from LeaveApplication la where la.department is null and la.formStatusEnum = :status")
+    List<LeaveApplication>findAllByDepartmentIsNull(@Param("status") FormStatusEnum status);
+
+    @Query("select la from LeaveApplication la where la.department.id = :departmentId and la.formStatusEnum = :status")
+    List<LeaveApplication>findAllByDepartmentNotNull(@Param("status") FormStatusEnum status,
+                                                     @Param("departmentId") String departmentId);
 
     @Query("SELECT la FROM LeaveApplication la " +
             "WHERE la.user.id = :userId " +

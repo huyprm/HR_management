@@ -54,4 +54,8 @@ public class LeaveApplication{
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "leave_type")
     private LeaveType leaveType;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "department_id")
+    private Department department;
 }

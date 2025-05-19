@@ -16,5 +16,6 @@ public class Role {
     @Enumerated(EnumType.STRING)
     private RoleEnum id;
     private String description;
+    private int level;
 
 }

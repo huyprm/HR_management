@@ -17,7 +17,7 @@ public interface LeaveApplicationService {
     LeaveApplicationResponse confirmApplication (FormStatusEnum formStatusEnum, long applicationId);
 
     @PreAuthorize("hasAnyAuthority('SCOPE_MANAGER', 'SCOPE_ADMIN')")
-    List<LeaveApplicationResponse> getApplicationIsPending(FormStatusEnum formStatusEnum);
+    List<LeaveApplicationResponse> getApplicationIsPending(String departmentId, FormStatusEnum formStatusEnum);
 
     LeaveApplicationResponse getApplication(long applicationId);
 

@@ -31,7 +31,7 @@ public class LeaveApplicationController {
                 .data(leaveApplicationService.createApplication(leaveApplicationRequest)).build();
     }
 
-    @PostMapping("/confirm/{applicationId}")
+    @PutMapping("/confirm/{applicationId}")
     public ApiResponse<LeaveApplicationResponse> confirmApplication(@PathVariable long applicationId,
                                                                     @RequestParam FormStatusEnum formStatusEnum) {
         return ApiResponse.<LeaveApplicationResponse>builder()
@@ -40,9 +40,10 @@ public class LeaveApplicationController {
 
 
     @GetMapping()
-    public ApiResponse<List<LeaveApplicationResponse>> getApplicationIsPending(@RequestParam(required = false) FormStatusEnum formStatusEnum) {
+    public ApiResponse<List<LeaveApplicationResponse>> getApplicationIsPending(@RequestParam FormStatusEnum formStatusEnum,
+                                                                               @RequestParam(required = false) String departmentId) {
         return ApiResponse.<List<LeaveApplicationResponse>>builder()
-                .data(leaveApplicationService.getApplicationIsPending(formStatusEnum)).build();
+                .data(leaveApplicationService.getApplicationIsPending(departmentId, formStatusEnum)).build();
     }
 
     @GetMapping("/{applicationId}")

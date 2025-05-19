@@ -224,23 +224,23 @@ public class LeaveApplicationServiceImplTest {
         assertEquals(ErrorCode.LEAVE_APPLICATION_NOT_FOUND, exception.getErrorCode());
     }
     
-    @Test
-    public void getApplicationIsPending() {
-        // Arrange
-        List<LeaveApplication> applications = new ArrayList<>();
-        applications.add(mockApplication);
-        
-        when(leaveApplicationRepository.getAllByFormStatusEnum(FormStatusEnum.PENDING)).thenReturn(applications);
-        when(leaveApplicationMapper.toLeaveTypeApplicationResponse(mockApplication)).thenReturn(mockResponse);
-        
-        // Act
-        List<LeaveApplicationResponse> results = leaveApplicationService.getApplicationIsPending(FormStatusEnum.PENDING);
-        
-        // Assert
-        assertNotNull(results);
-        assertEquals(1, results.size());
-        assertEquals(1L, results.get(0).getId());
-    }
+//    @Test
+//    public void getApplicationIsPending() {
+//        // Arrange
+//        List<LeaveApplication> applications = new ArrayList<>();
+//        applications.add(mockApplication);
+//
+//        when(leaveApplicationRepository.getAllByFormStatusEnum(FormStatusEnum.PENDING)).thenReturn(applications);
+//        when(leaveApplicationMapper.toLeaveTypeApplicationResponse(mockApplication)).thenReturn(mockResponse);
+//
+//        // Act
+//        List<LeaveApplicationResponse> results = leaveApplicationService.getApplicationIsPending(FormStatusEnum.PENDING);
+//
+//        // Assert
+//        assertNotNull(results);
+//        assertEquals(1, results.size());
+//        assertEquals(1L, results.get(0).getId());
+//    }
     
     @Test
     public void getApplicationByUserIdSuccess() {

@@ -8,6 +8,7 @@ import org.ptithcm2021.hr_management.enums.LeaveTypeEnum;
 import org.ptithcm2021.hr_management.exception.AppException;
 import org.ptithcm2021.hr_management.exception.ErrorCode;
 import org.ptithcm2021.hr_management.mapper.LeaveApplicationMapper;
+import org.ptithcm2021.hr_management.model.Department;
 import org.ptithcm2021.hr_management.model.LeaveApplication;
 import org.ptithcm2021.hr_management.model.LeaveType;
 import org.ptithcm2021.hr_management.model.User;
@@ -34,9 +35,7 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
     private final LeaveApplicationRepository leaveApplicationRepository;
     private final UserRepository userRepository;
     private final UserService userService;
-    private final LeaveBalanceService leaveBalanceService;
     private final LeaveTypeRepository leaveTypeRepository;
-    private final LeaveBalanceRepository leaveBalanceRepository;
     private final LeaveApplicationUtil leaveApplicationUtil;
 
     @Override
@@ -49,6 +48,10 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
 
         leaveApplication.setUser(user);
         leaveApplication.setLeaveType(leaveType);
+
+        if (user.getPosition().getDepartment()!=null) {
+            leaveApplication.setDepartment(user.getPosition().getDepartment());
+        }
 
 
         return leaveApplicationMapper.toLeaveTypeApplicationResponse(
@@ -72,8 +75,16 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
             throw new AppException(ErrorCode.SIGNER_IS_USER);
         }
 
+        if (signer.getPosition().getRole().getLevel() < leaveApplication.getUser().getPosition().getRole().getLevel()){
+            throw new AppException(ErrorCode.SIGNER_IS_USER);
+        }
+
         if(leaveApplication.getFormStatusEnum() != FormStatusEnum.PENDING)
             throw new AppException(ErrorCode.FORM_STATUS_INVALID);
+
+        if (!signer.getPosition().getDepartment().getId().equals(leaveApplication.getUser().getPosition().getDepartment().getId())) {
+            throw new AppException(ErrorCode.SIGNER_IS_USER);
+        }
 
         leaveApplication.setFormStatusEnum(formStatusEnum);
         leaveApplication.setSigner(signer);
@@ -84,12 +95,12 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
     }
 
     @Override
-    public List<LeaveApplicationResponse> getApplicationIsPending(FormStatusEnum formStatusEnum) {
-        if (formStatusEnum == null)
-            return leaveApplicationRepository.findAll()
-                .stream().map(leaveApplicationMapper::toLeaveTypeApplicationResponse).toList();
+    public List<LeaveApplicationResponse> getApplicationIsPending(String departmentId, FormStatusEnum formStatusEnum) {
+        if (departmentId == null)
+            return leaveApplicationRepository.findAllByDepartmentIsNull(formStatusEnum)
+                    .stream().map(leaveApplicationMapper::toLeaveTypeApplicationResponse).toList();
 
-        return leaveApplicationRepository.getAllByFormStatusEnum(formStatusEnum)
+        return leaveApplicationRepository.findAllByDepartmentNotNull(formStatusEnum, departmentId)
                 .stream().map(leaveApplicationMapper::toLeaveTypeApplicationResponse).toList();
     }
 

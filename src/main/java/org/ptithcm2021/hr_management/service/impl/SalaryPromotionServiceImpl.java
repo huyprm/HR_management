@@ -20,6 +20,7 @@ import org.ptithcm2021.hr_management.service.SalaryPromotionService;
 import org.ptithcm2021.hr_management.service.UserService;
 import org.springframework.stereotype.Service;
 
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -131,6 +132,7 @@ public class SalaryPromotionServiceImpl implements SalaryPromotionService {
      */
     private void applyApprovedSalaryPromotion(SalaryPromotion promotion) {
         try {
+            DecimalFormat df = new DecimalFormat("#,###.##");
             var contract = contractService.getContractCurrentOfUser(promotion.getUser().getId());
 
             double oldCoefficient = promotion.getCurrentJobGrade().getCoefficient();
@@ -143,7 +145,7 @@ public class SalaryPromotionServiceImpl implements SalaryPromotionService {
                     + " (hệ số " + oldCoefficient + ") lên cấp " 
                     + promotion.getRequestJobGrade().getName() 
                     + " (hệ số " + newCoefficient + "). "
-                    + "Lương thay đổi từ " + currentBasicSalary + " lên " + newBasicSalary;
+                    + "Lương thay đổi từ " + df.format(currentBasicSalary) + " VNĐ lên " + df.format(newBasicSalary) +" VNĐ";
 
             Decision decision = new Decision();
             decision.setType(DecisionEnum.INCREASE_SALARY);
