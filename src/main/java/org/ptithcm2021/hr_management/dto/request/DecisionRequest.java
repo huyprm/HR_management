@@ -38,9 +38,9 @@ public class DecisionRequest {
     @NotNull(message ="User id cannot be empty")
     private long userId;
 
-    private int salaryPromotionId;
+    private Integer salaryPromotionId;
 
     private String positionId;
 
-    private  int seniorityAllowanceRuleId;
+    private  Integer seniorityAllowanceRuleId;
 }

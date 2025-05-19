@@ -22,5 +22,6 @@ public interface DecisionService {
 
     List<DecisionResponse> getAllDecisionByType(DecisionEnum decisionType);
 
+    @PreAuthorize("T(String).valueOf(#userId) == authentication.name")
     List<DecisionResponse> getAllDecisionByUser(long userId, DecisionEnum decisionType);
 }

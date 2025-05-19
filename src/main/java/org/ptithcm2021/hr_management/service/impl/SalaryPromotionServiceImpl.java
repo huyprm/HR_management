@@ -9,11 +9,9 @@ import org.ptithcm2021.hr_management.enums.WorkLogTypeEnum;
 import org.ptithcm2021.hr_management.exception.AppException;
 import org.ptithcm2021.hr_management.exception.ErrorCode;
 import org.ptithcm2021.hr_management.mapper.SalaryPromotionMapper;
-import org.ptithcm2021.hr_management.model.SalaryPromotion;
-import org.ptithcm2021.hr_management.model.User;
-import org.ptithcm2021.hr_management.model.Decision;
+import org.ptithcm2021.hr_management.model.*;
 import org.ptithcm2021.hr_management.enums.DecisionEnum;
-import org.ptithcm2021.hr_management.model.WorkingHistory;
+import org.ptithcm2021.hr_management.repository.JobGradeRepository;
 import org.ptithcm2021.hr_management.repository.SalaryPromotionRepository;
 import org.ptithcm2021.hr_management.repository.DecisionRepository;
 import org.ptithcm2021.hr_management.repository.WorkLogRepository;
@@ -35,13 +33,24 @@ public class SalaryPromotionServiceImpl implements SalaryPromotionService {
     private final ContractService contractService;
     private final DecisionRepository decisionRepository;
     private final WorkLogRepository workLogRepository;
+    private final JobGradeRepository jobGradeRepository;
 
     @Override
     public SalaryPromotionResponse createSalaryPromotion(SalaryPromotionRequest salaryPromotionRequest) {
         User user = userService.getUserToUser(salaryPromotionRequest.getUserId());
 
         SalaryPromotion salaryPromotion = salaryPromotionMapper.toSalaryPromotion(salaryPromotionRequest);
+
+
+        JobGrade currentJob = jobGradeRepository.findById(salaryPromotionRequest.getCurrentJobGradeId())
+                .orElseThrow(() -> new AppException(ErrorCode.JOB_GRADE_NOT_FOUND));
+
+        JobGrade requestJob = jobGradeRepository.findById(salaryPromotionRequest.getRequestJobGradeId())
+                .orElseThrow(() -> new AppException(ErrorCode.JOB_GRADE_NOT_FOUND));
+
         salaryPromotion.setUser(user);
+        salaryPromotion.setCurrentJobGrade(currentJob);
+        salaryPromotion.setRequestJobGrade(requestJob);
 
         return salaryPromotionMapper.toSalaryPromotionResponse(salaryPromotionRepository.save(salaryPromotion));
     }
@@ -110,6 +119,12 @@ public class SalaryPromotionServiceImpl implements SalaryPromotionService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public List<SalaryPromotionResponse> getSalaryPromotionByStatus(FormStatusEnum formStatus) {
+        return salaryPromotionRepository.findAllByStatus(formStatus)
+                .stream().map(salaryPromotionMapper::toSalaryPromotionResponse).collect(Collectors.toList());
+    }
+
     /**
      * Áp dụng thay đổi khi đề xuất tăng lương được phê duyệt
      * Tạo một Decision với ngày hiệu lực vào đầu tháng sau
@@ -131,7 +146,6 @@ public class SalaryPromotionServiceImpl implements SalaryPromotionService {
                     + "Lương thay đổi từ " + currentBasicSalary + " lên " + newBasicSalary;
 
             Decision decision = new Decision();
-            decision.setId("SP" + System.currentTimeMillis()); // ID dựa trên thời gian
             decision.setType(DecisionEnum.INCREASE_SALARY);
             decision.setDate(LocalDate.now()); // Ngày tạo quyết định
             decision.setEffectiveDate(LocalDate.from(LocalDate.now().plusMonths(1).atStartOfDay())); // Ngày hiệu lực (đầu tháng sau)

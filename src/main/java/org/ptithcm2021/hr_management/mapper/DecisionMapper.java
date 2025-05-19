@@ -13,6 +13,7 @@ import org.ptithcm2021.hr_management.model.Decision;
 @Mapper(componentModel = "spring", uses = {
         SeniorityAllowanceRuleMapper.class,
         PositionMapper.class,
+        SalaryPromotionMapper.class,
 })
 public interface DecisionMapper {
 //    RewardDecision toRewardDecision(DecisionRequest decisionRequest);

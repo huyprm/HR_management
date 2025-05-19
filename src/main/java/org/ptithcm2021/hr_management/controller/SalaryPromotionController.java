@@ -59,4 +59,10 @@ public class SalaryPromotionController {
         return ApiResponse.<List<SalaryPromotionResponse>>builder()
                 .data(salaryPromotionService.getSalaryPromotionByStatusAndSignId(signerId, status)).build();
     }
+
+    @GetMapping("/pending")
+    public ApiResponse<List<SalaryPromotionResponse>> getSalaryPromotionsByStatus() {
+        return ApiResponse.<List<SalaryPromotionResponse>>builder()
+                .data(salaryPromotionService.getSalaryPromotionByStatus(FormStatusEnum.PENDING)).build();
+    }
 }

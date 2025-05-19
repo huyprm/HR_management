@@ -11,20 +11,23 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import java.util.List;
 
 public interface SalaryPromotionService {
-    @PreAuthorize("T(String).valueOf(#salaryPromotionRequest.getUserId()) == authentication.principal.username")
+    @PreAuthorize("T(String).valueOf(#salaryPromotionRequest.getUserId()) == authentication.name")
     SalaryPromotionResponse createSalaryPromotion(SalaryPromotionRequest salaryPromotionRequest);
 
     SalaryPromotionResponse getSalaryPromotionById(int id);
 
-    @PreAuthorize("hasAnyAuthority('SCOPE_MANAGER', 'SCOPE_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN')")
     SalaryPromotionResponse updateSalaryPromotion(int id, SalaryPromotionUpdateRequest updateRequest);
 
     @PreAuthorize("hasAuthority('SCOPE_USER')")
     void deleteSalaryPromotion(int id);
 
-    @PreAuthorize("T(String).valueOf(#userId) == authentication.principal.username")
+    @PreAuthorize("T(String).valueOf(#userId) == authentication.name")
     List<SalaryPromotionResponse> getSalaryPromotionByStatusAndUserId(long userId, FormStatusEnum formStatus);
 
-    @PreAuthorize("hasAnyAuthority('SCOPE_MANAGER', 'SCOPE_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN')")
     List<SalaryPromotionResponse> getSalaryPromotionByStatusAndSignId(long signer, FormStatusEnum formStatus);
+
+    @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN')")
+    List<SalaryPromotionResponse> getSalaryPromotionByStatus(FormStatusEnum formStatus);
 }

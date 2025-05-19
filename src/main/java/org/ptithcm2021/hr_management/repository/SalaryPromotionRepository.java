@@ -12,4 +12,6 @@ import java.util.List;
 public interface SalaryPromotionRepository extends JpaRepository<SalaryPromotion, Integer> {
     List<SalaryPromotion> findAllByStatusAndUserId(FormStatusEnum status, long userId);
     List<SalaryPromotion> findAllByStatusAndSignerId(FormStatusEnum status, long signerId);
+
+    List<SalaryPromotion> findAllByStatus(FormStatusEnum status);
 }

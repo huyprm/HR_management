@@ -17,5 +17,5 @@ public class SalaryPromotionResponse {
     private String signerName;
     private String currentJobGradeName;
     private String requestJobGradeName;
-    private String requestJobGradeValue;
+    private double requestJobGradeValue;
 }

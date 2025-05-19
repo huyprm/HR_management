@@ -22,7 +22,6 @@ public class PositionRequest {
 
     private String description;
 
-    @NotNull(message = "Department position cannot be empty")
     private String departmentId;
 
     @NotNull(message = "Role must be selected")

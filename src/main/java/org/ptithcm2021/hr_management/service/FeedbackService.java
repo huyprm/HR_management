@@ -11,9 +11,12 @@ public interface FeedbackService {
     @PreAuthorize("T(String).valueOf(#feedbackRequest.userId) == authentication.name")
     FeedbackResponse createFeedback(FeedbackRequest feedbackRequest);
 
-    @PreAuthorize("hasAnyAuthority('SCOPE_AMIN', 'SCOPE_MANAGER', 'SCOPE_USER')")
+    @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN')")
     FeedbackResponse getFeedback(long id);
 
-    @PreAuthorize("hasAnyAuthority('SCOPE_AMIN', 'SCOPE_MANAGER', 'SCOPE_USER')")
+    @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN', 'SCOPE_MANAGER')")
     List<FeedbackResponse> getAllFeedback();
+
+    @PreAuthorize("T(String).valueOf(#userId) == authentication.name")
+    List<FeedbackResponse> getAllFeedbackByUserId(long userId);
 }

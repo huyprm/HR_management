@@ -34,4 +34,9 @@ public class FeedBackController {
         return ApiResponse.<List<FeedbackResponse>>builder()
                 .data(feedbackService.getAllFeedback()).build();
     }
+
+    @GetMapping("/user/{id}")
+    public ApiResponse<List<FeedbackResponse>> getFeedbackByUser(@PathVariable long id) {
+        return ApiResponse.<List<FeedbackResponse>>builder().data(feedbackService.getAllFeedbackByUserId(id)).build();
+    }
 }

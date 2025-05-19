@@ -18,7 +18,8 @@ public interface DecisionRepository extends JpaRepository<Decision, String> {
     List<Decision> findByTypeAndProcessedFalseAndEffectiveDateLessThanEqual(
             DecisionEnum type, LocalDate currentDate);
 
-    List<Decision> findAllByUserId(long userId);
+    @Query("select d from Decision d where d.user.id= :userId and d.signer != null")
+    List<Decision> findAllByUserId(@Param("userId") long userId);
 
     List<Decision> findAllByUserIdAndType(long userId, DecisionEnum decisionType);
 }

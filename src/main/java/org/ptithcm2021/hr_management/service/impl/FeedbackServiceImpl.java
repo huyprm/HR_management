@@ -47,4 +47,10 @@ public class FeedbackServiceImpl implements FeedbackService {
         return feedbackRepository.findAll()
                 .stream().map(feedbackMapper::toFeedBackResponse).toList();
     }
+
+    @Override
+    public List<FeedbackResponse> getAllFeedbackByUserId(long userId) {
+        return feedbackRepository.findAllBySenderId(userId).stream()
+                .map(feedbackMapper::toFeedBackResponse).toList();
+    }
 }

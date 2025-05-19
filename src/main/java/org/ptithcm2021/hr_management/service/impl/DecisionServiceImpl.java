@@ -51,13 +51,13 @@ public class DecisionServiceImpl implements DecisionService {
             decision.setPosition(position);
             decision.setProcessed(false);
 
-        } else if (decision.getSeniorityAllowanceRule() != null) {
+        } else if (decisionRequest.getSeniorityAllowanceRuleId() != null) {
             SeniorityAllowanceRule seniorityAllowanceRule = seniorityAllowanceRuleRepository.findById(decisionRequest.getSeniorityAllowanceRuleId())
                     .orElseThrow(() -> new AppException(ErrorCode.SENIORITY_ALLOWANCE_RULE_NOT_FOUND));
 
             decision.setSeniorityAllowanceRule(seniorityAllowanceRule);
             decision.setProcessed(false);
-        } else if (decision.getSalaryPromotion() != null) {
+        } else if (decisionRequest.getSalaryPromotionId() != null) {
             SalaryPromotion salaryPromotion = salaryPromotionRepository.findById(decisionRequest.getSalaryPromotionId())
                     .orElseThrow(() -> new AppException(ErrorCode.SALARY_PROMOTION_NOT_FOUND));
 
