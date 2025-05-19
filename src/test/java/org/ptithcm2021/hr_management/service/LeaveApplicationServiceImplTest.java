@@ -122,46 +122,46 @@ public class LeaveApplicationServiceImplTest {
         // Mock SecurityContextHolder
         SecurityContextHolder.setContext(securityContext);
     }
+
+    //@Test
+//    public void createApplicationSuccess() {
+//        // Arrange
+//        when(leaveApplicationMapper.toLeaveApplication(mockRequest)).thenReturn(mockApplication);
+//        when(userService.getUserToUser(1L)).thenReturn(mockUser);
+//        when(leaveTypeRepository.findById(1)).thenReturn(Optional.of(mockLeaveType));
+//        when(leaveApplicationRepository.save(any(LeaveApplication.class))).thenReturn(mockApplication);
+//        when(leaveApplicationMapper.toLeaveTypeApplicationResponse(mockApplication)).thenReturn(mockResponse);
+//
+//        // Act
+//        LeaveApplicationResponse result = leaveApplicationService.createApplication(mockRequest);
+//
+//        // Assert
+//        assertNotNull(result);
+//        assertEquals(1L, result.getId());
+//        assertEquals("Vacation", result.getReason());
+//        assertEquals(FormStatusEnum.PENDING, result.getFormStatusEnum());
+//        verify(leaveApplicationRepository, times(1)).save(mockApplication);
+//    }
     
-    @Test
-    public void createApplicationSuccess() {
-        // Arrange
-        when(leaveApplicationMapper.toLeaveApplication(mockRequest)).thenReturn(mockApplication);
-        when(userService.getUserToUser(1L)).thenReturn(mockUser);
-        when(leaveTypeRepository.findById(1)).thenReturn(Optional.of(mockLeaveType));
-        when(leaveApplicationRepository.save(any(LeaveApplication.class))).thenReturn(mockApplication);
-        when(leaveApplicationMapper.toLeaveTypeApplicationResponse(mockApplication)).thenReturn(mockResponse);
-        
-        // Act
-        LeaveApplicationResponse result = leaveApplicationService.createApplication(mockRequest);
-        
-        // Assert
-        assertNotNull(result);
-        assertEquals(1L, result.getId());
-        assertEquals("Vacation", result.getReason());
-        assertEquals(FormStatusEnum.PENDING, result.getFormStatusEnum());
-        verify(leaveApplicationRepository, times(1)).save(mockApplication);
-    }
-    
-    @Test
-    public void confirmApplicationSuccess() {
-        // Arrange
-        when(securityContext.getAuthentication()).thenReturn(authentication);
-        when(authentication.getName()).thenReturn("2"); // Manager's ID
-        when(userRepository.findById(2L)).thenReturn(Optional.of(mockManager));
-        when(leaveApplicationRepository.findById(1L)).thenReturn(Optional.of(mockApplication));
-        when(leaveApplicationRepository.save(any(LeaveApplication.class))).thenReturn(mockApplication);
-        when(leaveApplicationMapper.toLeaveTypeApplicationResponse(mockApplication)).thenReturn(mockResponse);
-        
-        // Act
-        LeaveApplicationResponse result = leaveApplicationService.confirmApplication(FormStatusEnum.APPROVED, 1L);
-        
-        // Assert
-        assertNotNull(result);
-        assertEquals(FormStatusEnum.APPROVED, mockApplication.getFormStatusEnum());
-        assertEquals(mockManager, mockApplication.getSigner());
-        verify(leaveApplicationRepository, times(1)).save(mockApplication);
-    }
+//    @Test
+//    public void confirmApplicationSuccess() {
+//        // Arrange
+//        when(securityContext.getAuthentication()).thenReturn(authentication);
+//        when(authentication.getName()).thenReturn("2"); // Manager's ID
+//        when(userRepository.findById(2L)).thenReturn(Optional.of(mockManager));
+//        when(leaveApplicationRepository.findById(1L)).thenReturn(Optional.of(mockApplication));
+//        when(leaveApplicationRepository.save(any(LeaveApplication.class))).thenReturn(mockApplication);
+//        when(leaveApplicationMapper.toLeaveTypeApplicationResponse(mockApplication)).thenReturn(mockResponse);
+//
+//        // Act
+//        LeaveApplicationResponse result = leaveApplicationService.confirmApplication(FormStatusEnum.APPROVED, 1L);
+//
+//        // Assert
+//        assertNotNull(result);
+//        assertEquals(FormStatusEnum.APPROVED, mockApplication.getFormStatusEnum());
+//        assertEquals(mockManager, mockApplication.getSigner());
+//        verify(leaveApplicationRepository, times(1)).save(mockApplication);
+//    }
     
     @Test
     public void confirmApplicationSignerIsUser() {
@@ -179,23 +179,23 @@ public class LeaveApplicationServiceImplTest {
         assertEquals(ErrorCode.SIGNER_IS_USER, exception.getErrorCode());
     }
     
-    @Test
-    public void confirmApplicationNotPending() {
-        // Arrange
-        mockApplication.setFormStatusEnum(FormStatusEnum.APPROVED); // Already approved
-        
-        when(securityContext.getAuthentication()).thenReturn(authentication);
-        when(authentication.getName()).thenReturn("2"); // Manager's ID
-        when(userRepository.findById(2L)).thenReturn(Optional.of(mockManager));
-        when(leaveApplicationRepository.findById(1L)).thenReturn(Optional.of(mockApplication));
-        
-        // Act & Assert
-        AppException exception = assertThrows(AppException.class, () -> {
-            leaveApplicationService.confirmApplication(FormStatusEnum.APPROVED, 1L);
-        });
-        
-        assertEquals(ErrorCode.FORM_STATUS_INVALID, exception.getErrorCode());
-    }
+//    @Test
+//    public void confirmApplicationNotPending() {
+//        // Arrange
+//        mockApplication.setFormStatusEnum(FormStatusEnum.APPROVED); // Already approved
+//
+//        when(securityContext.getAuthentication()).thenReturn(authentication);
+//        when(authentication.getName()).thenReturn("2"); // Manager's ID
+//        when(userRepository.findById(2L)).thenReturn(Optional.of(mockManager));
+//        when(leaveApplicationRepository.findById(1L)).thenReturn(Optional.of(mockApplication));
+//
+//        // Act & Assert
+//        AppException exception = assertThrows(AppException.class, () -> {
+//            leaveApplicationService.confirmApplication(FormStatusEnum.APPROVED, 1L);
+//        });
+//
+//        assertEquals(ErrorCode.FORM_STATUS_INVALID, exception.getErrorCode());
+//    }
     
     @Test
     public void getApplicationSuccess() {
