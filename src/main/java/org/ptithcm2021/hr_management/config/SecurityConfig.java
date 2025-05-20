@@ -37,6 +37,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(authorizeRequests -> authorizeRequests
                 .requestMatchers(PUBLIC_ENDPOINT).permitAll()
+                .requestMatchers("/ws/**").permitAll()
                 .requestMatchers(
                         "/swagger-ui/**",
                         "/v3/api-docs/**",
@@ -53,8 +54,8 @@ public class SecurityConfig {
 
         http.cors(cors -> cors.configurationSource(request -> {
             CorsConfiguration config = new CorsConfiguration();
-            config.setAllowedOrigins(List.of("http://localhost:3000")); // Chỉ frontend này được truy cập
-            config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH"));
+            config.setAllowedOrigins(List.of("http://localhost:3000", "http://127.0.0.1:5501")); // Chỉ frontend này được truy cập
+            config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
             config.setAllowedHeaders(List.of("*"));
             config.setAllowCredentials(true);
             return config;

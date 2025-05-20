@@ -49,4 +49,9 @@ public class DepartmentController {
         return ApiResponse.<List<DepartmentResponse>>builder()
                 .data(departmentService.getDepartments()).build();
     }
+
+    @GetMapping("/user/{id}")
+    public ApiResponse<DepartmentResponse> getDepartmentByUserId(@PathVariable long id){
+        return ApiResponse.<DepartmentResponse>builder().data(departmentService.getDepartmentByUserId(id)).build();
+    }
 }

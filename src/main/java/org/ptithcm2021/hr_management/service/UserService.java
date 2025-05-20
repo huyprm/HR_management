@@ -35,7 +35,7 @@ public interface UserService {
     @PreAuthorize("T(String).valueOf(#changePasswordRequest.userId) == authentication.name")
     void changePassword(ChangePasswordRequest changePasswordRequest);
 
-    @PreAuthorize("hasAnyAuthority('SCOPE_STAFF', 'SCOPE_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('SCOPE_STAFF', 'SCOPE_ADMIN', 'SCOPE_MANAGER')")
     PagedModel<UserResponse> getAllUserByStatus(UserStatusEnum status, Pageable pageable);
 
     User getUserToUser(long id);
@@ -43,12 +43,12 @@ public interface UserService {
     @PreAuthorize("T(String).valueOf(#userId) == authentication.name")
     List<WorkLogResponse> getWorkLogByUserId(long userId);
 
-    @PreAuthorize("hasAnyAuthority('SCOPE_STAFF', 'SCOPE_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('SCOPE_STAFF', 'SCOPE_ADMIN', 'SCOPE_MANAGER')")
     PagedModel<UserResponse> getAllUserByRole(RoleEnum roleName, Pageable pageable);
 
-    @PreAuthorize("hasAnyAuthority('SCOPE_STAFF', 'SCOPE_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('SCOPE_STAFF', 'SCOPE_ADMIN', 'SCOPE_MANAGER')")
     PagedModel<UserResponse> getAllUserByContract(ContractStatusEnum contractStatusEnum, Pageable pageable);
 
-    @PreAuthorize("hasAnyAuthority('SCOPE_STAFF', 'SCOPE_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('SCOPE_STAFF', 'SCOPE_ADMIN', 'SCOPE_MANAGER')")
     List<UserSummary> searchUser(String keyword);
 }

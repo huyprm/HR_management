@@ -48,6 +48,7 @@ public class UserServiceImpl implements UserService {
     private final WorkLogRepository workLogRepository;
     private final WorkLogMapper workLogMapper;
     private final LeaveApplicationUtil leaveApplicationUtil;
+    private final ContractRepository contractRepository;
 
 
     @Override
@@ -145,7 +146,6 @@ public class UserServiceImpl implements UserService {
         double numLeave = leaveApplicationUtil.calculateTotalLeveDays(userId, startDate, endDate);
 
         userResponse.setUsedLeaveDay(numLeave);
-
         return userResponse;
     }
 

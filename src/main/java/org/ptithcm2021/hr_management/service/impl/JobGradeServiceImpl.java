@@ -4,10 +4,13 @@ import lombok.RequiredArgsConstructor;
 import org.ptithcm2021.hr_management.dto.request.JobGradeRequest;
 import org.ptithcm2021.hr_management.dto.request.UpdateNameAndDescriptionRequest;
 import org.ptithcm2021.hr_management.dto.response.JobGradeResponse;
+import org.ptithcm2021.hr_management.enums.ContractStatusEnum;
 import org.ptithcm2021.hr_management.exception.AppException;
 import org.ptithcm2021.hr_management.exception.ErrorCode;
 import org.ptithcm2021.hr_management.mapper.JobGradeMapper;
+import org.ptithcm2021.hr_management.model.Contract;
 import org.ptithcm2021.hr_management.model.JobGrade;
+import org.ptithcm2021.hr_management.repository.ContractRepository;
 import org.ptithcm2021.hr_management.repository.JobGradeRepository;
 import org.ptithcm2021.hr_management.service.JobGradeService;
 import org.springframework.stereotype.Service;
@@ -19,6 +22,7 @@ import java.util.List;
 public class JobGradeServiceImpl implements JobGradeService {
     private final JobGradeRepository jobGradeRepository;
     private final JobGradeMapper jobGradeMapper;
+    private final ContractRepository contractRepository;
 
 
     @Override
@@ -71,5 +75,12 @@ public class JobGradeServiceImpl implements JobGradeService {
     public List<JobGradeResponse> getAllJobGrade() {
         return jobGradeRepository.findAll()
                 .stream().map(jobGradeMapper::toJobGradeResponse).toList();
+    }
+
+    @Override
+    public JobGradeResponse getJobGradeByUserId(long userId) {
+        Contract contract = contractRepository.findContractByUserIdAndContractStatusEnum(userId, ContractStatusEnum.ACTIVE)
+                .orElseThrow(() -> new AppException(ErrorCode.CONTRACT_NOT_FOUND));
+        return jobGradeMapper.toJobGradeResponse(contract.getJobGrade());
     }
 }

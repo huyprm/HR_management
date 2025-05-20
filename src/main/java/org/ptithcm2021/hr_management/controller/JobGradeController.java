@@ -47,4 +47,9 @@ public class JobGradeController {
         return ApiResponse.<List<JobGradeResponse>>builder()
                 .data(jobGradeService.getAllJobGrade()).build();
     }
+
+    @GetMapping("/user/{id}")
+    public ApiResponse<JobGradeResponse> getJobGradeByUserId(@PathVariable long id) {
+        return ApiResponse.<JobGradeResponse>builder().data(jobGradeService.getJobGradeByUserId(id)).build();
+    }
 }

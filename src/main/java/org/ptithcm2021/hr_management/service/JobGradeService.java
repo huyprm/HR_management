@@ -7,15 +7,21 @@ import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
 
-@PreAuthorize("hasAnyAuthority('SCOPE_ADMIN')")
+
 public interface JobGradeService {
+    @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN')")
     JobGradeResponse createJobGrade(JobGradeRequest jobGradeRequest);
 
+    @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN')")
     JobGradeResponse updateJobGrade(String id, UpdateNameAndDescriptionRequest jobGradeRequest);
 
+    @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN')")
     void deleteJobGrade(String id);
 
     JobGradeResponse getJobGrade(String id);
 
     List<JobGradeResponse> getAllJobGrade();
+
+    @PreAuthorize("T(String).valueOf(#userId) == authentication.name")
+    JobGradeResponse getJobGradeByUserId(long userId);
 }

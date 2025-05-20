@@ -73,4 +73,11 @@ public class DepartmentServiceImpl implements DepartmentService {
 
         return departments.stream().map(departmentMapper::toDepartmentResponse).toList();
     }
+
+    @Override
+    public DepartmentResponse getDepartmentByUserId(long userId) {
+        Department department = departmentRepository.findByUserId(userId)
+                .orElseThrow(() -> new AppException(ErrorCode.DEPARTMENT_NOT_FOUND));
+        return departmentMapper.toDepartmentResponse(department);
+    }
 }

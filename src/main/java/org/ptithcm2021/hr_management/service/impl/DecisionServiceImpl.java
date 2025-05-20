@@ -77,6 +77,11 @@ public class DecisionServiceImpl implements DecisionService {
         decisionMapper.updateDecision(decision, updateRequest);
 
         User signer = userService.getUserToUser(updateRequest.getSignerId());
+
+        if (signer.getPosition().getRole().getLevel()<2){
+            throw new AppException(ErrorCode.SIGNER_IS_USER);
+        }
+
         decision.setSigner(signer);
 
         WorkLogTypeEnum workLogType = switch (decision.getType()) {
