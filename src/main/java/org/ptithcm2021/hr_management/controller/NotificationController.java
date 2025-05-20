@@ -1,5 +1,6 @@
 package org.ptithcm2021.hr_management.controller;
 
+import com.google.firebase.messaging.FirebaseMessagingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.ptithcm2021.hr_management.dto.request.NotificationRequest;
@@ -24,7 +25,7 @@ public class NotificationController {
     private final NotificationService notificationService;
 
     @PostMapping("/create")
-    public ApiResponse<NotificationResponse> createNotification (@RequestBody @Valid NotificationRequest notificationRequest){
+    public ApiResponse<NotificationResponse> createNotification (@RequestBody @Valid NotificationRequest notificationRequest) throws FirebaseMessagingException {
         return ApiResponse.<NotificationResponse>builder()
                 .data(notificationService.createNotification(notificationRequest)).build();
     }

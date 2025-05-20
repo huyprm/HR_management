@@ -31,4 +31,6 @@ public class Account {
 
     @OneToOne(mappedBy = "account")
     private User user;
+
+    private String deviceToken;
 }

@@ -221,6 +221,31 @@ public class UserServiceImpl implements UserService {
         return userRepository.searchFullText(finalKey.toString());
     }
 
+    @Override
+    public String saveDeviceToken(long userId, String deviceToken) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+
+        user.getAccount().setDeviceToken(deviceToken);
+        userRepository.save(user);
+        return "Saved device token";
+    }
+
+    @Override
+    public PagedModel<UserResponse> getAllUserByDepartment(String departmentId, UserStatusEnum status, Pageable pageable) {
+        Page<UserResponse> users;
+
+        if(status == null ){
+            users = userRepository.findAllByDepartmentId(departmentId, pageable)
+                    .map(userMapper::toUserResponse);
+        } else {
+            users = userRepository.findByDepartmentIdAndStatus(departmentId, status, pageable)
+                    .map(userMapper::toUserResponse);
+        }
+
+        return new PagedModel<>(users);
+    }
+
     private Page<NotificationRecipientResponse> getTop5NotificationRecipient(long userId) {
         Pageable pageable = PageRequest.of(0,5);
         Page<NotificationRecipient> notificationRecipients = notificationRecipientRepository.findAllByUserId(userId, pageable);

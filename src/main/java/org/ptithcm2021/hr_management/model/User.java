@@ -65,5 +65,4 @@ public class User extends Base{
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seniority_allowance_rule_id")
     private SeniorityAllowanceRule seniorityAllowanceRule;
-
 }

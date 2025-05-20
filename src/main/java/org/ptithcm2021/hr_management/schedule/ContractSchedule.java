@@ -1,5 +1,6 @@
 package org.ptithcm2021.hr_management.schedule;
 
+import com.google.firebase.messaging.FirebaseMessagingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.ptithcm2021.hr_management.dto.request.NotificationRequest;
@@ -8,6 +9,7 @@ import org.ptithcm2021.hr_management.enums.UserStatusEnum;
 import org.ptithcm2021.hr_management.model.Contract;
 import org.ptithcm2021.hr_management.repository.ContractRepository;
 import org.ptithcm2021.hr_management.service.NotificationService;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -43,8 +45,12 @@ public class ContractSchedule {
 //                    contract.setContractStatusEnum(ContractStatusEnum.EXPIRING_SOON);
 //                    contractRepository.save(contract);
 
-                    notificationService.createNotification(
-                            notificationContractExpirySoon(contract.getUser().getId(), contract.getEndDate()));
+                    try {
+                        notificationService.createNotification(
+                                notificationContractExpirySoon(contract.getUser().getId(), contract.getEndDate()));
+                    } catch (FirebaseMessagingException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
             }
         });
@@ -93,6 +99,7 @@ public class ContractSchedule {
         });
         contractRepository.saveAll(contracts);
     }
+
     public void scheduleContractStatusUpdate(int contractId, LocalDateTime runAt, ContractStatusEnum contractStatusEnum ) {
         Runnable task = () -> {
             contractRepository.findById(contractId).ifPresent(contract -> {

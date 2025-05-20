@@ -1,5 +1,6 @@
 package org.ptithcm2021.hr_management.service;
 
+import com.google.firebase.messaging.FirebaseMessagingException;
 import org.ptithcm2021.hr_management.dto.request.NotificationRequest;
 import org.ptithcm2021.hr_management.dto.response.NotificationRecipientResponse;
 import org.ptithcm2021.hr_management.dto.response.NotificationResponse;
@@ -13,7 +14,7 @@ import java.util.List;
 
 public interface NotificationService {
     @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN', 'SCOPE_MANAGER', 'SCOPE_STAFF')")
-    NotificationResponse createNotification(NotificationRequest notificationRequest);
+    NotificationResponse createNotification(NotificationRequest notificationRequest) throws FirebaseMessagingException;
 
     NotificationResponse getNotification(long id);
 

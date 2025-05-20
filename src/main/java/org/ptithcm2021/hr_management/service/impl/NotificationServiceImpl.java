@@ -1,5 +1,8 @@
 package org.ptithcm2021.hr_management.service.impl;
 
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.FirebaseMessagingException;
+import com.google.firebase.messaging.Message;
 import com.nimbusds.jose.JWEObjectJSON;
 import lombok.RequiredArgsConstructor;
 import org.ptithcm2021.hr_management.dto.request.NotificationRequest;
@@ -22,6 +25,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedModel;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -34,13 +38,11 @@ public class NotificationServiceImpl implements NotificationService {
     private final NotificationRepository notificationRepository;
     private final NotificationMapper notificationMapper;
     private final UserService userService;
-    private final DepartmentRepository departmentRepository;
-    private final PositionRepository positionRepository;
     private final UserRepository userRepository;
-    private final NotificationWebSocketSender notificationWebSocketSender;
+    //private final SimpMessagingTemplate messagingTemplate;
 
     @Override
-    public NotificationResponse createNotification(NotificationRequest notificationRequest) {
+    public NotificationResponse createNotification(NotificationRequest notificationRequest) throws FirebaseMessagingException {
         User sender =null;
         if (notificationRequest.getUserId() !=null) {
             sender = userService.getUserToUser(notificationRequest.getUserId());
@@ -95,7 +97,8 @@ public class NotificationServiceImpl implements NotificationService {
                     .build();
             notificationRecipients.add(recipient);
 
-            notificationWebSocketSender.sendNotificationToUser(receiver.getId(), response);
+            sendNotificationWithWS(receiver.getId(), response);
+            sendNotificationWithFireBase(receiver.getAccount().getDeviceToken(), response.getTitle());
         }
 
         recipientRepository.saveAll(notificationRecipients);
@@ -154,5 +157,20 @@ public class NotificationServiceImpl implements NotificationService {
         });
     }
 
+    private void sendNotificationWithWS(long userId, NotificationResponse notification) {
+        String destination = "/topic/user/" + userId;
+        //messagingTemplate.convertAndSend(destination, notification);
+    }
 
+    private void sendNotificationWithFireBase(String deviceToken, String title) throws FirebaseMessagingException {
+
+        Message message = Message.builder()
+                .setToken(deviceToken)
+                .setNotification(com.google.firebase.messaging.Notification.builder()
+                        .setTitle(title)
+                        .build())
+                .build();
+
+        FirebaseMessaging.getInstance().send(message);
+    }
 }

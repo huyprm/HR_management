@@ -51,4 +51,10 @@ public interface UserService {
 
     @PreAuthorize("hasAnyAuthority('SCOPE_STAFF', 'SCOPE_ADMIN', 'SCOPE_MANAGER')")
     List<UserSummary> searchUser(String keyword);
+
+    @PreAuthorize("T(String).valueOf(#userId) == authentication.name")
+    String saveDeviceToken(long userId, String deviceToken);
+
+    @PreAuthorize("hasAnyAuthority('SCOPE_STAFF', 'SCOPE_ADMIN', 'SCOPE_MANAGER')")
+    PagedModel<UserResponse> getAllUserByDepartment(String departmentId, UserStatusEnum status, Pageable pageable);
 }

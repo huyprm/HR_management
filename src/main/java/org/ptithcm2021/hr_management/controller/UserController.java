@@ -9,10 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.ptithcm2021.hr_management.dto.request.ChangePasswordRequest;
 import org.ptithcm2021.hr_management.dto.request.UserRequest;
 import org.ptithcm2021.hr_management.dto.request.UserUpdateRequest;
-import org.ptithcm2021.hr_management.dto.response.ApiResponse;
-import org.ptithcm2021.hr_management.dto.response.UserResponse;
-import org.ptithcm2021.hr_management.dto.response.UserSummaryResponse;
-import org.ptithcm2021.hr_management.dto.response.WorkLogResponse;
+import org.ptithcm2021.hr_management.dto.response.*;
 import org.ptithcm2021.hr_management.enums.ContractStatusEnum;
 import org.ptithcm2021.hr_management.enums.RoleEnum;
 import org.ptithcm2021.hr_management.enums.UserStatusEnum;
@@ -21,6 +18,7 @@ import org.ptithcm2021.hr_management.projection.UserSummary;
 import org.ptithcm2021.hr_management.service.UserService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.query.Param;
 import org.springframework.data.web.PagedModel;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -113,4 +111,19 @@ public class UserController {
     }
 
 
+    @PutMapping("/save-device/{userId}")
+    public ApiResponse<String> saveDeviceToken(@RequestParam String deviceToken,
+                                               @PathVariable long userId){
+        return ApiResponse.<String>builder().data(userService.saveDeviceToken(userId,deviceToken)).build();
+    }
+
+    @GetMapping("department/{id}")
+    public ApiResponse<PagedModel<UserResponse>> getAllDepartments(@PathVariable String id,
+                                                                   @RequestParam(required = false) UserStatusEnum status,
+                                                                   @RequestParam(defaultValue = "0") int page,
+                                                                   @RequestParam(defaultValue = "10") int size){
+        Pageable pageable = Pageable.ofSize(size).withPage(page);
+
+        return ApiResponse.<PagedModel<UserResponse>>builder().data(userService.getAllUserByDepartment(id, status, pageable)).build();
+    }
 }

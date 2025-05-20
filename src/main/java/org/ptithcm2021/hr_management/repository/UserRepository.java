@@ -37,6 +37,14 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT u FROM User u LEFT JOIN Contract c ON u.id = c.user.id WHERE c.id IS NULL or c.contractStatusEnum = 'TERMINATED'")
     Page<User> findUsersWithoutContract(Pageable pageable);
 
+    @Query("select u from User u where u.position.department.id = :departmentId and u.status= :status")
+    Page<User> findByDepartmentIdAndStatus(@Param("departmentId") String departmentId,
+                                     @Param("status") UserStatusEnum status, Pageable pageable);
+
+    @Query("select u from User u where u.position.department.id = :departmentId")
+    Page<User> findAllByDepartmentId(@Param("departmentId") String departmentId,
+                                     Pageable pageable);
+
     @Query("select distinct c.user from Contract c where (c.contractStatusEnum = :status " +
             "or ((c.endDate BETWEEN :startOfMonth AND :endOfMonth) and c.contractStatusEnum in ('EXPIRED','RENEWED')))")
     List<User> findActiveOrRecentlyEndedContractUsers(@Param("startOfMonth") LocalDate startOfMonth,
