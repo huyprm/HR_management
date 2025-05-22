@@ -116,7 +116,7 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
 
         UserResponse userResponse = userMapper.toUserResponse(user);
-        userResponse.setRecipientResponse(getTop5NotificationRecipient(userId));
+        //userResponse.setRecipientResponse(getTop5NotificationRecipient(userId));
 
         //Seniority Info
         SeniorityAllowanceRule rule;

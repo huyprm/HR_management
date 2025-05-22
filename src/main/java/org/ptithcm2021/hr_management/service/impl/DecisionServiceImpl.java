@@ -82,6 +82,10 @@ public class DecisionServiceImpl implements DecisionService {
             throw new AppException(ErrorCode.SIGNER_IS_USER);
         }
 
+        if (signer.getId() == decision.getUser().getId()){
+            throw new AppException(ErrorCode.SIGNER_IS_USER);
+        }
+
         decision.setSigner(signer);
 
         WorkLogTypeEnum workLogType = switch (decision.getType()) {

@@ -39,7 +39,7 @@ public class NotificationServiceImpl implements NotificationService {
     private final NotificationMapper notificationMapper;
     private final UserService userService;
     private final UserRepository userRepository;
-    //private final SimpMessagingTemplate messagingTemplate;
+    private final SimpMessagingTemplate messagingTemplate;
 
     @Override
     public NotificationResponse createNotification(NotificationRequest notificationRequest) throws FirebaseMessagingException {
@@ -98,7 +98,10 @@ public class NotificationServiceImpl implements NotificationService {
             notificationRecipients.add(recipient);
 
             sendNotificationWithWS(receiver.getId(), response);
-            sendNotificationWithFireBase(receiver.getAccount().getDeviceToken(), response.getTitle());
+            if(receiver.getAccount().getDeviceToken() != null){
+                sendNotificationWithFireBase(receiver.getAccount().getDeviceToken(), response.getTitle());
+            }
+
         }
 
         recipientRepository.saveAll(notificationRecipients);
@@ -159,7 +162,7 @@ public class NotificationServiceImpl implements NotificationService {
 
     private void sendNotificationWithWS(long userId, NotificationResponse notification) {
         String destination = "/topic/user/" + userId;
-        //messagingTemplate.convertAndSend(destination, notification);
+        messagingTemplate.convertAndSend(destination, notification);
     }
 
     private void sendNotificationWithFireBase(String deviceToken, String title) throws FirebaseMessagingException {

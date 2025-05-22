@@ -20,6 +20,8 @@ public class Notification {
     private long id;
 
     private String title;
+
+    @Column(columnDefinition = "text")
     private String content;
 
     @CollectionTable(name = "notification_attached", joinColumns = @JoinColumn(name = "notification_id"))

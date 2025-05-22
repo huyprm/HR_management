@@ -19,7 +19,10 @@ public class Decision {
     private String id;
 
     private String attachment;
+
+    @Column(columnDefinition = "text")
     private String content;
+
     private double value;
 
     @Temporal(TemporalType.DATE)
