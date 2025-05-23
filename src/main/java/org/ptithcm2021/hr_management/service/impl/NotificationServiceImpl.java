@@ -53,14 +53,14 @@ public class NotificationServiceImpl implements NotificationService {
 
         List<User> receivers = new ArrayList<>();
 
-        if (notificationRequest.getReceiverIds() != null){
+        if (notificationRequest.getReceiverIds() != null && !notificationRequest.getReceiverIds().isEmpty()) {
             notificationRequest.getReceiverIds().forEach(aLong -> {
                 User user = userService.getUserToUser(aLong);
                 receivers.add(user);
             });
             notification.setNotificationEnum(NotificationEnum.SINGLE);
         }
-        if (notificationRequest.getDepartmentIds() != null){
+        if (notificationRequest.getDepartmentIds() != null && !notificationRequest.getDepartmentIds().isEmpty()) {
             notificationRequest.getDepartmentIds().forEach(s -> {
                 List<User> users = userRepository.findAllByDepartmentId(s, UserStatusEnum.ACTIVE);
                 receivers.addAll(users);
@@ -69,16 +69,18 @@ public class NotificationServiceImpl implements NotificationService {
             notification.setNotificationEnum(NotificationEnum.DEPARTMENT);
         }
 
-        if (notificationRequest.getPositionIds() !=null){
+        if (notificationRequest.getPositionIds() !=null && notificationRequest.getPositionIds().isEmpty()) {
 
         }
 
-        if (notificationRequest.getReceiverIds() == null &&
-            notificationRequest.getPositionIds() == null &&
-            notificationRequest.getDepartmentIds() == null ){
+        boolean noReceivers = (notificationRequest.getReceiverIds() == null || notificationRequest.getReceiverIds().isEmpty());
+        boolean noPositions = (notificationRequest.getPositionIds() == null || notificationRequest.getPositionIds().isEmpty());
+        boolean noDepartments = (notificationRequest.getDepartmentIds() == null || notificationRequest.getDepartmentIds().isEmpty());
+
+        if (noReceivers && noPositions && noDepartments){
 
             List<User> list = userRepository.findAll().stream()
-                    .filter(user -> user.getStatus().equals(UserStatusEnum.PENDING)).toList();
+                    .filter(user -> user.getStatus().equals(UserStatusEnum.ACTIVE)).toList();
 
             receivers.addAll(list);
             notification.setNotificationEnum(NotificationEnum.ALL);

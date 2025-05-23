@@ -9,13 +9,13 @@ import java.util.List;
 
 public interface DepartmentService {
 
-    @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN', 'SCOPE_STAFF')")
     DepartmentResponse createDepartment (DepartmentRequest departmentRequest);
 
-    @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN', 'SCOPE_STAFF')")
     DepartmentResponse updateDepartment (String id, UpdateNameAndDescriptionRequest request);
 
-    @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN', 'SCOPE_STAFF')")
     void deleteDepartment(String departmentId);
 
     DepartmentResponse getDepartment (String departmentId);

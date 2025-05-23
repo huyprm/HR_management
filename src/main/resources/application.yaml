@@ -6,6 +6,8 @@ spring:
     name: HR_management
   config:
     import: "application-secret.yaml"
+  flyway:
+    enabled: false
 
   jpa:
     show-sql: true

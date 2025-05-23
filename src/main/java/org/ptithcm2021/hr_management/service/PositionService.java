@@ -7,7 +7,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
 
-@PreAuthorize("hasAnyAuthority('SCOPE_ADMIN')")
+@PreAuthorize("hasAnyAuthority('SCOPE_ADMIN', 'SCOPE_STAFF')")
 public interface PositionService {
     PositionResponse createPosition(PositionRequest positionRequest);
 
