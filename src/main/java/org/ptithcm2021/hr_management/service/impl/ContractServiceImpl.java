@@ -251,8 +251,8 @@ public class ContractServiceImpl implements ContractService {
         }
         contract.setContractStatusEnum(ContractStatusEnum.TERMINATED);
 
-        contract.getUser().setStatus(UserStatusEnum.TERMINATED);
-        contract.getUser().getAccount().setStatus(false);
+        contract.getUser().setStatus(UserStatusEnum.PENDING);
+        //contract.getUser().getAccount().setStatus(false);
         contractRepository.save(contract);
     }
 

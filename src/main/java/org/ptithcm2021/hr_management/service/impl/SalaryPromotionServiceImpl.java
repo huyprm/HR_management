@@ -1,6 +1,8 @@
 package org.ptithcm2021.hr_management.service.impl;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.ptithcm2021.hr_management.dto.request.SalaryPromotionRequest;
 import org.ptithcm2021.hr_management.dto.request.SalaryPromotionUpdateRequest;
 import org.ptithcm2021.hr_management.dto.response.SalaryPromotionResponse;
@@ -22,9 +24,12 @@ import org.springframework.stereotype.Service;
 
 import java.text.DecimalFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class SalaryPromotionServiceImpl implements SalaryPromotionService {
@@ -65,6 +70,7 @@ public class SalaryPromotionServiceImpl implements SalaryPromotionService {
     }
 
     @Override
+    @Transactional
     public SalaryPromotionResponse updateSalaryPromotion(int id, SalaryPromotionUpdateRequest updateRequest) {
         SalaryPromotion promotion = salaryPromotionRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.SALARY_PROMOTION_NOT_FOUND));
@@ -79,13 +85,14 @@ public class SalaryPromotionServiceImpl implements SalaryPromotionService {
 
         promotion.setStatus(updateRequest.getFormStatus());
 
+
         if (updateRequest.getFormStatus() == FormStatusEnum.APPROVED) {
             applyApprovedSalaryPromotion(promotion);
         }
 
-        promotion = salaryPromotionRepository.save(promotion);
+        salaryPromotionRepository.save(promotion);
 
-        return salaryPromotionMapper.toSalaryPromotionResponse(salaryPromotionRepository.save(promotion));
+        return salaryPromotionMapper.toSalaryPromotionResponse(promotion);
 
     }
 
@@ -148,6 +155,8 @@ public class SalaryPromotionServiceImpl implements SalaryPromotionService {
                     + "Lương thay đổi từ " + df.format(currentBasicSalary) + " VNĐ lên " + df.format(newBasicSalary) +" VNĐ";
 
             Decision decision = new Decision();
+            String id = "QDTL" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
+            decision.setId(id);
             decision.setType(DecisionEnum.INCREASE_SALARY);
             decision.setDate(LocalDate.now()); // Ngày tạo quyết định
             decision.setEffectiveDate(LocalDate.from(LocalDate.now().plusMonths(1).atStartOfDay())); // Ngày hiệu lực (đầu tháng sau)
@@ -167,6 +176,7 @@ public class SalaryPromotionServiceImpl implements SalaryPromotionService {
                     .build());
 
         } catch (Exception e) {
+            log.error(e.getMessage());
             throw new AppException(ErrorCode.DECISION_CREATION_FAILED);
         }
     }
