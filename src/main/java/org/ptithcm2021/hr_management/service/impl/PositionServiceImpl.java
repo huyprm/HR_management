@@ -37,12 +37,14 @@ public class PositionServiceImpl implements PositionService {
 
         Position position = positionMapper.toPosition(positionRequest);
 
-        Department department = departmentRepository.findById(positionRequest.getDepartmentId())
-                .orElseThrow(() -> new AppException(ErrorCode.DEPARTMENT_NOT_FOUND));
+        if (positionRequest.getDepartmentId() != null && !positionRequest.getDepartmentId().isEmpty()) {
+            Department department = departmentRepository.findById(positionRequest.getDepartmentId())
+                    .orElseThrow(() -> new AppException(ErrorCode.DEPARTMENT_NOT_FOUND));
+            position.setDepartment(department);
+        }
 
         Role role = roleRepository.findById(positionRequest.getRoleId()).orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_FOUND));
 
-        position.setDepartment(department);
         position.setRole(role);
 
         return positionMapper.toPositionResponse(positionRepository.save(position));
