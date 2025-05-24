@@ -29,8 +29,8 @@ public class PositionServiceImpl implements PositionService {
 
     @Override
     public PositionResponse createPosition(PositionRequest positionRequest) {
-        if(positionRepository.existsById(positionRequest.getDepartmentId()))
-            throw new AppException(ErrorCode.POSITION_ID_EXISTS);
+//        if(positionRepository.existsById(positionRequest.getDepartmentId()))
+//            throw new AppException(ErrorCode.POSITION_ID_EXISTS);
 
         if (positionRepository.existsByName(positionRequest.getName()))
             throw new AppException(ErrorCode.POSITION_NAME_EXISTS);

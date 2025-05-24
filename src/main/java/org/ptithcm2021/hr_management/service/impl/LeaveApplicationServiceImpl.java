@@ -82,8 +82,10 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
         if(leaveApplication.getFormStatusEnum() != FormStatusEnum.PENDING)
             throw new AppException(ErrorCode.FORM_STATUS_INVALID);
 
-        if (!signer.getPosition().getDepartment().getId().equals(leaveApplication.getUser().getPosition().getDepartment().getId())) {
-            throw new AppException(ErrorCode.SIGNER_IS_USER);
+        if( signer.getPosition().getDepartment() != null && leaveApplication.getUser().getPosition().getDepartment() != null) {
+            if (!signer.getPosition().getDepartment().getId().equals(leaveApplication.getUser().getPosition().getDepartment().getId())) {
+                throw new AppException(ErrorCode.SIGNER_IS_USER);
+            }
         }
 
         leaveApplication.setFormStatusEnum(formStatusEnum);
