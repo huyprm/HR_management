@@ -126,4 +126,11 @@ public class UserController {
 
         return ApiResponse.<PagedModel<UserResponse>>builder().data(userService.getAllUserByDepartment(id, status, pageable)).build();
     }
+
+    @PutMapping("/remove-device/{id}")
+    public ApiResponse<String> removeDeviceToken(@PathVariable long id){
+        userService.removeDeviceToken(id);
+
+        return ApiResponse.<String>builder().message("Deleted device token successful").build();
+    }
 }

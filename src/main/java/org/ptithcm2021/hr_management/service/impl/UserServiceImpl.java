@@ -246,6 +246,14 @@ public class UserServiceImpl implements UserService {
         return new PagedModel<>(users);
     }
 
+    @Override
+    public void removeDeviceToken(long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+        user.getAccount().setDeviceToken(null);
+        userRepository.save(user);
+    }
+
     private Page<NotificationRecipientResponse> getTop5NotificationRecipient(long userId) {
         Pageable pageable = PageRequest.of(0,5);
         Page<NotificationRecipient> notificationRecipients = notificationRecipientRepository.findAllByUserId(userId, pageable);

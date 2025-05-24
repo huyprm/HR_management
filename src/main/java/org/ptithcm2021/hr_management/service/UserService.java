@@ -57,4 +57,7 @@ public interface UserService {
 
     @PreAuthorize("hasAnyAuthority('SCOPE_STAFF', 'SCOPE_ADMIN', 'SCOPE_MANAGER')")
     PagedModel<UserResponse> getAllUserByDepartment(String departmentId, UserStatusEnum status, Pageable pageable);
+
+    @PreAuthorize("T(String).valueOf(#userId) == authentication.name")
+    void removeDeviceToken(long userId);
 }

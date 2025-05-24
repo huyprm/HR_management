@@ -75,7 +75,7 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
             throw new AppException(ErrorCode.SIGNER_IS_USER);
         }
 
-        if (signer.getPosition().getRole().getLevel() < leaveApplication.getUser().getPosition().getRole().getLevel()){
+        if (signer.getPosition().getRole().getLevel() > leaveApplication.getUser().getPosition().getRole().getLevel()){
             throw new AppException(ErrorCode.SIGNER_IS_USER);
         }
 
