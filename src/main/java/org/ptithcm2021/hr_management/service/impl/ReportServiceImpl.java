@@ -1,6 +1,7 @@
 package org.ptithcm2021.hr_management.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.ptithcm2021.hr_management.dto.response.ContractExpireReportResponse;
 import org.ptithcm2021.hr_management.dto.response.LeaveBalanceResponse;
 import org.ptithcm2021.hr_management.dto.response.PayrollResponse;
 import org.ptithcm2021.hr_management.enums.ContractStatusEnum;
@@ -22,6 +23,7 @@ import java.time.YearMonth;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 @RequiredArgsConstructor
@@ -118,6 +120,31 @@ public class ReportServiceImpl implements ReportService {
             }
         }
         return new ActualWorkingDays(unpaidLeave, paidLeave);
+    }
+
+    @Override
+    public List<ContractExpireReportResponse> getExpiringContracts(int days) {
+        LocalDate today = LocalDate.now();
+        LocalDate deadline = today.plusDays(days);
+
+        List<Contract> contracts = contractRepository.findActiveContractsExpiringBetween(today, deadline);
+
+        AtomicInteger index = new AtomicInteger(1);
+
+        return contracts.stream().map(c -> ContractExpireReportResponse.builder()
+                .stt(index.getAndIncrement())
+                .fullName(c.getUser().getFullName())
+                .email(c.getUser().getEmail())
+                .departmentName(c.getPosition().getDepartment() != null
+                        ? c.getPosition().getDepartment().getName()
+                        : "Chưa có")
+                .positionName(c.getPosition().getName())
+                .contractTypeName(c.getContractType().getName())
+                .endDate(c.getEndDate())
+                .remainingDays((int) ChronoUnit.DAYS.between(today, c.getEndDate())) // sửa chỗ này
+                .contractStatus(c.getContractStatusEnum().name())
+                .build()
+        ).toList();
     }
 
 
