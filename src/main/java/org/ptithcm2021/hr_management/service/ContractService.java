@@ -24,7 +24,7 @@ public interface ContractService {
     @PreAuthorize("hasAnyAuthority('SCOPE_STAFF', 'SCOPE_ADMIN')")
     ContractResponse extendContract(int contractId, ContractRequest contractRequest) throws Exception;
 
-    @PreAuthorize("hasAnyAuthority('SCOPE_STAFF', 'SCOPE_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('SCOPE_STAFF', 'SCOPE_ADMIN', 'SCOPE_USER', 'SCOPE_MANAGER')")
     ContractResponse getContract(int contractId);
 
     @PreAuthorize("hasAnyAuthority('SCOPE_STAFF', 'SCOPE_ADMIN') or T(String).valueOf(#userId) == authentication.name")
