@@ -1,18 +1,18 @@
-package org.ptithcm2021.hr_management.websocket;
+package org.ptithcm2021.hr_management.observer;
 
 import lombok.RequiredArgsConstructor;
 import org.ptithcm2021.hr_management.dto.response.NotificationResponse;
+import org.ptithcm2021.hr_management.model.User;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
-import org.springframework.web.socket.client.WebSocketClient;
 
 @Component
 @RequiredArgsConstructor
-public class NotificationWebSocketSender {
+public class WebSocketNotificationObserver implements NotificationObserver {
     private final SimpMessagingTemplate messagingTemplate;
 
-    public void sendNotificationToUser(long userId, NotificationResponse notification) {
-        String destination = "/topic/user/" + userId;
+    public void update(User user, NotificationResponse notification) {
+        String destination = "/topic/user/" + user.getId();
         messagingTemplate.convertAndSend(destination, notification);
     }
 }

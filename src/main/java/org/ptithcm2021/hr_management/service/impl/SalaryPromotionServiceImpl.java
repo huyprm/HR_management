@@ -169,12 +169,6 @@ public class SalaryPromotionServiceImpl implements SalaryPromotionService {
 
             decisionRepository.save(decision);
 
-            workLogRepository.save(WorkingHistory.builder()
-                    .type(WorkLogTypeEnum.INCREASE_SALARY)
-                    .user(decision.getUser())
-                    .decision(decision)
-                    .build());
-
         } catch (Exception e) {
             log.error(e.getMessage());
             throw new AppException(ErrorCode.DECISION_CREATION_FAILED);

@@ -48,8 +48,6 @@ public class UserServiceImpl implements UserService {
     private final WorkLogRepository workLogRepository;
     private final WorkLogMapper workLogMapper;
     private final LeaveApplicationUtil leaveApplicationUtil;
-    private final ContractRepository contractRepository;
-
 
     @Override
     public UserResponse createUser(UserRequest userRequest) throws MessagingException {

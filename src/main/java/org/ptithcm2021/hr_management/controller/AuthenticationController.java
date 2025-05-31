@@ -7,7 +7,9 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.ptithcm2021.hr_management.dto.request.LoginRequest;
 import org.ptithcm2021.hr_management.dto.response.ApiResponse;
+import org.ptithcm2021.hr_management.service.AuthenticationService;
 import org.ptithcm2021.hr_management.service.impl.AuthenticationServiceImpl;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
@@ -17,7 +19,8 @@ import java.text.ParseException;
 @RequiredArgsConstructor
 @Tag(name = "Authentication Controller")
 public class AuthenticationController {
-    private final AuthenticationServiceImpl authenticationService;
+
+    private final AuthenticationService authenticationService;
 
     @PostMapping("/login")
     public ApiResponse<String> login(@RequestBody @Valid LoginRequest request){
