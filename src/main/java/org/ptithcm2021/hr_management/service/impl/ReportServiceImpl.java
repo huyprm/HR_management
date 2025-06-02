@@ -2,6 +2,7 @@ package org.ptithcm2021.hr_management.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.ptithcm2021.hr_management.dto.response.ContractExpireReportResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.ptithcm2021.hr_management.dto.response.LeaveBalanceResponse;
 import org.ptithcm2021.hr_management.dto.response.PayrollResponse;
 import org.ptithcm2021.hr_management.enums.ContractStatusEnum;
@@ -18,13 +19,16 @@ import org.ptithcm2021.hr_management.service.UserService;
 import org.ptithcm2021.hr_management.util.LeaveBalanceUtil;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ReportServiceImpl implements ReportService {
@@ -53,28 +57,33 @@ public class ReportServiceImpl implements ReportService {
             payrollResponse.setSalary(user.getSalaryBasic());
 
             if (user.getSeniorityAllowanceRule()!= null){
-                payrollResponse.setSeniority(user.getSeniorityAllowanceRule().getSeniorityPercentage());
+                payrollResponse.setSeniority(user.getSeniorityAllowanceRule().getSeniorityPercentage()* user.getSalaryBasic()/100);
             } else payrollResponse.setSeniority(0);
 
             payrollResponse.setWorkDays(workDays);
 
+            log.info(String.valueOf(user.getId()));
+            //Contract contract = contractRepository.findContractByUserIdAndContractStatusEnum(user.getId(), ContractStatusEnum.ACTIVE)
+                    //.orElseThrow(() -> new AppException(ErrorCode.CONTRACT_NOT_FOUND));
+            Optional<Contract> contract = contractRepository.findContractByUserIdAndContractStatusEnum(user.getId(), ContractStatusEnum.ACTIVE);
+            if (contract.isPresent()) {
+                Contract con = contract.get();
+                double unpaidLeave = 0;
+                double paidLeave = 0;
 
-            Contract contract = contractRepository.findContractByUserIdAndContractStatusEnum(user.getId(), ContractStatusEnum.ACTIVE)
-                    .orElseThrow(() -> new AppException(ErrorCode.CONTRACT_NOT_FOUND));
-            double unpaidLeave = 0;
-            double paidLeave = 0;
+                if(con.getContractType().isPolicy()){
+                    ActualWorkingDays actualWorkingDays = calculateActualWorkingDays(user.getId(), startDate, endDate);
 
-            if(contract.getContractType().isPolicy()){
-                ActualWorkingDays actualWorkingDays = calculateActualWorkingDays(user.getId(), startDate, endDate);
+                    unpaidLeave = actualWorkingDays.unpaidLeave;
+                    paidLeave = actualWorkingDays.paidLeave;
+                }
 
-                unpaidLeave = actualWorkingDays.unpaidLeave;
-                paidLeave = actualWorkingDays.paidLeave;
-            }
+                payrollResponse.setActualWorkDays(workDays - unpaidLeave -paidLeave);
+                payrollResponse.setUnpaidLeaveDays(unpaidLeave);
 
-            payrollResponse.setActualWorkDays(workDays - unpaidLeave -paidLeave);
-            payrollResponse.setUnpaidLeaveDays(unpaidLeave);
+                payrollResponses.add(payrollResponse);
+            }else continue;
 
-            payrollResponses.add(payrollResponse);
         }
 
         return payrollResponses;

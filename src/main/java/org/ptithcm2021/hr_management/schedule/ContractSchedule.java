@@ -93,6 +93,7 @@ public class ContractSchedule {
 
     @Scheduled(cron = "0 0 0 * * *")
     public void updateContractExpiry() {
+        log.info("Updating contract expiry");
         List<Contract> contracts = contractRepository.findAllContractExpiry(LocalDate.now());
         contracts.forEach(contract -> {
             contract.setContractStatusEnum(ContractStatusEnum.EXPIRED);
