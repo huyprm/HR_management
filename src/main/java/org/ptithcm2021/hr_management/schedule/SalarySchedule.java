@@ -91,6 +91,4 @@ public class SalarySchedule {
             log.error("Error in pending salary changes processing job: {}", e.getMessage(), e);
         }
     }
-
-
 }

@@ -1,5 +1,6 @@
 package org.ptithcm2021.hr_management.util;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.ptithcm2021.hr_management.repository.LeaveApplicationRepository;
 import org.springframework.stereotype.Component;
@@ -9,9 +10,10 @@ import java.time.temporal.ChronoUnit;
 
 @Component
 @RequiredArgsConstructor
-public final class LeaveApplicationUtil {
+public class LeaveApplicationUtil {
     private final LeaveApplicationRepository leaveApplicationRepository;
 
+    @Transactional
     public double calculateLeveDays(long userId, LocalDate startDate, LocalDate endDate) {
         double used = leaveApplicationRepository.findApprovedLeavesByUserAndMonth(userId, startDate, endDate)
                 .stream()
@@ -32,6 +34,7 @@ public final class LeaveApplicationUtil {
         return used;
     }
 
+    @Transactional
     public double calculateTotalLeveDays(long userId, LocalDate startDate, LocalDate endDate) {
         return leaveApplicationRepository.findApprovedLeavesByUserAndMonth(userId, startDate, endDate)
                 .stream()
