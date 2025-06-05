@@ -80,11 +80,11 @@ public class SalaryPromotionServiceImpl implements SalaryPromotionService {
         }
 
         User signer = userService.getUserToUser(updateRequest.getSignerId());
+
         promotion.setSigner(signer);
         promotion.setNote(updateRequest.getReason());
 
         promotion.setStatus(updateRequest.getFormStatus());
-
 
         if (updateRequest.getFormStatus() == FormStatusEnum.APPROVED) {
             applyApprovedSalaryPromotion(promotion);
@@ -93,7 +93,6 @@ public class SalaryPromotionServiceImpl implements SalaryPromotionService {
         salaryPromotionRepository.save(promotion);
 
         return salaryPromotionMapper.toSalaryPromotionResponse(promotion);
-
     }
 
     @Override

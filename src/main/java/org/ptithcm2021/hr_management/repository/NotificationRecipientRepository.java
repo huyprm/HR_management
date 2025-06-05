@@ -15,4 +15,7 @@ import java.util.List;
 public interface NotificationRecipientRepository extends JpaRepository<NotificationRecipient, Long> {
     @Query("select nr from NotificationRecipient nr where nr.user.id = :userId ORDER BY nr.notification.sendDate DESC")
     Page<NotificationRecipient> findAllByUserId(@Param("userId")long userId, Pageable pageable);
+
+    @Query("select count(nr.id) from NotificationRecipient nr where nr.user.id = :userId and nr.readStatus = false")
+    Integer countNotificationUnreadByUserId(@Param("userId")long userId);
 }

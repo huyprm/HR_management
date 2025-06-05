@@ -138,6 +138,11 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
+    public Integer countNotificationUnread(long userId) {
+        return recipientRepository.countNotificationUnreadByUserId(userId);
+    }
+
+    @Override
     public NotificationResponse getNotificationByRecipient(long id) {
         NotificationRecipient recipient = recipientRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.NOTIFICATION_NOT_FOUND));
         Notification notification = recipient.getNotification();
@@ -155,9 +160,4 @@ public class NotificationServiceImpl implements NotificationService {
             recipientRepository.save(recipient);
         });
     }
-
-//    private void sendNotificationWithWS(long userId, NotificationResponse notification) {
-//        String destination = "/topic/user/" + userId;
-//        messagingTemplate.convertAndSend(destination, notification);
-//    }
 }

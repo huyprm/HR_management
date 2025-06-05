@@ -78,7 +78,7 @@ public class DecisionServiceImpl implements DecisionService {
 
         User signer = userService.getUserToUser(updateRequest.getSignerId());
 
-        if (signer.getPosition().getRole().getLevel()<2){
+        if (signer.getPosition().getRole().getLevel() > 2){
             throw new AppException(ErrorCode.SIGNER_IS_USER);
         }
 

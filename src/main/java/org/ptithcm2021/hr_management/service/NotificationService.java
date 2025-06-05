@@ -24,6 +24,9 @@ public interface NotificationService {
     @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN', 'SCOPE_MANAGER', 'SCOPE_STAFF')")
     PagedModel<NotificationResponse> getListNotification (long senderId, Pageable pageable, NotificationEnum type);
 
+    @PreAuthorize("T(String).valueOf(#userId) == authentication.name")
+    Integer countNotificationUnread(long userId);
+
     NotificationResponse getNotificationByRecipient(long id);
 
     void maskAsSeen(List<Long> ids);
