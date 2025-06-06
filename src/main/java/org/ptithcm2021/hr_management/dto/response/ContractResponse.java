@@ -2,6 +2,7 @@ package org.ptithcm2021.hr_management.dto.response;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.ptithcm2021.hr_management.enums.ContractStatusEnum;
@@ -16,6 +17,7 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class ContractResponse {
     private int id;
     private LocalDate startDate;

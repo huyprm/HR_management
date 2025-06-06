@@ -68,4 +68,9 @@ public class NotificationController {
     public ApiResponse<Integer> getUnreadCount(@PathVariable long userId){
         return ApiResponse.<Integer>builder().data(notificationService.countNotificationUnread(userId)).build();
     }
+
+    @GetMapping("/{userId}/list-unread-count")
+    public ApiResponse<List<Long>> getIdsUnreadCount(@PathVariable long userId){
+        return ApiResponse.<List<Long>>builder().data(notificationService.getIdsNotificationUnread(userId)).build();
+    }
 }

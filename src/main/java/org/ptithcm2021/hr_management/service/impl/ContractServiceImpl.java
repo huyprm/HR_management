@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.tomcat.util.http.fileupload.ByteArrayOutputStream;
 import org.ptithcm2021.hr_management.dto.request.ContractRequest;
 import org.ptithcm2021.hr_management.dto.response.ContractResponse;
+import org.ptithcm2021.hr_management.dto.response.UserSummaryResponse;
 import org.ptithcm2021.hr_management.enums.ContractStatusEnum;
 import org.ptithcm2021.hr_management.enums.RoleEnum;
 import org.ptithcm2021.hr_management.enums.UserStatusEnum;
@@ -236,7 +237,7 @@ public class ContractServiceImpl implements ContractService {
                 userId, ContractStatusEnum.EXPIRED);
 
         return expiredContract.map(contractMapper::toContractResponse)
-                .orElseThrow(() -> new AppException(ErrorCode.CONTRACT_NOT_FOUND));
+                .orElse(ContractResponse.builder().build());
     }
 
     @Override

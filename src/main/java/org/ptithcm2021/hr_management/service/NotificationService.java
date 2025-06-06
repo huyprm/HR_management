@@ -30,4 +30,7 @@ public interface NotificationService {
     NotificationResponse getNotificationByRecipient(long id);
 
     void maskAsSeen(List<Long> ids);
+
+    @PreAuthorize("T(String).valueOf(#userId) == authentication.name")
+    List<Long> getIdsNotificationUnread(long userId);
 }

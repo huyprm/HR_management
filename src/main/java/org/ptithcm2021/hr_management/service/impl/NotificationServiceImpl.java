@@ -160,4 +160,9 @@ public class NotificationServiceImpl implements NotificationService {
             recipientRepository.save(recipient);
         });
     }
+
+    @Override
+    public List<Long> getIdsNotificationUnread(long userId) {
+        return recipientRepository.getIdsNotificationUnreadByUserId(userId);
+    }
 }

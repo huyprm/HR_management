@@ -20,5 +20,5 @@ public class ContractType {
     private String duration;
 
     @Column(nullable = false)
-    private boolean isPolicy; // với hợp đồng thỉnh giảng
+    private boolean policy; // với hợp đồng thỉnh giảng
 }
