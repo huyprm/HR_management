@@ -163,7 +163,7 @@ public class SalaryPromotionServiceImpl implements SalaryPromotionService {
             decision.setValue(((newCoefficient / oldCoefficient) - 1) * 100); // % tăng
             decision.setProcessed(false);
             decision.setUser(promotion.getUser());
-            decision.setSigner(promotion.getSigner());
+//            decision.setSigner(promotion.getSigner());
             decision.setSalaryPromotion(promotion);
 
             decisionRepository.save(decision);

@@ -16,7 +16,7 @@ public interface SalaryPromotionService {
 
     SalaryPromotionResponse getSalaryPromotionById(int id);
 
-    @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('SCOPE_MANAGER')")
     SalaryPromotionResponse updateSalaryPromotion(int id, SalaryPromotionUpdateRequest updateRequest);
 
     @PreAuthorize("hasAuthority('SCOPE_USER')")
